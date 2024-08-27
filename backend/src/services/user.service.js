@@ -1,9 +1,14 @@
 "use strict";
-import User from "../entity/user.entity.js";
+import User from "../entity/user.entity.js"; // Modelo de usuario
 import { AppDataSource } from "../config/configDb.js";
 import { comparePassword, encryptPassword } from "../helpers/bcrypt.helper.js";
 
-export async function createUserService(body) {
+/**
+ * Crea un nuevo usuario en la base de datos
+ * @param {Object} body - Datos del usuario
+ * @returns {Promise} Promesa con el objeto de usuario creado
+ */
+async function createUser(body) {
   try {
     const userRepository = AppDataSource.getRepository(User);
 
@@ -34,10 +39,14 @@ export async function createUserService(body) {
   }
 }
 
-export async function getUserService(query) {
+/**
+ * Obtiene un usuario por su ID, RUT o Email de la base de datos
+ * @param {Object} query - Parámetros de consulta (id, rut, email)
+ * @returns {Promise} Promesa con el objeto de usuario
+ */
+async function getUser(query) {
   try {
     const { rut, id, email } = query;
-
     const userRepository = AppDataSource.getRepository(User);
 
     const userFound = await userRepository.findOne({
@@ -50,12 +59,16 @@ export async function getUserService(query) {
 
     return [userData, null];
   } catch (error) {
-    console.error("Error obtener el usuario:", error);
+    console.error("Error al obtener el usuario:", error);
     return [null, "Error interno del servidor"];
   }
 }
 
-export async function getUsersService() {
+/**
+ * Obtiene todos los usuarios de la base de datos
+ * @returns {Promise} Promesa con el objeto de los usuarios
+ */
+async function getUsers() {
   try {
     const userRepository = AppDataSource.getRepository(User);
 
@@ -72,18 +85,27 @@ export async function getUsersService() {
   }
 }
 
-export async function updateUserService(query, body) {
+/**
+ * Actualiza un usuario por su ID, RUT o Email en la base de datos
+ * @param {Object} query - Parámetros de consulta (id, rut, email)
+ * @param {Object} body - Datos del usuario a actualizar
+ * @returns {Promise} Promesa con el objeto de usuario actualizado
+ */
+async function updateUser(query, body) {
   try {
     const { id, rut, email } = query;
-
     const userRepository = AppDataSource.getRepository(User);
 
+    // Verificar si el usuario existe antes de actualizar
     const userFound = await userRepository.findOne({
       where: [{ id: id }, { rut: rut }, { email: email }],
     });
 
-    if (!userFound) return [null, "Usuario no encontrado"];
+    if (!userFound) {
+      return [null, "Usuario no encontrado"];
+    }
 
+    // Verificar si ya existe un usuario con el mismo RUT o email, excluyendo el actual
     const existingUser = await userRepository.findOne({
       where: [{ rut: body.rut }, { email: body.email }],
     });
@@ -92,14 +114,12 @@ export async function updateUserService(query, body) {
       return [null, "Ya existe un usuario con el mismo rut o email"];
     }
 
-    const matchPassword = await comparePassword(
-      body.password,
-      userFound.password,
-    );
+    // Comparar la contraseña proporcionada con la almacenada
+    const matchPassword = await comparePassword(body.password, userFound.password);
 
-    if (!matchPassword) return [null, "La contraseña no coincide"];
-
-    const updatedParam = id ? { id } : rut ? { rut } : { email };
+    if (!matchPassword) {
+      return [null, "La contraseña no coincide"];
+    }
 
     const updateData = {
       nombreCompleto: body.nombreCompleto,
@@ -110,12 +130,17 @@ export async function updateUserService(query, body) {
       updatedAt: new Date(),
     };
 
-    await userRepository.update(updatedParam, updateData);
+    await userRepository.update({ id: userFound.id }, updateData);
 
     const userData = await userRepository.findOne({
-      where: [updatedParam],
+      where: { id: userFound.id },
     });
 
+    if (!userData) {
+      return [null, "Error al recuperar el usuario actualizado"];
+    }
+
+    // Eliminar la contraseña del objeto antes de retornarlo
     const { password, ...userUpdated } = userData;
 
     return [userUpdated, null];
@@ -125,11 +150,14 @@ export async function updateUserService(query, body) {
   }
 }
 
-
-export async function deleteUserService(query) {
+/**
+ * Elimina un usuario por su ID, RUT o Email de la base de datos
+ * @param {Object} query - Parámetros de consulta (id, rut, email)
+ * @returns {Promise} Promesa con el objeto de usuario eliminado
+ */
+async function deleteUser(query) {
   try {
     const { id, rut, email } = query;
-
     const userRepository = AppDataSource.getRepository(User);
 
     const userFound = await userRepository.findOne({
@@ -152,3 +180,11 @@ export async function deleteUserService(query) {
     return [null, "Error interno del servidor"];
   }
 }
+
+export default {
+  createUser,
+  getUser,
+  getUsers,
+  updateUser,
+  deleteUser,
+};
