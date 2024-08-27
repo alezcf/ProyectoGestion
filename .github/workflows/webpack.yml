@@ -1,14 +1,29 @@
-name: NodeJS with Webpack
+name: NodeJS with Webpack and PostgreSQL
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "test-branch" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "test-branch" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: myuser
+          POSTGRES_PASSWORD: mypassword
+          POSTGRES_DB: mydatabase
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U myuser"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     strategy:
       matrix:
@@ -22,18 +37,27 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    # Backend - Solo instalación y desarrollo
+    - name: Wait for PostgreSQL to be ready
+      run: sleep 10
+
+    - name: Set environment variables
+      run: |
+        echo "DB_HOST=127.0.0.1" >> $GITHUB_ENV
+        echo "DB_PORT=5432" >> $GITHUB_ENV
+        echo "DB_USER=myuser" >> $GITHUB_ENV
+        echo "DB_PASSWORD=mypassword" >> $GITHUB_ENV
+        echo "DB_NAME=mydatabase" >> $GITHUB_ENV
+
     - name: Install Dependencies in Backend
       working-directory: ./backend
       run: |
         npm install
 
-    - name: Run Backend in Development Mode
+    - name: Run Backend Tests
       working-directory: ./backend
       run: |
-        npm run dev
+        npm test
 
-    # Frontend - Instalación, construcción y desarrollo
     - name: Install Dependencies in Frontend
       working-directory: ./frontend
       run: |
@@ -43,8 +67,3 @@ jobs:
       working-directory: ./frontend
       run: |
         npm run build
-
-    - name: Run Frontend in Development Mode
-      working-directory: ./frontend
-      run: |
-        npm run dev
