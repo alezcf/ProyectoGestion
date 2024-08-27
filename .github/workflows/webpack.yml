@@ -22,7 +22,29 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Build
+    # Backend - Solo instalación y desarrollo
+    - name: Install Dependencies in Backend
+      working-directory: ./backend
       run: |
         npm install
-        npx webpack
+
+    - name: Run Backend in Development Mode
+      working-directory: ./backend
+      run: |
+        npm run dev
+
+    # Frontend - Instalación, construcción y desarrollo
+    - name: Install Dependencies in Frontend
+      working-directory: ./frontend
+      run: |
+        npm install
+
+    - name: Build Frontend
+      working-directory: ./frontend
+      run: |
+        npm run build
+
+    - name: Run Frontend in Development Mode
+      working-directory: ./frontend
+      run: |
+        npm run dev
