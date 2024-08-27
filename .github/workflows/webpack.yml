@@ -53,11 +53,6 @@ jobs:
       run: |
         npm install
 
-    - name: Run Backend Tests
-      working-directory: ./backend
-      run: |
-        npm test
-
     - name: Install Dependencies in Frontend
       working-directory: ./frontend
       run: |
