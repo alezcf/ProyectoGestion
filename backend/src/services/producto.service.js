@@ -1,198 +1,167 @@
 "use strict";
-import Inventario from "../entity/inventario.entity.js";
 import Producto from "../entity/producto.entity.js";
+import Proveedor from "../entity/proveedor.entity.js";
 import { AppDataSource } from "../config/configDb.js";
 import { In } from "typeorm";
 
 /**
- * Crea un nuevo inventario en la base de datos
- * @param {Object} body - Datos del inventario
- * @returns {Promise} Promesa con el objeto de inventario creado o un error
+ * Crea un nuevo producto en la base de datos
+ * @param {Object} body - Datos del producto
+ * @returns {Promise} Promesa con el objeto de producto creado o un error si los proveedores no existen
  */
-async function createInventario(body) {
+async function createProducto(body) {
     try {
-        const inventarioRepository = AppDataSource.getRepository(Inventario);
+        const productoRepository = AppDataSource.getRepository(Producto);
+        const proveedorRepository = AppDataSource.getRepository(Proveedor);
+
+        // Verificar si los proveedores existen solo si se proporcionan
+        if (body.proveedores && body.proveedores.length > 0) {
+            const proveedores = await proveedorRepository.findBy({
+                id: In(body.proveedores),
+            });
+
+            if (proveedores.length !== body.proveedores.length) {
+                return [null, "Uno o más proveedores no existen"];
+            }
+
+            body.proveedores = proveedores; // Asociar los proveedores encontrados
+        } else {
+            body.proveedores = [];
+        }
+
+        const newProducto = productoRepository.create(body);
+        const savedProducto = await productoRepository.save(newProducto);
+
+        return [savedProducto, null];
+    } catch (error) {
+        console.error("Error al crear un producto:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
+/**
+ * Obtiene un producto por su ID de la base de datos
+ * @param {Object} query - Parámetros de consulta (id)
+ * @returns {Promise} Promesa con el objeto de producto
+ */
+async function getProducto(query) {
+    try {
+        const { id } = query;
         const productoRepository = AppDataSource.getRepository(Producto);
 
-        // Crear un nuevo inventario
-        let newInventario = inventarioRepository.create(body);
-        newInventario = await inventarioRepository.save(newInventario);
-
-        // Asociar productos si se proporcionan
-        if (body.productos && body.productos.length > 0) {
-            const productos = await productoRepository.findBy({ id: In(body.productos) });
-            if (productos.length !== body.productos.length) {
-                return [null, "Uno o más productos no existen"];
-            }
-
-            newInventario.productos = productos;
-            await inventarioRepository.save(newInventario);
-        }
-
-        return [newInventario, null];
-    } catch (error) {
-        console.error("Error al crear inventario:", error);
-        return [null, "Error interno del servidor"];
-    }
-}
-
-/**
- * Obtiene un inventario por su ID de la base de datos, incluyendo productos asociados (solo id, nombre y cantidad)
- * @param {Object} query - Parámetros de consulta (id)
- * @returns {Promise} Promesa con el objeto de inventario encontrado o un error
- */
-async function getInventario(query) {
-    try {
-        const inventarioRepository = AppDataSource.getRepository(Inventario);
-
-        const inventarioFound = await inventarioRepository.findOne({
-            where: { id: query.id },
-            relations: ["productos"],
-            select: {
-                productos: {
-                    id: true,
-                    nombre: true,
-                    cantidad: true,
-                }
-            }
+        const productoFound = await productoRepository.findOne({
+            where: { id: id },
         });
 
-        if (!inventarioFound) return [null, "Inventario no encontrado"];
+        if (!productoFound) return [null, "Producto no encontrado"];
 
-        return [inventarioFound, null];
+        return [productoFound, null];
     } catch (error) {
-        console.error("Error al obtener el inventario:", error);
+        console.error("Error al obtener el producto:", error);
         return [null, "Error interno del servidor"];
     }
 }
 
 /**
- * Obtiene todos los inventarios de la base de datos, incluyendo productos asociados (solo id, nombre y cantidad)
- * @returns {Promise} Promesa con el objeto de los inventarios encontrados o un error
+ * Obtiene todos los productos de la base de datos
+ * @returns {Promise} Promesa con el objeto de los productos
  */
-async function getInventarios() {
+async function getProductos() {
     try {
-        const inventarioRepository = AppDataSource.getRepository(Inventario);
-
-        const inventarios = await inventarioRepository.find({
-            relations: ["productos"],
-            select: {
-                productos: {
-                    id: true,
-                    nombre: true,
-                    cantidad: true,
-                }
-            }
-        });
-
-        if (!inventarios || inventarios.length === 0) return [null, "No hay inventarios"];
-
-        return [inventarios, null];
-    } catch (error) {
-        console.error("Error al obtener los inventarios:", error);
-        return [null, "Error interno del servidor"];
-    }
-}
-
-/**
- * Actualiza un inventario por su ID en la base de datos, incluyendo productos asociados (solo id, nombre y cantidad)
- * @param {Object} query - Parámetros de consulta (id)
- * @param {Object} body - Datos del inventario a actualizar
- * @returns {Promise} Promesa con el objeto de inventario actualizado o un error
- */
-async function updateInventario(query, body) {
-    try {
-        const inventarioRepository = AppDataSource.getRepository(Inventario);
         const productoRepository = AppDataSource.getRepository(Producto);
 
-        const inventarioFound = await inventarioRepository.findOne({
-            where: { id: query.id },
-            relations: ["productos"],
-            select: {
-                productos: {
-                    id: true,
-                    nombre: true,
-                    cantidad: true,
-                }
-            }
-        });
+        const productos = await productoRepository.find();
 
-        if (!inventarioFound) {
-            return [null, "Inventario no encontrado"];
-        }
+        if (!productos || productos.length === 0) return [null, "No hay productos"];
 
-        await inventarioRepository.update({ id: query.id }, body);
-
-        // Actualizar la relación de productos si se proporciona
-        if (body.productos && body.productos.length > 0) {
-            const productos = await productoRepository.findBy({ id: In(body.productos) });
-            if (productos.length !== body.productos.length) {
-                return [null, "Uno o más productos no existen"];
-            }
-
-            inventarioFound.productos = productos;
-            await inventarioRepository.save(inventarioFound);
-        }
-
-        const updatedInventario = await inventarioRepository.findOne({
-            where: { id: query.id },
-            relations: ["productos"],
-            select: {
-                productos: {
-                    id: true,
-                    nombre: true,
-                    cantidad: true,
-                }
-            }
-        });
-
-        if (!updatedInventario) {
-            return [null, "Error al recuperar el inventario actualizado"];
-        }
-
-        return [updatedInventario, null];
+        return [productos, null];
     } catch (error) {
-        console.error("Error al actualizar un inventario:", error);
+        console.error("Error al obtener los productos:", error);
         return [null, "Error interno del servidor"];
     }
 }
 
 /**
- * Elimina un inventario por su ID de la base de datos, incluyendo productos asociados (solo id, nombre y cantidad)
+ * Actualiza un producto por su ID en la base de datos
  * @param {Object} query - Parámetros de consulta (id)
- * @returns {Promise} Promesa con el objeto de inventario eliminado o un error
+ * @param {Object} body - Datos del producto a actualizar
+ * @returns {Promise} Promesa con el objeto de producto actualizado
  */
-async function deleteInventario(query) {
+async function updateProducto(query, body) {
     try {
-        const inventarioRepository = AppDataSource.getRepository(Inventario);
+        const { id } = query;
+        const productoRepository = AppDataSource.getRepository(Producto);
+        const proveedorRepository = AppDataSource.getRepository(Proveedor);
 
-        const inventarioFound = await inventarioRepository.findOne({
-            where: { id: query.id },
-            relations: ["productos"],
-            select: {
-                productos: {
-                    id: true,
-                    nombre: true,
-                    cantidad: true,
-                }
-            }
+        // Verificar si el producto existe antes de actualizar
+        const productoFound = await productoRepository.findOne({
+            where: { id: id },
         });
 
-        if (!inventarioFound) return [null, "Inventario no encontrado"];
+        if (!productoFound) {
+            return [null, "Producto no encontrado"];
+        }
 
-        await inventarioRepository.remove(inventarioFound);
+        // Extraer los proveedores del cuerpo de la solicitud
+        const { proveedores, ...productoData } = body;
 
-        return [inventarioFound, null];
+        // Actualizar los campos del producto que no están relacionados con proveedores
+        await productoRepository.update({ id: productoFound.id }, productoData);
+
+        // Actualizar la relación muchos a muchos (proveedores)
+        if (proveedores && proveedores.length > 0) {
+            const proveedoresEntities = await proveedorRepository.findBy({
+                id: In(proveedores),
+            });
+
+            if (proveedoresEntities.length !== proveedores.length) {
+                return [null, "Uno o más proveedores no existen"];
+        }
+
+            productoFound.proveedores = proveedoresEntities; // Asociar los proveedores encontrados
+        } else {
+            productoFound.proveedores = []; // Si no se proporcionan proveedores, desasociar todos
+            }
+
+        // Guardar las asociaciones actualizadas
+        await productoRepository.save(productoFound);
+
+        return [productoFound, null];
     } catch (error) {
-        console.error("Error al eliminar un inventario:", error);
+        console.error("Error al modificar un producto:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
+/**
+ * Elimina un producto por su ID de la base de datos
+ * @param {Object} query - Parámetros de consulta (id)
+ * @returns {Promise} Promesa con el objeto de producto eliminado
+ */
+async function deleteProducto(query) {
+    try {
+        const { id } = query;
+        const productoRepository = AppDataSource.getRepository(Producto);
+
+        const productoFound = await productoRepository.findOne({
+            where: { id: id },
+        });
+
+        if (!productoFound) return [null, "Producto no encontrado"];
+
+        const productoDeleted = await productoRepository.remove(productoFound);
+
+        return [productoDeleted, null];
+    } catch (error) {
+        console.error("Error al eliminar un producto:", error);
         return [null, "Error interno del servidor"];
     }
 }
 
 export default {
-    createInventario,
-    getInventario,
-    getInventarios,
-    updateInventario,
-    deleteInventario,
+    createProducto,
+    getProducto,
+    getProductos,
+    updateProducto,
+    deleteProducto,
 };
