@@ -2,9 +2,13 @@ name: NodeJS with Webpack and PostgreSQL
 
 on:
   push:
-    branches: [ "test-branch" ]
+    branches: 
+      - "master"
+      - "test-branch"
   pull_request:
-    branches: [ "test-branch" ]
+    branches: 
+      - "master"
+      - "test-branch"
 
 jobs:
   build:
