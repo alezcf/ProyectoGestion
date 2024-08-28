@@ -5,6 +5,7 @@ import authRoutes from "./auth.routes.js";
 import proveedorRoutes from "./proveedor.routes.js";
 import vendedorRoutes from "./vendedor.routes.js";
 import productoRoutes from "./producto.routes.js";
+import inventarioRoutes from "./inventario.routes.js";
 
 const router = Router();
 
@@ -13,6 +14,7 @@ router
     .use("/user", userRoutes)
     .use("/proveedor", proveedorRoutes)
     .use("/vendedor", vendedorRoutes)
-    .use("/producto", productoRoutes);
+    .use("/producto", productoRoutes)
+    .use("/inventario", inventarioRoutes);
     
 export default router;

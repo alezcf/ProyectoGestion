@@ -68,7 +68,7 @@ const ProductoSchema = new EntitySchema({
                     referencedColumnName: "id",
                 },
             },
-            eager: true,
+            eager: false,
         },
     },
 });
