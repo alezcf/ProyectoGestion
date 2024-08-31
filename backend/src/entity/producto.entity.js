@@ -1,5 +1,6 @@
 import { EntitySchema } from "typeorm";
 import Proveedor from "./proveedor.entity.js";
+import ProductoInventario from "./producto_inventario.entity.js";
 
 const ProductoSchema = new EntitySchema({
     name: "Producto",
@@ -69,6 +70,11 @@ const ProductoSchema = new EntitySchema({
                 },
             },
             eager: false,
+        },
+        productoInventarios: {
+            target: ProductoInventario,
+            type: "one-to-many",
+            inverseSide: "producto",
         },
     },
 });

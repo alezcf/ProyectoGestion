@@ -1,5 +1,5 @@
 import { EntitySchema } from "typeorm";
-import Producto from "./producto.entity.js";
+import ProductoInventario from "./producto_inventario.entity.js";
 
 const InventarioSchema = new EntitySchema({
     name: "Inventario",
@@ -23,26 +23,20 @@ const InventarioSchema = new EntitySchema({
             type: "int",
             nullable: true,
         },
-        fecha_ingreso: {
-            type: "timestamp",
-            nullable: true,
-        },
-        fecha_actualizacion: {
-            type: "timestamp",
-            nullable: true,
+        ultima_actualizacion: {
+            type: "timestamp with time zone",
+            default: () => "CURRENT_TIMESTAMP",
+            onUpdate: "CURRENT_TIMESTAMP",
+            nullable: false,
         },
     },
     relations: {
-        productos: {
-            target: Producto,
-            type: "many-to-many",
-            joinTable: {
-                name: "inventario_productos",
-                joinColumn: { name: "inventario_id", referencedColumnName: "id" },
-                inverseJoinColumn: { name: "producto_id", referencedColumnName: "id" },
-            },
-        },
-    },
+        productoInventarios: {
+            target: "ProductoInventario",
+            type: "one-to-many",
+            inverseSide: "inventario",
+        }
+    }
 });
 
 export default InventarioSchema;

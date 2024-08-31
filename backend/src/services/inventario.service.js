@@ -13,35 +13,15 @@ import { In } from "typeorm";
 async function createInventario(body) {
     try {
         const inventarioRepository = AppDataSource.getRepository(Inventario);
-        const productoRepository = AppDataSource.getRepository(Producto);
-        const productoInventarioRepository = AppDataSource.getRepository(ProductoInventario);
 
-        // Crear un nuevo inventario
-        let newInventario = inventarioRepository.create(body);
+        let newInventario = inventarioRepository.create({
+            nombre: body.nombre,
+            stock_actual: 0,
+            maximo_stock: body.maximo_stock,
+            ultima_actualizacion: new Date()
+        });
+
         newInventario = await inventarioRepository.save(newInventario);
-
-        // Asociar productos y cantidades si se proporcionan
-        if (body.productos && body.productos.length > 0) {
-            for (let i = 0; i < body.productos.length; i++) {
-                const productoId = body.productos[i];
-                
-                const producto = await productoRepository.findOne({
-                    where: { id: productoId }
-                });
-
-                if (!producto) {
-                    return [null, `Producto con id ${productoId} no existe`];
-                }
-
-                const productoInventario = productoInventarioRepository.create({
-                    producto: producto,
-                    inventario: newInventario,
-                    cantidad: productoId.cantidad
-                });
-
-                await productoInventarioRepository.save(productoInventario);
-            }
-        }
 
         return [newInventario, null];
     } catch (error) {
@@ -61,7 +41,7 @@ async function getInventario(query) {
 
         const inventarioFound = await inventarioRepository.findOne({
             where: { id: query.id },
-            relations: ["productos"], // Incluir productos asociados
+            relations: ["productoInventarios", "productoInventarios.producto"],
         });
 
         if (!inventarioFound) return [null, "Inventario no encontrado"];
@@ -73,6 +53,7 @@ async function getInventario(query) {
     }
 }
 
+
 /**
  * Obtiene todos los inventarios de la base de datos, incluyendo productos asociados
  * @returns {Promise} Promesa con el objeto de los inventarios encontrados o un error
@@ -82,7 +63,7 @@ async function getInventarios() {
         const inventarioRepository = AppDataSource.getRepository(Inventario);
 
         const inventarios = await inventarioRepository.find({
-            relations: ["productos"], // Incluir productos asociados
+            relations: ["productoInventarios", "productoInventarios.producto"],
         });
 
         if (!inventarios || inventarios.length === 0) return [null, "No hay inventarios"];
@@ -94,6 +75,7 @@ async function getInventarios() {
     }
 }
 
+
 /**
  * Actualiza un inventario por su ID en la base de datos, incluyendo productos asociados
  * @param {Object} query - Parámetros de consulta (id)
@@ -104,44 +86,73 @@ async function updateInventario(query, body) {
     try {
         const inventarioRepository = AppDataSource.getRepository(Inventario);
         const productoRepository = AppDataSource.getRepository(Producto);
+        const productoInventarioRepository = AppDataSource.getRepository(ProductoInventario);
 
-        const inventarioFound = await inventarioRepository.findOne({
-            where: { id: query.id },
-            relations: ["productos"], // Incluir productos asociados
-        });
+        // Verificar si el inventario existe
+        const inventarioFound = await inventarioRepository.findOne({ where: { id: query.id } });
+        if (!inventarioFound) return [null, "Inventario no encontrado"];
 
-        if (!inventarioFound) {
-            return [null, "Inventario no encontrado"];
-        }
-
-        await inventarioRepository.update({ id: query.id }, body);
-
-        // Actualizar la relación de productos si se proporciona
-        if (body.productos && body.productos.length > 0) {
-            const productos = await productoRepository.findBy({ id: In(body.productos) });
-            if (productos.length !== body.productos.length) {
-                return [null, "Uno o más productos no existen"];
+        if (body.productos?.length) {
+            // Verificar existencia de todos los productos
+            const productoIds = body.productos.map(p => p.id);
+            const productosExistentes = await productoRepository.find({
+                where: { id: In(productoIds) }
+            });
+            
+            if (productosExistentes.length !== productoIds.length) {
+                const productosNoExistentes = productoIds.filter(id => 
+                    !productosExistentes.some(p => p.id === id)
+                );
+                return [null, `Los productos no existen: ${productosNoExistentes.join(", ")}`];
             }
 
-            inventarioFound.productos = productos;
-            await inventarioRepository.save(inventarioFound);
+            // Calcular el nuevo stock_actual y verificar si supera el maximo_stock
+            const nuevoStockActual = body.productos.reduce(
+                (total, prod) => total + prod.cantidad,
+                0
+            );
+            if (nuevoStockActual > body.maximo_stock) {
+                return [null, "El stock actual supera el máximo permitido."];
+            }
+
+            // Limpiar y crear nuevas relaciones
+            await productoInventarioRepository.delete({ inventario: { id: inventarioFound.id } });
+            const nuevosProductoInventarios = body.productos.map((producto) => {
+                const id = producto.id;
+                return productoInventarioRepository.create({ 
+                    inventario: { id: inventarioFound.id }, 
+                    producto: { id }, 
+                    cantidad: producto.cantidad 
+                });
+            });
+            await productoInventarioRepository.save(nuevosProductoInventarios);
+
+            body.stock_actual = nuevoStockActual;  // Actualizar el stock_actual en el body
         }
 
-        const updatedInventario = await inventarioRepository.findOne({
-            where: { id: query.id },
-            relations: ["productos"], // Asegurarse de que los productos actualizados se carguen
+        // Actualizar los campos básicos del inventario
+        await inventarioRepository.update({ id: query.id }, {
+            nombre: body.nombre,
+            stock_actual: body.stock_actual,
+            maximo_stock: body.maximo_stock,
+            ultima_actualizacion: new Date()
         });
 
-        if (!updatedInventario) {
-            return [null, "Error al recuperar el inventario actualizado"];
-        }
+        // Recuperar y retornar el inventario actualizado
+        const updatedInventario = await inventarioRepository.findOne({
+            where: { id: query.id },
+            relations: ["productoInventarios", "productoInventarios.producto"],
+        });
 
-        return [updatedInventario, null];
+        return updatedInventario
+            ? [updatedInventario, null]
+            : [null, "Error al recuperar el inventario actualizado"];
     } catch (error) {
         console.error("Error al actualizar un inventario:", error);
         return [null, "Error interno del servidor"];
     }
 }
+
 
 /**
  * Elimina un inventario por su ID de la base de datos, incluyendo productos asociados

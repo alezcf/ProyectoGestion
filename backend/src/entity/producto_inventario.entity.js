@@ -1,6 +1,4 @@
 import { EntitySchema } from "typeorm";
-import Inventario from "./inventario.entity.js";
-import Producto from "./producto.entity.js";
 
 const ProductoInventarioSchema = new EntitySchema({
     name: "ProductoInventario",
@@ -18,16 +16,16 @@ const ProductoInventarioSchema = new EntitySchema({
     },
     relations: {
         inventario: {
-            target: Inventario,
+            target: "Inventario",
             type: "many-to-one",
-            joinColumn: { name: "inventario_id" },
-            inverseSide: "productoInventarios"
+            joinColumn: { name: "inventario_id", referencedColumnName: "id" },
+            inverseSide: "productoInventarios",
         },
         producto: {
-            target: Producto,
+            target: "Producto",
             type: "many-to-one",
-            joinColumn: { name: "producto_id" },
-            inverseSide: "productoInventarios"
+            joinColumn: { name: "producto_id", referencedColumnName: "id" },
+            inverseSide: "productoInventarios",
         }
     }
 });
