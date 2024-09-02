@@ -1,0 +1,8 @@
+.root-container {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #e6e6fa 100%, #e6e6fa 100%);
+  color: #333;
+  margin: 0;
+  min-height: 85.5vh;
+  padding: 10px;
+}

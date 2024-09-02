@@ -1,0 +1,63 @@
+.navbar {
+  background-color: #30004e; /* Púrpura oscuro */
+  width: 100%;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.brand-logo {
+  width: 20vw; /* Unidades de viewport width */
+  height: 20vw; /* Unidades de viewport width para mantener proporciones */
+  max-width: 300px; /* Tamaño máximo */
+  max-height: 80px; /* Tamaño máximo */
+  min-width: 200px; /* Tamaño mínimo */
+  min-height: 50px; /* Tamaño mínimo */
+  background-size: cover;
+  margin: 0 20px 0 0; /* Margen derecho */
+}
+
+.nav-links {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.nav-link {
+  color: #ffffff; /* Blanco para los enlaces de navegación */
+  font-weight: 500;
+  font-size: 1.1em;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #cf9c01; /* Dorado para el hover de los enlaces de navegación */
+  text-decoration: underline;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-text {
+  margin-right: 20px;
+  color: #ffffff; /* Blanco para el texto de la barra de navegación */
+  font-weight: 500;
+}
+
+.custom-button {
+  background-color: #21a99b; /* Turquesa para el botón */
+  color: #000000; /* Blanco para el texto del botón */
+  border: 1.5px solid #000000; /* Borde negro */
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 1.1em;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  text-decoration: none; /* Quitar subrayado */
+  display: inline-block; /* Hacerlo inline-block para comportarse como enlace */
+}
+
+.custom-button:hover {
+  background-color: #00ada5; /* Color de hover para el botón */
+  transform: scale(1.05);
+}

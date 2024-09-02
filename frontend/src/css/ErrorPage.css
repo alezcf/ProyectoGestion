@@ -1,0 +1,43 @@
+.error-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    background-color: #31004F; /* Color de fondo */
+    color: #f3eeee;
+    padding: 20px; /* Espaciado para evitar que el contenido toque los bordes */
+    box-sizing: border-box; /* Incluye el padding en el cálculo del ancho */
+  }
+  
+  .error-page img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .error-page h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .error-page p {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  
+  /* Asegura que el contenido no se salga de la pantalla */
+  @media (max-height: 700px) {
+    .error-page h1 {
+      font-size: 2rem;
+    }
+  
+    .error-page p {
+      font-size: 1rem;
+    }
+  
+    .error-page button {
+      font-size: 0.875rem;
+    }
+  }
+  

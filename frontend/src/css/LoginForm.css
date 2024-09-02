@@ -1,0 +1,120 @@
+.login-container {
+    background: #30004e;
+    border: 1px solid #000000; /* Borde de la caja */
+    border-radius: 10px;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row; /* Dirección de los elementos a fila */
+    align-items: center;
+    padding: 20px;
+    width: 90%;
+    max-width: 700px; /* Tamaño máximo */
+    margin: 20px;
+}
+
+.login-card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user-image {
+    width: 20vw; /* Unidades de viewport width */
+    height: 30vw; /* Unidades de viewport width para mantener proporciones */
+    max-width: 400px; /* Tamaño máximo */
+    max-height: 400px; /* Tamaño máximo */
+    min-width: 200px; /* Tamaño mínimo */
+    min-height: 200px; /* Tamaño mínimo */
+    background: url('../images/InspeccionInventario.png') no-repeat center center; /* Ajustado para la imagen redimensionada */
+    background-size: contain; /* Ajuste de tamaño para mantener la imagen completa */
+    margin: 0 20px 0 0; /* Margen derecho */
+}
+
+.welcome-text {
+    font-size: 32px; /* Tamaño de fuente */
+    margin-bottom: 20px; /* Espaciado inferior */
+    color: #673ab7; /* Color de texto */
+    text-align: center; /* Alineación centrada */
+    font-family: 'Arial', sans-serif; /* Fuente moderna */
+    font-weight: 700; /* Texto más grueso */
+    background: linear-gradient(to right, #d5d4d4, #bdbdbd); /* Gradiente de color */
+    -webkit-background-clip: text; /* Recortar el fondo al texto */
+    -webkit-text-fill-color: transparent; /* Llenar el texto con el fondo */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra de texto */
+    letter-spacing: 1px; /* Espaciado entre letras */
+}
+
+.welcome-text:hover {
+    color: #ffffff; /* Color en el hover */
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Sombra aumentada en el hover */
+    transform: scale(1.05); /* Agrandado en el hover */
+}
+
+.input-container {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.input-container input {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.input-container input:focus {
+    border-color: #673ab7;
+    box-shadow: 0px 0px 5px rgba(103, 58, 183, 0.5);
+}
+
+.form-control.is-invalid {
+    border-color: red;
+}
+
+.invalid-feedback {
+    color: red;
+    font-size: 12px;
+}
+
+.login-button,
+.signup-button,
+.recover-button {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column; /* Cambia a columna en pantallas medianas */
+    }
+    .user-image {
+        width: 25vw;
+        height: 40vw;
+        margin: 0 auto 20px; /* Ajustar el margen */
+        order: -1; /* Mueve la imagen al principio */
+    }
+    .welcome-text {
+        font-size: 28px;
+    }
+    .input-container input {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-image {
+        width: 60vw;
+        height: 60vw;
+        margin: 0 auto 20px; /* Ajustar el margen */
+        order: -1; /* Mueve la imagen al principio */
+    }
+}

@@ -1,0 +1,137 @@
+
+.container {
+    background-color: #31004F;
+    color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    height: 100%;
+    overflow-x: auto; /* Añadir scroll horizontal en caso de ser necesario */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+}
+
+.alert-danger {
+    background-color: #BC0D8D;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+}
+
+.inventario-header {
+    background-color: #31004F;
+    text-align: center;
+    font-weight: bold;
+    font-size: 2em; /* Tamaño de fuente aumentado */
+    color: #f6f6f6;
+}
+
+.inventario-table {
+    background-color: #fff;
+    color: #31004F;
+    border-collapse: collapse; /* Asegurar que las celdas no tengan espacio entre ellas */
+    border-radius: 10px; /* Bordes redondeados */
+    overflow: hidden; /* Redondear bordes de la tabla */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para la tabla */
+}
+
+.inventario-table th,
+.inventario-table td {
+    padding: 5px 8px; /* Padding aumentado para mejor legibilidad */
+    text-align: center; /* Centralizar el texto */
+    font-size: 1.1em; /* Aumentar tamaño de la fuente */
+}
+
+.inventario-table th {
+    background-color: #31004F;
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.inventario-table td {
+    background-color: #e5e5e5;
+    color: #31004F;
+}
+
+.inventario-table tr:nth-child(even) {
+    background-color: #d5d3d3; /* Fondo alternado para filas pares */
+}
+
+.inventario-table tr:hover {
+    background-color: #f1c40f; /* Color de fondo al pasar el cursor */
+    color: #fff;
+}
+
+.table-responsive {
+    max-width: 100%;
+    overflow-x: auto; /* Permitir el scroll horizontal */
+}
+
+/* Estilos adicionales para formularios y botones */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: bold;
+    color: #fff;
+    font-size: 1.2em;
+}
+
+.form-control {
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 12px 20px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1em;
+}
+
+.form-control:focus {
+    border-color: #21A99B;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+.btn:hover {
+    background-color: #357ABD;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 0px;
+}
+
+.pagination .page-link {
+    color: #31004F;
+    background-color: transparent;
+    border: 1px solid #ddd; /* Agregar borde gris */
+    margin: 0 4px;
+    padding: 2px 10px;
+    transition: all 0.3s ease;
+    font-size: 1.1em;
+    border-radius: 4px; /* Bordes redondeados para un estilo más suave */
+}
+
+.pagination .page-link:hover {
+    color: #000000;
+    border-color: #D5D4D4; /* Cambiar color de borde al pasar el cursor */
+}
+
+.pagination .page-item.active .page-link {
+    color: #000000;
+    font-weight: bold;
+    border-color: #000000; /* Cambiar color de borde para el elemento activo */
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #717070;
+    border-color: #bebcbc; /* Borde gris para el elemento deshabilitado */
+}
+
+.producto-imagen {
+    width: 70px;
+    height: 70px;
+    object-fit: cover; /* Mantiene la proporción de la imagen */
+}
