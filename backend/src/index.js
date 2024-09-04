@@ -5,10 +5,16 @@ import cookieParser from "cookie-parser";
 import indexRoutes from "./routes/index.routes.js";
 import session from "express-session";
 import passport from "passport";
+import path from "path";
+import { fileURLToPath } from "url";
 import express, { json, urlencoded } from "express";
 import { cookieKey, HOST, PORT } from "./config/configEnv.js";
 import { connectDB } from "./config/configDb.js";
 import { passportJwtSetup } from "./auth/passport.auth.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 async function setupServer() {
   try {
@@ -57,6 +63,8 @@ async function setupServer() {
     app.use(passport.session());
 
     passportJwtSetup();
+
+    app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
     app.use("/api", indexRoutes);
 

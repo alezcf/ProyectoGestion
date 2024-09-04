@@ -1,5 +1,6 @@
 "use strict";
 import ProductoService from "../services/producto.service.js";
+import upload from "../config/configMulter.js";
 import {
     productoBodyValidation,
     productoQueryValidation
@@ -18,12 +19,19 @@ import {
 export async function createProducto(req, res) {
     try {
         const { body } = req;
-        console.log(body);
-        const { error } = productoBodyValidation.validate(body);
 
+        const { error } = productoBodyValidation.validate(body);
         if (error) return handleErrorClient(res, 400, "Error de validación", error.message);
 
-        const [producto, errorProducto] = await ProductoService.createProducto(body);
+        const imagenRuta = req.file ? req.file.path : null;
+
+        const productoData = {
+            ...body,
+            imagen_ruta: imagenRuta,
+        };
+
+        // Crear el producto en la base de datos
+        const [producto, errorProducto] = await ProductoService.createProducto(productoData);
 
         if (errorProducto) return handleErrorClient(res, 400, errorProducto);
 
@@ -83,19 +91,25 @@ export async function updateProducto(req, res) {
         const { id } = req.query;
         const { body } = req;
 
-        const { error: queryError } = productoQueryValidation.validate({ id });
+        const nuevaImagenRuta = req.file ? req.file.path : null;
 
-        if (queryError) {
-            return handleErrorClient(res, 400, "Error de validación", queryError.message);
+        if (nuevaImagenRuta) {
+            body.imagen_ruta = nuevaImagenRuta;
+        }
+        else{
+            delete body.imagen;
         }
 
-        const { error: bodyError } = productoBodyValidation.validate(body);
+        const { error } = productoQueryValidation.validate({ id });
+        if (error) {
+            return handleErrorClient(res, 400, "Error de validación", error.message);
+        }
 
-        if (bodyError) return handleErrorClient(res, 400, "Error de validación", bodyError.message);
-
+        // Llamar al servicio para actualizar el producto
         const [producto, errorProducto] = await ProductoService.updateProducto({ id }, body);
-
-        if (errorProducto) return handleErrorClient(res, 400, errorProducto);
+        if (errorProducto) {
+            return handleErrorClient(res, 400, errorProducto);
+        }
 
         handleSuccess(res, 200, "Producto modificado correctamente", producto);
     } catch (error) {

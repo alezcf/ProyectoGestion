@@ -1,6 +1,8 @@
 "use strict";
 import Producto from "../entity/producto.entity.js";
 import Proveedor from "../entity/proveedor.entity.js";
+import fs from "fs";
+import path from "path";
 import { AppDataSource } from "../config/configDb.js";
 import { In } from "typeorm";
 
@@ -102,8 +104,28 @@ async function updateProducto(query, body) {
             return [null, "Producto no encontrado"];
         }
 
-        // Extraer los proveedores del cuerpo de la solicitud
-        const { proveedores, ...productoData } = body;
+        // Extraer los proveedores y la imagen del cuerpo de la solicitud
+        const { proveedores, imagen_ruta: nuevaImagen, ...productoData } = body;
+
+        if (nuevaImagen) {
+            const imagenActualRuta = productoFound.imagen_ruta;
+            
+            if (imagenActualRuta) {
+                const filePath = path.resolve(imagenActualRuta);
+
+                if (fs.existsSync(filePath)) {
+                    fs.unlink(filePath, (err) => {
+                        if (err) {
+                            console.error("Error eliminando la imagen registrada:", err);
+                        } else {
+                            console.log("Imagen registrada eliminada:", filePath);
+                        }
+                    });
+                }
+            }
+
+            productoFound.imagen_ruta = nuevaImagen;
+        }
 
         // Actualizar los campos del producto que no están relacionados con proveedores
         await productoRepository.update({ id: productoFound.id }, productoData);
@@ -116,17 +138,17 @@ async function updateProducto(query, body) {
 
             if (proveedoresEntities.length !== proveedores.length) {
                 return [null, "Uno o más proveedores no existen"];
-        }
+            }
 
             productoFound.proveedores = proveedoresEntities; // Asociar los proveedores encontrados
         } else {
             productoFound.proveedores = []; // Si no se proporcionan proveedores, desasociar todos
-            }
+        }
 
-        // Guardar las asociaciones actualizadas
-        await productoRepository.save(productoFound);
+        // Guardar el producto actualizado
+        const productoActualizado = await productoRepository.save(productoFound);
 
-        return [productoFound, null];
+        return [productoActualizado, null];
     } catch (error) {
         console.error("Error al modificar un producto:", error);
         return [null, "Error interno del servidor"];
@@ -148,6 +170,19 @@ async function deleteProducto(query) {
         });
 
         if (!productoFound) return [null, "Producto no encontrado"];
+
+        const imagenRuta = productoFound.imagen_ruta;
+
+        if (imagenRuta) {
+            const filePath = path.resolve(imagenRuta);
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error("Error eliminando la imagen:", err);
+                } else {
+                    console.log("Imagen eliminada:", filePath);
+                }
+            });
+        }
 
         const productoDeleted = await productoRepository.remove(productoFound);
 

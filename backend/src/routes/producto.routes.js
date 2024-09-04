@@ -1,6 +1,7 @@
 "use strict";
 import { Router } from "express";
 import { authenticateJwt } from "../middlewares/authentication.middleware.js";
+import upload from "../config/configMulter.js";
 import {
     createProducto,
     deleteProducto,
@@ -17,8 +18,8 @@ router
 router
     .get("/", getProductos)
     .get("/detail", getProducto)
-    .put("/", updateProducto)
+    .put("/", upload.single("imagen"), updateProducto)
     .delete("/", deleteProducto)
-    .post("/", createProducto);
+    .post("/", upload.single("imagen"), createProducto);
 
 export default router;
