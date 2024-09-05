@@ -1,37 +1,22 @@
 import React from 'react';
 import { Form, Row, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import '../css/InventarioSelector.css'; 
+import '../css/InventarioSelector.css';
 
-const InventarioSelector = ({ inventarioData, selectedInventario, handleSelectChange, categorias, selectedCategoria, handleCategoriaChange, searchQuery, handleSearchChange, resetPage }) => {
-    const handleInventarioChange = (event) => {
-        handleSelectChange(event);
-        resetPage();
-    };
-
-    const handleCategoriaChangeInternal = (event) => {
-        handleCategoriaChange(event);
-        resetPage();
-    };
-
-    const handleSearchChangeInternal = (event) => {
-        handleSearchChange(event);
-        resetPage();
-    };
-
+const InventarioSelector = ({ inventarioData, selectedInventario, handleSelectChange, categorias, selectedCategoria, handleCategoriaChange, searchQuery, handleSearchChange }) => {
     return (
         <>
             <Form.Group controlId="inventarioSelect" className="mb-4 selector-group">
-                <Form.Control 
-                    as="select" 
-                    value={selectedInventario} 
-                    onChange={handleInventarioChange} 
+                <Form.Control
+                    as="select"
+                    value={selectedInventario}
+                    onChange={handleSelectChange}
                     className="selector-control"
                     style={{ textAlign: 'center' }}
                 >
                     <option value="" style={{ textAlign: 'center' }}>Selecciona un Inventario</option>
                     {inventarioData.map((inventario) => (
-                        <option key={inventario._id} value={inventario._id} className="selector-option">
+                        <option key={inventario.id} value={inventario.id} className="selector-option">
                             {inventario.nombre}
                         </option>
                     ))}
@@ -40,10 +25,10 @@ const InventarioSelector = ({ inventarioData, selectedInventario, handleSelectCh
             <Row>
                 <Col>
                     <Form.Group controlId="categoriaSelect" className="mb-4 selector-group">
-                        <Form.Control 
-                            as="select" 
-                            value={selectedCategoria} 
-                            onChange={handleCategoriaChangeInternal} 
+                        <Form.Control
+                            as="select"
+                            value={selectedCategoria}
+                            onChange={handleCategoriaChange}
                             className="selector-control"
                             style={{ textAlign: 'center' }}
                         >
@@ -58,11 +43,11 @@ const InventarioSelector = ({ inventarioData, selectedInventario, handleSelectCh
                 </Col>
                 <Col>
                     <Form.Group controlId="searchInput" className="mb-4 selector-group">
-                        <Form.Control 
-                            type="text" 
-                            value={searchQuery} 
-                            onChange={handleSearchChangeInternal} 
-                            placeholder="Buscar..." 
+                        <Form.Control
+                            type="text"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            placeholder="Buscar..."
                             className="selector-control"
                         />
                     </Form.Group>
@@ -81,7 +66,6 @@ InventarioSelector.propTypes = {
     handleCategoriaChange: PropTypes.func.isRequired,
     searchQuery: PropTypes.string.isRequired,
     handleSearchChange: PropTypes.func.isRequired,
-    resetPage: PropTypes.func.isRequired,
 };
 
 export default InventarioSelector;

@@ -9,29 +9,31 @@ const useInventarioData = () => {
 
     useEffect(() => {
         const fetchInventario = async () => {
-        try {
-            const data = await inventarioService.getAllInventarios();
-            setInventarioData(data);
-            setCategorias(extractCategorias(data));
-        } catch (error) {
-            setError(error.message);
-        }
+            try {
+                const data = await inventarioService.getAllInventarios();
+                setInventarioData(data);
+                setCategorias(extractCategorias(data));
+            } catch (error) {
+                setError(error.message);
+            }
         };
         fetchInventario();
     }, []);
 
     const extractCategorias = (data) => {
         return data.reduce((acc, inventario) => {
-        inventario.productos.forEach((producto) => {
-            if (!acc.includes(producto.productoId.categoria)) {
-            acc.push(producto.productoId.categoria);
-            }
-        });
-        return acc;
+            inventario.productoInventarios.forEach((productoInventario) => {
+                const categoria = productoInventario.producto.categoria;
+                if (!acc.includes(categoria)) {
+                    acc.push(categoria);
+                }
+            });
+            return acc;
         }, []);
     };
 
     return { inventarioData, categorias, error };
 };
+
 
 export default useInventarioData;

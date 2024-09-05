@@ -8,7 +8,7 @@ export const getAllInventarios = async () => {
             Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.get('/inventarios/', { headers });
+        const response = await axios.get('/inventario/', { headers });
         const { status, data } = response;
         if (status === 200) {
             return data.data;
