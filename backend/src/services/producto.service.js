@@ -98,6 +98,7 @@ async function updateProducto(query, body) {
         // Verificar si el producto existe antes de actualizar
         const productoFound = await productoRepository.findOne({
             where: { id: id },
+            relations: ["proveedores"], // Incluimos la relación con los proveedores
         });
 
         if (!productoFound) {
