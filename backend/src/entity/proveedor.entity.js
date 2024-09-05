@@ -2,7 +2,7 @@ import { EntitySchema } from "typeorm";
 
 const ProveedorSchema = new EntitySchema({
     name: "Proveedor",
-    tableName: "proveedores",
+    tableName: "proveedor",
     columns: {
         id: {
         type: "int",

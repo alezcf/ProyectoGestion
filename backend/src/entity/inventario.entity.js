@@ -3,7 +3,7 @@ import ProductoInventario from "./producto_inventario.entity.js";
 
 const InventarioSchema = new EntitySchema({
     name: "Inventario",
-    tableName: "inventarios",
+    tableName: "inventario",
     columns: {
         id: {
             type: "int",
@@ -14,10 +14,6 @@ const InventarioSchema = new EntitySchema({
             type: "varchar",
             length: 255,
             nullable: false,
-        },
-        stock_actual: {
-            type: "int",
-            nullable: true,
         },
         maximo_stock: {
             type: "int",
@@ -32,7 +28,7 @@ const InventarioSchema = new EntitySchema({
     },
     relations: {
         productoInventarios: {
-            target: "ProductoInventario",
+            target: ProductoInventario,
             type: "one-to-many",
             inverseSide: "inventario",
         }

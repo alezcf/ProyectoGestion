@@ -16,7 +16,6 @@ async function createInventario(body) {
 
         let newInventario = inventarioRepository.create({
             nombre: body.nombre,
-            stock_actual: 0,
             maximo_stock: body.maximo_stock,
             ultima_actualizacion: new Date()
         });
@@ -82,6 +81,12 @@ async function getInventarios() {
  * @param {Object} body - Datos del inventario a actualizar
  * @returns {Promise} Promesa con el objeto de inventario actualizado o un error
  */
+/**
+ * Actualiza un inventario por su ID en la base de datos, incluyendo productos asociados
+ * @param {Object} query - Parámetros de consulta (id)
+ * @param {Object} body - Datos del inventario a actualizar
+ * @returns {Promise} Promesa con el objeto de inventario actualizado o un error
+ */
 async function updateInventario(query, body) {
     try {
         const inventarioRepository = AppDataSource.getRepository(Inventario);
@@ -106,12 +111,14 @@ async function updateInventario(query, body) {
                 return [null, `Los productos no existen: ${productosNoExistentes.join(", ")}`];
             }
 
-            // Calcular el nuevo stock_actual y verificar si supera el maximo_stock
-            const nuevoStockActual = body.productos.reduce(
+            // Calcular el stock basado solo en los productos que se están actualizando
+            const nuevoStockPropuesto = body.productos.reduce(
                 (total, prod) => total + prod.cantidad,
                 0
             );
-            if (nuevoStockActual > body.maximo_stock) {
+
+            // Verificar si supera el maximo_stock
+            if (nuevoStockPropuesto > body.maximo_stock) {
                 return [null, "El stock actual supera el máximo permitido."];
             }
 
@@ -126,14 +133,11 @@ async function updateInventario(query, body) {
                 });
             });
             await productoInventarioRepository.save(nuevosProductoInventarios);
-
-            body.stock_actual = nuevoStockActual;  // Actualizar el stock_actual en el body
         }
 
         // Actualizar los campos básicos del inventario
         await inventarioRepository.update({ id: query.id }, {
             nombre: body.nombre,
-            stock_actual: body.stock_actual,
             maximo_stock: body.maximo_stock,
             ultima_actualizacion: new Date()
         });
@@ -154,6 +158,7 @@ async function updateInventario(query, body) {
 }
 
 
+
 /**
  * Elimina un inventario por su ID de la base de datos, incluyendo productos asociados
  * @param {Object} query - Parámetros de consulta (id)
@@ -165,7 +170,7 @@ async function deleteInventario(query) {
 
         const inventarioFound = await inventarioRepository.findOne({
             where: { id: query.id },
-            relations: ["productos"], // Incluir productos asociados
+            relations: ["productoInventarios"], // Incluir productos asociados
         });
 
         if (!inventarioFound) return [null, "Inventario no encontrado"];

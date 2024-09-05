@@ -4,7 +4,7 @@ import Proveedor from "./proveedor.entity.js";
 
 const VendedorSchema = new EntitySchema({
     name: "Vendedor",
-    tableName: "vendedores",
+    tableName: "vendedor",
     columns: {
         id: {
         type: "int",

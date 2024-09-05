@@ -4,7 +4,7 @@ import Producto from "./producto.entity.js";
 
 const PedidoProductoSchema = new EntitySchema({
     name: "PedidoProducto",
-    tableName: "pedido_productos",
+    tableName: "pedido_producto",
     columns: {
         id: {
             type: "int",
