@@ -23,7 +23,7 @@ export const cookieValidation = Joi.object({
 export const authValidation = Joi.object({
   email: Joi.string()
     .min(17)
-    .max(40)
+    .max(50)
     .email()
     .required()
     .messages({
@@ -34,7 +34,7 @@ export const authValidation = Joi.object({
       "string.min":
         "El correo electrónico debe tener como mínimo 17 caracteres.",
       "string.max":
-        "El correo electrónico debe tener como máximo 30 caracteres.",
+        "El correo electrónico debe tener como máximo 50 caracteres.",
     })
     .custom(domainEmailValidator, "Validación dominio email"),
   password: Joi.string()

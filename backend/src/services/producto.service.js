@@ -31,6 +31,11 @@ async function createProducto(body) {
             body.proveedores = [];
         }
 
+        // Corregir la barra invertida en la ruta de la imagen
+        if (body.imagen_ruta) {
+            body.imagen_ruta = body.imagen_ruta.replace(/\\/g, "/");
+        }
+
         const newProducto = productoRepository.create(body);
         const savedProducto = await productoRepository.save(newProducto);
 
@@ -108,7 +113,11 @@ async function updateProducto(query, body) {
         // Extraer los proveedores y la imagen del cuerpo de la solicitud
         const { proveedores, imagen_ruta: nuevaImagen, ...productoData } = body;
 
+        // Si se proporciona una nueva imagen, procesar la actualización
         if (nuevaImagen) {
+            // Reemplazar las barras invertidas por barras inclinadas en la nueva imagen
+            const imagenRutaNormalizada = nuevaImagen.replace(/\\/g, "/");
+
             const imagenActualRuta = productoFound.imagen_ruta;
             
             if (imagenActualRuta) {
@@ -125,7 +134,7 @@ async function updateProducto(query, body) {
                 }
             }
 
-            productoFound.imagen_ruta = nuevaImagen;
+            productoFound.imagen_ruta = imagenRutaNormalizada;
         }
 
         // Actualizar los campos del producto que no están relacionados con proveedores
@@ -155,6 +164,7 @@ async function updateProducto(query, body) {
         return [null, "Error interno del servidor"];
     }
 }
+
 
 /**
  * Elimina un producto por su ID de la base de datos

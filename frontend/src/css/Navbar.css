@@ -36,7 +36,7 @@
   display: flex;
   align-items: center;
   width: 150px; /* Ajusta este valor para reducir el ancho */
-  height: 50px;  /* Ajusta este valor para reducir la altura */
+  height: 45px;  /* Ajusta este valor para reducir la altura */
   justify-content: center; /* Centra el contenido dentro del contenedor */
 }
 

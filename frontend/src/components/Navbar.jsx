@@ -35,7 +35,7 @@ function Navbar() {
             <Nav.Link href="/perfil" className="nav-link">Perfil</Nav.Link>
             <Nav.Link href="/proveedor" className="nav-link">Proveedores</Nav.Link>
             <div className="user-info">
-              <button onClick={handleLogout} className="button logout-button">Cerrar sesión</button>
+            <button onClick={handleLogout} className="button logout-button">Cerrar sesión</button>
             </div>
           </Nav>
 
