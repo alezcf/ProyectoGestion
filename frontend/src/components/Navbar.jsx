@@ -4,6 +4,7 @@ import { logout } from '../services/auth.service';
 import { Navbar as BootstrapNavbar, Nav, Button, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/Navbar.css';
+import '../css/Buttons.css';
 import BotilleriaLogo from '../images/BotilleriaLogo.png';
 
 function Navbar() {
@@ -28,11 +29,13 @@ function Navbar() {
         <BootstrapNavbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto nav-links">
             <Nav.Link href="/" className="nav-link">Inicio</Nav.Link>
-            <Nav.Link href="/usuario" className="nav-link">Gestión de Usuarios</Nav.Link>
-            <Nav.Link href="/inventario" className="nav-link">Gestión de Inventario</Nav.Link>
+            <Nav.Link href="/usuario" className="nav-link">Usuarios</Nav.Link>
+            <Nav.Link href="/inventario" className="nav-link">Inventario</Nav.Link>
             <Nav.Link href="/reporte" className="nav-link">Reportes</Nav.Link>
+            <Nav.Link href="/perfil" className="nav-link">Perfil</Nav.Link>
+            <Nav.Link href="/proveedor" className="nav-link">Proveedores</Nav.Link>
             <div className="user-info">
-              <Button variant="outline-light" className="custom-button" onClick={handleLogout}>Cerrar sesión</Button>
+              <button onClick={handleLogout} className="button logout-button">Cerrar sesión</button>
             </div>
           </Nav>
 

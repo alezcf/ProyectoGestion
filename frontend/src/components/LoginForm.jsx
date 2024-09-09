@@ -52,9 +52,9 @@ function LoginForm() {
           />
           {errors.password && <div className="invalid-feedback">La contraseña es obligatoria</div>}
         </div>
-        <button type="submit" className="login-button">Ingresar</button>
-        <button type="button" className="signup-button" onClick={() => navigate('/signup')}>Registrar</button>
-        <button type="button" className="recover-button" onClick={() => navigate('/recuperate')}>Recuperar contraseña</button>
+        <button type="submit" className="button login-button">Ingresar</button>
+        <button type="button" className="button signup-button" onClick={() => navigate('/signup')}>Registrar</button>
+        <button type="button" className="button recover-button" onClick={() => navigate('/recuperate')}>Recuperar contraseña</button>
       </form>
     </div>
   );

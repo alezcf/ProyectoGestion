@@ -7,8 +7,6 @@ import ErrorPage from './routes/ErrorPage.jsx';
 import Login from './routes/Login.jsx';
 import Inventario from './routes/Inventario.jsx';
 import Reporte from './routes/Reporte.jsx';
-import Producto from './routes/Producto.jsx';
-import Usuario from './routes/Usuario.jsx';
 
 const router = createBrowserRouter([
   {
@@ -27,14 +25,6 @@ const router = createBrowserRouter([
       {
         path: '/reporte',
         element: <Reporte />,
-      },
-      {
-        path: '/producto/:id',
-        element: <Producto />,
-      },
-      {
-        path: '/usuario',
-        element: <Usuario />,
       },
     ],
   },

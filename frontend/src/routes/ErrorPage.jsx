@@ -30,7 +30,7 @@ const ErrorPage = () => {
             <p>
               <i>{error.statusText || error.message}</i>
             </p>
-            <button type="button" className="login-button" onClick={() => navigate('/')}>Página principal</button>
+            <button type="button" className="button login-button" onClick={() => navigate('/')}>Página principal</button>
           </Col>
         </Row>
       </form>

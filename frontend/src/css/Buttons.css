@@ -14,9 +14,36 @@
     color: #fff;
 }
 
-.login-button:hover,
-.signup-button:hover,
-.recover-button:hover{
+.logout-button {
+    background-color: #bc221d;
+    color: white; 
+}
+
+.button {
+    padding: 15px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.login-button,
+.signup-button,
+.recover-button {
+    width: 100%;
+}
+
+.logout-button {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centra el texto horizontalmente */
+    align-items: center; /* Centra el texto verticalmente */
+}
+
+.button:hover {
     opacity: 0.8;
 }
 

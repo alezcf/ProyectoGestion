@@ -7,10 +7,8 @@
 .brand-logo {
   width: 20vw; /* Unidades de viewport width */
   height: 20vw; /* Unidades de viewport width para mantener proporciones */
-  max-width: 300px; /* Tamaño máximo */
-  max-height: 80px; /* Tamaño máximo */
-  min-width: 200px; /* Tamaño mínimo */
-  min-height: 50px; /* Tamaño mínimo */
+  max-width: 200px; /* Tamaño máximo */
+  max-height: 50px;
   background-size: cover;
   margin: 0 20px 0 0; /* Margen derecho */
 }
@@ -37,27 +35,13 @@
 .user-info {
   display: flex;
   align-items: center;
+  width: 150px; /* Ajusta este valor para reducir el ancho */
+  height: 50px;  /* Ajusta este valor para reducir la altura */
+  justify-content: center; /* Centra el contenido dentro del contenedor */
 }
 
 .navbar-text {
   margin-right: 20px;
   color: #ffffff; /* Blanco para el texto de la barra de navegación */
   font-weight: 500;
-}
-
-.custom-button {
-  background-color: #21a99b; /* Turquesa para el botón */
-  color: #000000; /* Blanco para el texto del botón */
-  border: 1.5px solid #000000; /* Borde negro */
-  padding: 10px 20px;
-  border-radius: 20px;
-  font-size: 1.1em;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  text-decoration: none; /* Quitar subrayado */
-  display: inline-block; /* Hacerlo inline-block para comportarse como enlace */
-}
-
-.custom-button:hover {
-  background-color: #00ada5; /* Color de hover para el botón */
-  transform: scale(1.05);
 }
