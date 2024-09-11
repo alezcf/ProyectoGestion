@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Table, Button } from 'react-bootstrap';
 import '../css/Inventario.css';
 
-// Definir la URL base de tu servidor
-const BASE_URL = 'http://localhost:3000/'; // Reemplázalo con tu URL real
+// BASE_URL = BACKEND_URL
+const BASE_URL = 'http://localhost:3000/'; 
 
 const InventarioDetalles = ({ selectedData }) => {
     return (
@@ -13,7 +13,7 @@ const InventarioDetalles = ({ selectedData }) => {
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>Descripción</th>
+                        <th>Categoria</th>
                         <th>Marca</th>
                         <th>Contenido</th>
                         <th>Precio</th>
@@ -24,21 +24,24 @@ const InventarioDetalles = ({ selectedData }) => {
                 <tbody>
                     {selectedData.productoInventarios.map((productoInventario, index) => {
                         // Reemplazar las barras invertidas por barras inclinadas
-                        const rutaImagen = productoInventario.producto.imagen_ruta.replace(/\\/g, '/');
+                        const rutaImagen = productoInventario.producto.imagen_ruta ? 
+                            productoInventario.producto.imagen_ruta.replace(/\\/g, '/') : null;
                         
                         return (
                             <tr key={index}>
                                 <td>{productoInventario.producto.nombre}</td>
-                                <td>{productoInventario.producto.descripcion}</td>
+                                <td>{productoInventario.producto.categoria}</td>
                                 <td>{productoInventario.producto.marca}</td>
                                 <td>{productoInventario.cantidad} {productoInventario.producto.unidad_medida}</td>
                                 <td>${productoInventario.producto.precio}</td>
                                 <td>
-                                    <img 
-                                        src={`${BASE_URL}${rutaImagen}`} 
-                                        alt={productoInventario.producto.nombre}
-                                        style={{ width: '50px', height: '50px', objectFit: 'cover' }} 
-                                    />
+                                    {rutaImagen && (
+                                        <img 
+                                            src={`${BASE_URL}${rutaImagen}`} 
+                                            alt={productoInventario.producto.nombre}
+                                            style={{ width: '50px', height: '50px', objectFit: 'cover' }} 
+                                        />
+                                    )}
                                 </td>
                                 <td>
                                     <Button variant="primary" size="sm">Editar</Button>
@@ -58,12 +61,12 @@ InventarioDetalles.propTypes = {
         productoInventarios: PropTypes.arrayOf(PropTypes.shape({
             producto: PropTypes.shape({
                 nombre: PropTypes.string.isRequired,
-                descripcion: PropTypes.string.isRequired,
-                marca: PropTypes.string.isRequired,
-                cantidad: PropTypes.number.isRequired,
-                unidad_medida: PropTypes.string.isRequired,
-                precio: PropTypes.number.isRequired,
-                imagen_ruta: PropTypes.string.isRequired, // Ruta de la imagen
+                categoria: PropTypes.string,
+                marca: PropTypes.string,
+                cantidad: PropTypes.number,
+                unidad_medida: PropTypes.string,
+                precio: PropTypes.number,
+                imagen_ruta: PropTypes.string,
             }).isRequired,
         })).isRequired,
     }).isRequired,
