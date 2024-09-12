@@ -6,8 +6,7 @@ import { Link } from 'react-router-dom';
 import '../css/Inventario.css';
 import '../css/Buttons.css';
 
-// BASE_URL = BACKEND_URL
-const BASE_URL = 'http://localhost:3000/'; 
+const BASE_URL = import.meta.env.VITE_BASE_URL; 
 
 const InventarioDetalles = ({ selectedData }) => {
 

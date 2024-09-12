@@ -8,7 +8,7 @@ export const getAllReportes = async () => {
             Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.get('/reportes/', { headers });
+        const response = await axios.get('api/reportes/', { headers });
         const { status, data } = response;
         if (status === 200) {
             return data.data;
@@ -25,7 +25,7 @@ export const getReporte = async (reporteId) => {
             Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.get(`/reportes/${reporteId}`, { headers });
+        const response = await axios.get(`api/reportes/${reporteId}`, { headers });
         const { status, data } = response;
         if (status === 200) {
             return data.data;
@@ -42,7 +42,7 @@ export const deleteReporte = async (reporteId) => {
             Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.delete(`/reportes/${reporteId}`, { headers });
+        const response = await axios.delete(`api/reportes/${reporteId}`, { headers });
         const { status, data } = response;
         if (status === 200) {
             return data.message;

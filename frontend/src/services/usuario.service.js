@@ -8,7 +8,7 @@ export const getAllUsuarios = async () => {
             Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.get('/users/', { headers });
+        const response = await axios.get('api/users/', { headers });
         const { status, data } = response;
         if (status === 200) {
             return data.data; // Asumiendo que los datos de usuarios están en data.data
@@ -25,7 +25,7 @@ export const getUsuario = async (usuarioId) => {
             Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.get(`/usuarios/${usuarioId}`, { headers });
+        const response = await axios.get(`api/usuarios/${usuarioId}`, { headers });
         const { status, data } = response;
         if (status === 200) {
             return data.data;
@@ -42,7 +42,7 @@ export const deleteUsuario = async (usuarioId) => {
             Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.delete(`/users/${usuarioId}`, { headers });
+        const response = await axios.delete(`api/users/${usuarioId}`, { headers });
         const { status, data } = response;
         if (status === 200) {
             return data.message; // Asumiendo que se devuelve un mensaje al eliminar

@@ -4,7 +4,7 @@ import jwtDecode from 'jwt-decode';
 
 export const login = async ({ email, password }) => {
   try {
-    const response = await axios.post('auth/login', {
+    const response = await axios.post('api/auth/login', {
       email,
       password,
     });
@@ -37,7 +37,7 @@ export const logout = () => {
 
 export const test = async () => {
   try {
-    const response = await axios.get('/users');
+    const response = await axios.get('api/users');
     const { status, data } = response;
     if (status === 200) {
       console.log(data.data);
