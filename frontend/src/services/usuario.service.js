@@ -1,5 +1,6 @@
 import axios from './root.service';
 import cookies from 'js-cookie';
+import jwtDecode from 'jwt-decode';
 
 export const getAllUsuarios = async () => {
     try {
@@ -18,14 +19,15 @@ export const getAllUsuarios = async () => {
     }
 };
 
-export const getUsuario = async (usuarioId) => {
+export const getUsuario = async () => {
     try {
         const token = cookies.get('jwt-auth');
         const headers = {
             Authorization: `Bearer ${token}`,
         };
+        const decodedToken = jwtDecode(token);
 
-        const response = await axios.get(`api/usuarios/${usuarioId}`, { headers });
+        const response = await axios.get(`api/user/detail?rut=${decodedToken.rut}`, { headers });
         const { status, data } = response;
         if (status === 200) {
             return data.data;

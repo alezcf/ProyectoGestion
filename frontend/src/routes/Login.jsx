@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import LoginForm from '../components/LoginForm';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import '../css/Login.css';
 
 function Login() {
   const navigate = useNavigate();
-
-  if (localStorage.getItem('user')) {
+  const userToken = Cookies.get('jwt-auth');
+  if (userToken) {
     return (
       <>
         <h2>¡Ya estás logeado!</h2>

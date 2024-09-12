@@ -1,6 +1,5 @@
 import axios from './root.service';
 import cookies from 'js-cookie';
-import jwtDecode from 'jwt-decode';
 
 export const login = async ({ email, password }) => {
   try {
@@ -11,8 +10,6 @@ export const login = async ({ email, password }) => {
     const { status, data } = response;
 
     if (status === 200) {
-      const { id, nombreCompleto, rut, email, rol } = await jwtDecode(data.data.token);
-      localStorage.setItem('user', JSON.stringify({ id, nombreCompleto, rut, email, rol }));
       axios.defaults.headers.common[
         'Authorization'
       ] = `Bearer ${data.data.token}`;

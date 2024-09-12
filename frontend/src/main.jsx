@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root from './routes/Root.jsx';
 import ErrorPage from './routes/ErrorPage.jsx';
 import Login from './routes/Login.jsx';
+import Perfil from './routes/Perfil.jsx';
 import Inventario from './routes/Inventario.jsx';
 import Producto from './routes/Producto.jsx';
 import Reporte from './routes/Reporte.jsx';
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: '/reporte',
         element: <Reporte />,
+      },
+      {
+        path: '/perfil',
+        element: <Perfil />,
       },
     ],
   },
