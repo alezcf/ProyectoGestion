@@ -26,7 +26,7 @@ export const getProducto = async (productoId) => {
             Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.get(`api/productos/${productoId}`, { headers });
+        const response = await axios.get(`api/producto/detail?id=${productoId}`, { headers });
         const { status, data } = response;
         if (status === 200) {
             return data.data;

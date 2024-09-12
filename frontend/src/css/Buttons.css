@@ -64,6 +64,7 @@
     background-color: #177a2c; /* Verde para el botón de Excel */
     color: white; /* Color del texto */
     border: none;
+    margin-right: 5px;
 }
 
 .btn-success:hover {

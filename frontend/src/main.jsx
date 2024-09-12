@@ -6,6 +6,7 @@ import Root from './routes/Root.jsx';
 import ErrorPage from './routes/ErrorPage.jsx';
 import Login from './routes/Login.jsx';
 import Inventario from './routes/Inventario.jsx';
+import Producto from './routes/Producto.jsx';
 import Reporte from './routes/Reporte.jsx';
 
 const router = createBrowserRouter([
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: '/inventario',
         element: <Inventario />,
+      },
+      {
+        path: '/producto/:productoId',
+        element: <Producto />,
       },
       {
         path: '/reporte',
