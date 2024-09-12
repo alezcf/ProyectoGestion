@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Table, Button } from 'react-bootstrap';
+import { FileEarmarkExcel, InfoCircle } from 'react-bootstrap-icons';
 import '../css/Inventario.css';
+import '../css/Buttons.css';
 
 // BASE_URL = BACKEND_URL
 const BASE_URL = 'http://localhost:3000/'; 
@@ -44,8 +46,12 @@ const InventarioDetalles = ({ selectedData }) => {
                                     )}
                                 </td>
                                 <td>
-                                    <Button variant="primary" size="sm">Editar</Button>
-                                    <Button variant="danger" size="sm" className="ml-2">Eliminar</Button>
+                                    <button type="submit" className="button btn-info ">
+                                        <InfoCircle />
+                                    </button>
+                                    <button type="submit" className="button btn-success ">
+                                        <FileEarmarkExcel />
+                                    </button>
                                 </td>
                             </tr>
                         );
