@@ -46,11 +46,11 @@ async function createUser(body) {
  */
 async function getUser(query) {
   try {
-    const { rut, id, email } = query;
+    const { rut } = query;
     const userRepository = AppDataSource.getRepository(User);
 
     const userFound = await userRepository.findOne({
-      where: [{ id: id }, { rut: rut }, { email: email }],
+      where: { rut: rut },
     });
 
     if (!userFound) return [null, "Usuario no encontrado"];

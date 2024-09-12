@@ -37,13 +37,13 @@ export async function createUser(req, res) {
  */
 export async function getUser(req, res) {
   try {
-    const { rut, id, email } = req.query;
+    const { rut } = req.query;
 
-    const { error } = userQueryValidation.validate({ rut, id, email });
+    const { error } = userQueryValidation.validate({ rut });
 
     if (error) return handleErrorClient(res, 400, "Error de validación", error.message);
 
-    const [user, errorUser] = await UserService.getUser({ rut, id, email });
+    const [user, errorUser] = await UserService.getUser({ rut });
 
     if (errorUser) return handleErrorClient(res, 404, errorUser);
 

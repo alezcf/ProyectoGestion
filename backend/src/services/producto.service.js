@@ -137,6 +137,7 @@ async function updateProducto(query, body) {
             productoFound.imagen_ruta = imagenRutaNormalizada;
         }
 
+        Object.assign(productoFound, productoData);
         // Actualizar los campos del producto que no están relacionados con proveedores
         await productoRepository.update({ id: productoFound.id }, productoData);
 
