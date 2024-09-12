@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Table, Button } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import { FileEarmarkExcel, InfoCircle } from 'react-bootstrap-icons';
+import { Link } from 'react-router-dom'; 
 import '../css/Inventario.css';
 import '../css/Buttons.css';
 
@@ -9,6 +10,11 @@ import '../css/Buttons.css';
 const BASE_URL = 'http://localhost:3000/'; 
 
 const InventarioDetalles = ({ selectedData }) => {
+
+    const handleExportClick = (productoNombre) => {
+        console.log(`Exportando datos del producto: ${productoNombre}`);
+    };
+
     return (
         <div className="table-responsive">
             <Table striped bordered hover responsive="md" className="inventario-table">
@@ -25,31 +31,40 @@ const InventarioDetalles = ({ selectedData }) => {
                 </thead>
                 <tbody>
                     {selectedData.productoInventarios.map((productoInventario, index) => {
-                        // Reemplazar las barras invertidas por barras inclinadas
-                        const rutaImagen = productoInventario.producto.imagen_ruta ? 
-                            productoInventario.producto.imagen_ruta.replace(/\\/g, '/') : null;
+                        const producto = productoInventario.producto;
+                        const rutaImagen = producto.imagen_ruta ? 
+                            producto.imagen_ruta.replace(/\\/g, '/') : null;
                         
                         return (
                             <tr key={index}>
-                                <td>{productoInventario.producto.nombre}</td>
-                                <td>{productoInventario.producto.categoria}</td>
-                                <td>{productoInventario.producto.marca}</td>
-                                <td>{productoInventario.cantidad} {productoInventario.producto.unidad_medida}</td>
-                                <td>${productoInventario.producto.precio}</td>
+                                <td>{producto.nombre}</td>
+                                <td>{producto.categoria}</td>
+                                <td>{producto.marca}</td>
+                                <td>{productoInventario.cantidad} {producto.unidad_medida}</td>
+                                <td>${producto.precio}</td>
                                 <td>
                                     {rutaImagen && (
                                         <img 
                                             src={`${BASE_URL}${rutaImagen}`} 
-                                            alt={productoInventario.producto.nombre}
+                                            alt={producto.nombre}
                                             style={{ width: '50px', height: '50px', objectFit: 'cover' }} 
                                         />
                                     )}
                                 </td>
                                 <td>
-                                    <button type="submit" className="button btn-info ">
+                                    
+                                    <Link 
+                                        to={`/producto/${producto.id}`} // Usamos Link para redirigir
+                                        className="button btn-info"
+                                    >
                                         <InfoCircle />
-                                    </button>
-                                    <button type="submit" className="button btn-success ">
+                                    </Link>
+
+                                    <button 
+                                        type="submit" 
+                                        className="button btn-success"
+                                        onClick={() => handleExportClick(producto.nombre)} // Console log
+                                    >
                                         <FileEarmarkExcel />
                                     </button>
                                 </td>
@@ -66,12 +81,13 @@ InventarioDetalles.propTypes = {
     selectedData: PropTypes.shape({
         productoInventarios: PropTypes.arrayOf(PropTypes.shape({
             producto: PropTypes.shape({
+                id: PropTypes.number.isRequired,
                 nombre: PropTypes.string.isRequired,
                 categoria: PropTypes.string,
                 marca: PropTypes.string,
-                cantidad: PropTypes.number,
+                cantidad: PropTypes.string,
                 unidad_medida: PropTypes.string,
-                precio: PropTypes.number,
+                precio: PropTypes.string,
                 imagen_ruta: PropTypes.string,
             }).isRequired,
         })).isRequired,
