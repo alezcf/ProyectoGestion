@@ -19,7 +19,7 @@ export const DATABASE = process.env.DATABASE;
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 export const cookieKey = process.env.cookieKey;
 export const emailConfig = {
-    service: "gmail",
+    service: process.env.EMAIL_USER,
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
 };
