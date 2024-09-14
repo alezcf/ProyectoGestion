@@ -7,6 +7,7 @@ import vendedorRoutes from "./vendedor.routes.js";
 import productoRoutes from "./producto.routes.js";
 import inventarioRoutes from "./inventario.routes.js";
 import pedidoRoutes from "./pedido.routes.js";
+import emailRoutes from "./email.routes.js";
 
 const router = Router();
 
@@ -17,6 +18,7 @@ router
     .use("/vendedor", vendedorRoutes)
     .use("/producto", productoRoutes)
     .use("/inventario", inventarioRoutes)
-    .use("/pedido", pedidoRoutes);
+    .use("/pedido", pedidoRoutes)
+    .use("/email", emailRoutes);
     
 export default router;
