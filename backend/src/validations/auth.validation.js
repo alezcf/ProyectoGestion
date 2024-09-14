@@ -1,15 +1,6 @@
 "use strict";
 import Joi from "joi";
 
-const domainEmailValidator = (value, helper) => {
-  if (!value.endsWith("@alumnos.ubiobio.cl")) {
-    return helper.message(
-      "El correo electrónico debe ser del dominio @alumnos.ubiobio.cl",
-    );
-  }
-  return value;
-};
-
 export const cookieValidation = Joi.object({
   jwt: Joi.string().required().messages({
     "string.base": "El token debe ser un texto.",
@@ -35,8 +26,7 @@ export const authValidation = Joi.object({
         "El correo electrónico debe tener como mínimo 17 caracteres.",
       "string.max":
         "El correo electrónico debe tener como máximo 50 caracteres.",
-    })
-    .custom(domainEmailValidator, "Validación dominio email"),
+    }),
   password: Joi.string()
     .min(3)
     .max(30)
@@ -78,7 +68,7 @@ export const registerValidation = Joi.object({
     }),
   email: Joi.string()
     .min(20)
-    .max(36)
+    .max(50)
     .email()
     .required()
     .messages({
@@ -90,8 +80,7 @@ export const registerValidation = Joi.object({
         "El correo electrónico debe tener como mínimo 17 caracteres.",
       "string.max":
         "El correo electrónico debe tener como máximo 30 caracteres.",
-    })
-    .custom(domainEmailValidator, "Validación dominio email"),
+    }),
   password: Joi.string()
     .min(3)
     .max(30)

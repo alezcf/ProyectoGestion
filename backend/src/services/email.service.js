@@ -1,8 +1,23 @@
 import nodemailer from "nodemailer";
 import { emailConfig } from "../config/configEnv.js";
+/**
+ * Crea un nuevo inventario en la base de datos
+ * @param {Object} body - Datos del correo electrónico
+ * @returns {Promise} Promesa con el objeto email creado o un error
+ */
 
-export const sendEmail = async (to, subject, text, html) => {
+export const sendEmail = async (body) => {
     try {
+        const { email, subject, message } = body;
+
+        const newEmail = ({
+            from: `"Botilleria Santa Elena" <${emailConfig.user}>`,
+            to: email,
+            subject: subject,
+            text: message,
+            html: `<p>${message}</p>`
+        });
+
         const transporter = nodemailer.createTransport({
             service: emailConfig.service,
             auth: {
@@ -11,18 +26,10 @@ export const sendEmail = async (to, subject, text, html) => {
             },
         });
 
-        const mailOptions = {
-            from: `"Ingeniería de Software 2024 - 2" <${emailConfig.user}>`,
-            to: to,
-            subject: subject,
-            text: text,
-            html: html,
-        };
-        await transporter.sendMail(mailOptions);
+        await transporter.sendMail(newEmail);
 
-        return mailOptions;
+        return [newEmail, null];
     } catch (error) {
-        console.error("Error enviando el correo: %s", error.message);
-        throw new Error("Error enviando el correo: " + error.message);
+        return [null, error];
     }
 };

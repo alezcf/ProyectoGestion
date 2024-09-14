@@ -1,15 +1,6 @@
 "use strict";
 import Joi from "joi";
 
-const domainEmailValidator = (value, helper) => {
-  if (!value.endsWith("@alumnos.ubiobio.cl")) {
-    return helper.message(
-      "El correo electrónico debe ser del dominio @alumnos.ubiobio.cl",
-    );
-  }
-  return value;
-};
-
 export const userQueryValidation = Joi.object({
   id: Joi.number().integer().positive().optional().messages({
     "number.base": "El id debe ser un número.",
@@ -19,9 +10,9 @@ export const userQueryValidation = Joi.object({
   }),
   email: Joi.string()
     .min(20)
-    .max(36)
+    .max(50)
     .email()
-    .optional()
+    .required()
     .messages({
       "string.empty": "El correo electrónico no puede estar vacío.",
       "any.required": "El correo electrónico es obligatorio.",
@@ -32,13 +23,12 @@ export const userQueryValidation = Joi.object({
         "El correo electrónico debe tener como mínimo 20 caracteres.",
       "string.max":
         "El correo electrónico debe tener como máximo 36 caracteres.",
-    })
-    .custom(domainEmailValidator, "Validación dominio email"),
+    }),
   rut: Joi.string()
     .min(9)
     .max(12)
     .pattern(/^\d{1,2}\.?\d{3}\.?\d{3}-[\dkK]$/)
-    .optional()
+    .required()
     .messages({
       "string.empty": "El rut no puede estar vacío.",
       "any.required": "El rut es obligatorio.",
@@ -56,7 +46,7 @@ export const userQueryValidation = Joi.object({
   });
 
 export const userBodyValidation = Joi.object({
-  nombreCompleto: Joi.string().min(3).max(50).optional().messages({
+  nombreCompleto: Joi.string().min(3).max(50).required().messages({
     "string.empty": "El nombre completo no puede estar vacío.",
     "any.required": "El nombre completo es obligatorio.",
     "string.base": "El nombre completo debe ser de tipo string.",
@@ -65,9 +55,9 @@ export const userBodyValidation = Joi.object({
   }),
   email: Joi.string()
     .min(20)
-    .max(36)
+    .max(50)
     .email()
-    .optional()
+    .required()
     .messages({
       "string.empty": "El correo electrónico no puede estar vacío.",
       "any.required": "El correo electrónico es obligatorio.",
@@ -77,13 +67,12 @@ export const userBodyValidation = Joi.object({
         "El correo electrónico debe tener como mínimo 17 caracteres.",
       "string.max":
         "El correo electrónico debe tener como máximo 30 caracteres.",
-    })
-    .custom(domainEmailValidator, "Validación dominio email"),
+    }),
   password: Joi.string()
     .min(3)
     .max(30)
     .pattern(new RegExp("^[a-zA-Z0-9]+$"))
-    .optional()
+    .required()
     .messages({
       "string.empty": "La contraseña no puede estar vacía.",
       "any.required": "La contraseña es obligatoria.",
@@ -111,7 +100,7 @@ export const userBodyValidation = Joi.object({
     .min(9)
     .max(12)
     .pattern(/^\d{1,2}\.?\d{3}\.?\d{3}-[\dkK]$/)
-    .optional()
+    .required()
     .messages({
       "string.empty": "El RUT no puede estar vacío.",
       "any.required": "El RUT es obligatorio.",

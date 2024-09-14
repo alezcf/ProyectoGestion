@@ -1,5 +1,6 @@
 "use strict";
 import UserService from "../services/user.service.js";
+import { sendEmailDefault } from "../controllers/email.controller.js";
 import { userBodyValidation, userQueryValidation, } from "../validations/user.validation.js";
 import {
   handleErrorClient,
@@ -23,6 +24,19 @@ export async function createUser(req, res) {
     const [user, userError] = await UserService.createUser(body);
 
     if (userError) return handleErrorClient(res, 400, userError);
+
+    
+    const resEmail = await sendEmailDefault({ 
+      body: {
+        email: body.email,
+        subject: "Registro en Botilleria Santa Elena",
+        message: `Bienvenido a la plataforma ${user.nombreCompleto}!`,
+      }
+    });
+
+    if (!resEmail.success) {
+      console.error("Error enviando el correo:", resEmail.error);
+    }
 
     handleSuccess(res, 201, "Usuario creado correctamente", user);
   } catch (error) {
