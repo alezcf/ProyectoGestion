@@ -42,13 +42,11 @@ const InventarioDetalles = ({ selectedData }) => {
                                 <td>{productoInventario.cantidad} {producto.unidad_medida}</td>
                                 <td>${producto.precio}</td>
                                 <td>
-                                    {rutaImagen && (
-                                        <img 
-                                            src={`${BASE_URL}${rutaImagen}`} 
-                                            alt={producto.nombre}
-                                            style={{ width: '50px', height: '50px', objectFit: 'cover' }} 
-                                        />
-                                    )}
+                                    <img 
+                                        src={rutaImagen ? `${BASE_URL}${rutaImagen}` : '/images/NoExiste.png'} 
+                                        alt={rutaImagen ? 'Imagen del producto' : 'Imagen no disponible'} 
+                                        style={{ width: '50px', height: '50px', objectFit: 'cover' }} 
+                                    />
                                 </td>
                                 <td>
                                     

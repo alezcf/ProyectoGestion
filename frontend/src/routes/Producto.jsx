@@ -65,8 +65,7 @@ const Producto = () => {
                 <Col md={4} className="d-flex flex-column align-items-center">
                     {/* Imagen del producto con estilo */}
                     <Image 
-                        src={`${BASE_URL}${producto.imagen_ruta}`} 
-                        alt={producto.nombre}
+                        src={producto?.imagen_ruta ? `${BASE_URL}${producto.imagen_ruta}` : '../images/NoExiste.png'} 
                         fluid
                         style={{ 
                             objectFit: 'cover', 
