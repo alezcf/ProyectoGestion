@@ -8,6 +8,7 @@ import Login from './routes/Login.jsx';
 import Perfil from './routes/Perfil.jsx';
 import Inventario from './routes/Inventario.jsx';
 import Producto from './routes/Producto.jsx';
+import Productos from './routes/Productos.jsx';
 import Reporte from './routes/Reporte.jsx';
 
 const router = createBrowserRouter([
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: '/producto/:productoId',
         element: <Producto />,
+      },
+      {
+        path: '/producto',
+        element: <Productos />,
       },
       {
         path: '/reporte',

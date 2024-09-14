@@ -12,7 +12,7 @@ export const userQueryValidation = Joi.object({
     .min(20)
     .max(50)
     .email()
-    .required()
+    .optional()
     .messages({
       "string.empty": "El correo electrónico no puede estar vacío.",
       "any.required": "El correo electrónico es obligatorio.",

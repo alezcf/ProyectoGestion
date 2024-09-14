@@ -31,6 +31,7 @@ function Navbar() {
             <Nav.Link href="/" className="nav-link">Inicio</Nav.Link>
             <Nav.Link href="/usuario" className="nav-link">Usuarios</Nav.Link>
             <Nav.Link href="/inventario" className="nav-link">Inventario</Nav.Link>
+            <Nav.Link href="/producto" className="nav-link">Productos</Nav.Link>
             <Nav.Link href="/reporte" className="nav-link">Reportes</Nav.Link>
             <Nav.Link href="/perfil" className="nav-link">Perfil</Nav.Link>
             <Nav.Link href="/proveedor" className="nav-link">Proveedores</Nav.Link>

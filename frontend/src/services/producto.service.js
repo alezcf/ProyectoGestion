@@ -9,7 +9,7 @@ export const getAllProductos = async () => {
             Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.get('api/inventarios/', { headers });
+        const response = await axios.get('api/producto/', { headers });
         const { status, data } = response;
         if (status === 200) {
             return data.data;

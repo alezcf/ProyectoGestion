@@ -19,13 +19,13 @@ export const getAllUsuarios = async () => {
     }
 };
 
-export const getUsuario = async () => {
+export const getUsuario = async (rut) => {
     try {
         const token = cookies.get('jwt-auth');
         const headers = {
             Authorization: `Bearer ${token}`,
         };
-        const decodedToken = jwtDecode(token);
+        const decodedToken = rut || jwtDecode(token);
 
         const response = await axios.get(`api/user/detail?rut=${decodedToken.rut}`, { headers });
         const { status, data } = response;
