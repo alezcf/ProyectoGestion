@@ -55,11 +55,11 @@ function Dashboard() {
                 <Col md={6} lg={4}>
                     <Card className="mb-4 dashboard-card profile-card text-center">
                         <Card.Body className="d-flex flex-column align-items-center">
-                            <Card.Title className="dashboard-card-title">Trabajadores</Card.Title>
+                            <Card.Title className="dashboard-card-title">Usuarios</Card.Title>
                             <Card.Text className="flex-grow-1">
-                                Registro de todos los trabajadores registrados en la plataforma.
+                                Registro de todos los usuarios registrados en la plataforma.
                             </Card.Text>
-                            <Link to="/trabajadores" className="signup-button mt-auto">Ver</Link>
+                            <Link to="/usuarios" className="signup-button mt-auto">Ver</Link>
                         </Card.Body>
                     </Card>
                 </Col>

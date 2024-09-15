@@ -9,7 +9,7 @@ export const getAllUsuarios = async () => {
             Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.get('api/users/', { headers });
+        const response = await axios.get('api/user/', { headers });
         const { status, data } = response;
         if (status === 200) {
             return data.data; // Asumiendo que los datos de usuarios están en data.data

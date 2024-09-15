@@ -10,6 +10,8 @@ import Inventario from './routes/Inventario/Inventario.jsx';
 import Producto from './routes/Producto/Producto.jsx';
 import Productos from './routes/Producto/Productos.jsx';
 import Reporte from './routes/Reporte/Reporte.jsx';
+import Usuarios from './routes/Usuario/Usuarios.jsx';
+import Proveedores from './routes/Proveedor/Proveedores.jsx';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +38,14 @@ const router = createBrowserRouter([
       {
         path: '/reporte',
         element: <Reporte />,
+      },
+      {
+        path: '/usuarios',
+        element: <Usuarios />,
+      },
+      {
+        path: '/proveedores',
+        element: <Proveedores />,
       },
       {
         path: '/perfil',

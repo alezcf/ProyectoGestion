@@ -1,13 +1,12 @@
-// src/components/Common/ButtonsActions.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FileEarmarkExcel, InfoCircle } from 'react-bootstrap-icons';
 import PropTypes from 'prop-types';
 import '../../css/Buttons.css';
 
-const ButtonsActions = ({ itemId, itemName, onExport }) => (
+const ButtonsActions = ({ itemId, itemName, onExport, detailsRoute }) => (
     <div className="d-flex justify-content-center">
-        <Link to={`/producto/${itemId}`} className="button btn-info me-2">
+        <Link to={`${detailsRoute}/${itemId}`} className="button btn-info me-2">
             <InfoCircle />
         </Link>
         <button
@@ -21,9 +20,10 @@ const ButtonsActions = ({ itemId, itemName, onExport }) => (
 );
 
 ButtonsActions.propTypes = {
-    itemId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,  // ID del item (puede ser producto o inventario)
+    itemId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,  // ID del item
     itemName: PropTypes.string.isRequired,  // Nombre del item
     onExport: PropTypes.func.isRequired,  // Función de exportación
+    detailsRoute: PropTypes.string.isRequired,  // Ruta base para el link de detalles
 };
 
 export default ButtonsActions;

@@ -40,6 +40,7 @@ const InventarioDetalles = ({ selectedData }) => {
                         itemId={producto.id}
                         itemName={producto.nombre}
                         onExport={handleExport}
+                        detailsRoute="/producto"
                     />
                 </td>
             </tr>

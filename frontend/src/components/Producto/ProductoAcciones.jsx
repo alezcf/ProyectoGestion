@@ -8,6 +8,7 @@ const ProductoAcciones = ({ productoId, productoNombre, onExport }) => (
         itemId={productoId}
         itemName={productoNombre}
         onExport={onExport}
+        detailsRoute="/producto"
     />
 );
 
