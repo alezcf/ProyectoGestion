@@ -1,8 +1,8 @@
 import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import '../css/Dashboard.css';
-import '../css/Buttons.css';
+import '../../css/Dashboard.css';
+import '../../css/Buttons.css';
 
 function Dashboard() {
     return (

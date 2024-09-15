@@ -1,8 +1,8 @@
 import React from 'react';
-import LoginForm from '../components/LoginForm';
+import LoginForm from '../../components/Common/LoginForm';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import '../css/Login.css';
+import '../../css/Login.css';
 
 function Login() {
   const navigate = useNavigate();

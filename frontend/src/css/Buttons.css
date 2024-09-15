@@ -14,14 +14,9 @@
     color: #fff;
 }
 
-.logout-button {
-    background-color: #bc221d;
-    color: white; 
-}
-
 .button {
     padding: 15px;
-    margin: 5px 0;
+    margin: 5px 5px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -38,6 +33,8 @@
 .logout-button {
     height: 100%;
     width: 100%;
+    background-color: #bc221d;
+    color: white; 
     display: flex;
     justify-content: center; /* Centra el texto horizontalmente */
     align-items: center; /* Centra el texto verticalmente */
@@ -69,4 +66,15 @@
 
 .btn-success:hover {
     background-color: #19682a; /* Verde más oscuro al pasar el ratón */
+}
+
+.button.btn-edit {
+    background-color: #1f1fb5; /* Verde para el botón de Excel */
+    color: white; /* Color del texto */
+    border: none;
+    margin-right: 5px;
+}
+
+.button.btn-edit:hover {
+    background-color: #0e0e67; /* Verde más oscuro al pasar el ratón */
 }

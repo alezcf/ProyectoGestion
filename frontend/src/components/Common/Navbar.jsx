@@ -1,11 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../services/auth.service';
-import { Navbar as BootstrapNavbar, Nav, Button, Container } from 'react-bootstrap';
+import { logout } from '../../services/auth.service';
+import { Navbar as BootstrapNavbar, Nav, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../css/Navbar.css';
-import '../css/Buttons.css';
-import BotilleriaLogo from '../images/BotilleriaLogo.png';
+import '../../css/Navbar.css';
+import '../../css/Buttons.css';
+import BotilleriaLogo from '../../images/BotilleriaLogo.png';
 
 function Navbar() {
   const navigate = useNavigate();

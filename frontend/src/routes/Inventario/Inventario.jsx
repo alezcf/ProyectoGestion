@@ -1,12 +1,13 @@
+// src/pages/Inventario/Inventario.js
 import React, { useState } from 'react';
 import { Container, Row, Card, Alert } from 'react-bootstrap';
-import useInventarioData from '../logic/inventario.logic.js'; // Hook para obtener los datos del inventario
-import InventarioSelector from '../components/InventarioSelector';
-import InventarioDetalles from '../components/InventarioDetalles';
-import '../css/Inventario.css'; // Archivo de estilos
+import useInventarioData, { filtrarInventario } from '../../logic/inventario.logic';
+import InventarioSelector from '../../components/Inventario/InventarioSelector';
+import InventarioDetalles from '../../components/Inventario/InventarioDetalles';
+import '../../css/Inventario.css';
 
 const Inventario = () => {
-    const { inventarioData, categorias, error } = useInventarioData(); // Hook para obtener los datos
+    const { inventarioData, categorias, error } = useInventarioData();
     const [selectedInventario, setSelectedInventario] = useState('');
     const [selectedCategoria, setSelectedCategoria] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -15,20 +16,7 @@ const Inventario = () => {
         setter(event.target.value);
     };
 
-    // Filtramos los datos del inventario seleccionado
-    const selectedData = inventarioData.find(inv => inv.id === parseInt(selectedInventario));
-
-    // Filtramos los productos según la categoría seleccionada
-    const filteredData = selectedData
-        ? {
-            ...selectedData,
-            productoInventarios: selectedCategoria
-                ? selectedData.productoInventarios.filter(productoInventario =>
-                    productoInventario.producto.categoria === selectedCategoria
-                )
-                : selectedData.productoInventarios
-        }
-        : null;
+    const filteredData = filtrarInventario(inventarioData, selectedInventario, selectedCategoria);
 
     return (
         <Container fluid className="inventario-container mt-2">
@@ -45,7 +33,6 @@ const Inventario = () => {
                             </Alert>
                         ) : (
                             <>
-                                {/* Componente para seleccionar inventario, categoría y buscar */}
                                 <InventarioSelector
                                     inventarioData={inventarioData}
                                     selectedInventario={selectedInventario}
@@ -57,7 +44,6 @@ const Inventario = () => {
                                     handleSearchChange={handleInputChange(setSearchQuery)}
                                 />
 
-                                {/* Detalles del inventario filtrado usando InventarioDetalles */}
                                 {filteredData && filteredData.productoInventarios.length > 0 ? (
                                     <InventarioDetalles selectedData={filteredData} />
                                 ) : (

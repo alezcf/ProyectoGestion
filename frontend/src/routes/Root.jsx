@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { AuthProvider } from '../context/AuthContext';
-import Navbar from '../components/Navbar';
+import Navbar from '../components/Common/Navbar';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/Root.css'; // Importa los estilos específicos para Root
 import '../css/Navbar.css'; // Importa los estilos específicos para Navbar

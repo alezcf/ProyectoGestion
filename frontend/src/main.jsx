@@ -4,12 +4,12 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root from './routes/Root.jsx';
 import ErrorPage from './routes/ErrorPage.jsx';
-import Login from './routes/Login.jsx';
-import Perfil from './routes/Perfil.jsx';
-import Inventario from './routes/Inventario.jsx';
-import Producto from './routes/Producto.jsx';
-import Productos from './routes/Productos.jsx';
-import Reporte from './routes/Reporte.jsx';
+import Login from './routes/Login/Login.jsx';
+import Perfil from './routes/Perfil/Perfil.jsx';
+import Inventario from './routes/Inventario/Inventario.jsx';
+import Producto from './routes/Producto/Producto.jsx';
+import Productos from './routes/Producto/Productos.jsx';
+import Reporte from './routes/Reporte/Reporte.jsx';
 
 const router = createBrowserRouter([
   {

@@ -1,9 +1,19 @@
+// src/components/Inventario/InventarioSelector.js
 import React from 'react';
 import { Form, Row, Col } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import '../css/InventarioSelector.css';
+import '../../css/InventarioSelector.css';
 
-const InventarioSelector = ({ inventarioData, selectedInventario, handleSelectChange, categorias, selectedCategoria, handleCategoriaChange, searchQuery, handleSearchChange }) => {
+const InventarioSelector = ({
+    inventarioData,
+    selectedInventario,
+    handleSelectChange,
+    categorias,
+    selectedCategoria,
+    handleCategoriaChange,
+    searchQuery,
+    handleSearchChange,
+}) => {
     return (
         <>
             <Form.Group controlId="inventarioSelect" className="mb-4 selector-group">
