@@ -1,0 +1,61 @@
+/* Estilos generales para la tarjeta de perfil */
+.perfil-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border: none; /* Quitar el borde predeterminado */
+    background-color: #fff;
+    margin: 20px auto;
+    max-width: 600px; /* Ancho máximo de la tarjeta */
+    padding: 20px;
+}
+
+/* Estilos para el encabezado */
+.perfil-card-header {
+    background-color: #31004F; /* Azul moderno */
+    color: white; /* Texto en blanco */
+    border-bottom: none;
+    border-radius: 10px 10px 0 0; /* Bordes redondeados solo arriba */
+    text-align: center;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Estilos para los elementos de la lista */
+.perfil-list-group-item {
+    font-size: 18px; /* Tamaño de letra moderno */
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.perfil-list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* Estilos para los textos en negrita */
+.perfil-list-group-item strong {
+    color: #333;
+}
+
+/* Hover para los elementos de la lista */
+.perfil-list-group-item:hover {
+    background-color: #f9f9f9;
+}
+
+/* Ajustes de responsive design */
+@media (max-width: 768px) {
+    .perfil-card {
+        padding: 10px;
+        margin: 10px;
+    }
+    
+    .perfil-card-header {
+        font-size: 20px;
+        padding: 15px;
+    }
+
+    .perfil-list-group-item {
+        font-size: 16px;
+        padding: 10px;
+    }
+}
