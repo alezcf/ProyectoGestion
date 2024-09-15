@@ -1,32 +1,31 @@
-// src/components/Producto/ProductoDetalles.js
 import React from 'react';
 import PropTypes from 'prop-types';
+import '../../css/DetallesEstandar.css';  // Asegúrate de importar el CSS aquí
 
 const ProductoDetalles = ({ producto }) => (
     <div>
-        <h3 style={{ color: '#dc3545', fontWeight: 'bold', fontSize: '24px' }}>
-            {producto.marca}
+        <h3 className="detalles-marca">
+            {producto.marca || "No existe registro"} {/* Marca del producto o mensaje si no existe */}
         </h3>
-        <p style={{ fontSize: '36px', fontWeight: '700', marginBottom: '10px' }}>
-            {producto.nombre}
+        <p className="detalles-nombre">
+            {producto.nombre || "No existe registro"} {/* Nombre del producto o mensaje si no existe */}
         </p>
-        <p style={{ fontSize: '16px', color: '#6c757d', marginBottom: '20px' }}>
-            <strong>Código:</strong> {producto.codigo} &nbsp; | &nbsp;
-            <strong>Categoría:</strong> {producto.categoria}
+        <p className="detalles-info">
+            <strong>Código:</strong> {producto.codigo || "No existe registro"}
         </p>
-        <h3 style={{ fontSize: '32px', fontWeight: 'bold', color: '#28a745' }}>
-            <strong>Precio:</strong> ${producto.precio}
+        <h3 className="detalles-precio">
+            <strong>Precio:</strong> ${producto.precio || "No existe registro"} {/* Precio del producto o mensaje si no existe */}
         </h3>
     </div>
 );
 
 ProductoDetalles.propTypes = {
     producto: PropTypes.shape({
-        marca: PropTypes.string.isRequired,
-        nombre: PropTypes.string.isRequired,
-        codigo: PropTypes.string.isRequired,
-        categoria: PropTypes.string.isRequired,
-        precio: PropTypes.string.isRequired,
+        marca: PropTypes.string,
+        nombre: PropTypes.string,
+        codigo: PropTypes.string,
+        categoria: PropTypes.string,
+        precio: PropTypes.string,
     }).isRequired,
 };
 

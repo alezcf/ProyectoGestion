@@ -10,8 +10,10 @@ import Inventario from './routes/Inventario/Inventario.jsx';
 import Producto from './routes/Producto/Producto.jsx';
 import Productos from './routes/Producto/Productos.jsx';
 import Reporte from './routes/Reporte/Reporte.jsx';
+import Usuario from './routes/Usuario/Usuario.jsx';
 import Usuarios from './routes/Usuario/Usuarios.jsx';
 import Proveedores from './routes/Proveedor/Proveedores.jsx';
+import Proveedor from './routes/Proveedor/Proveedor.jsx';
 
 const router = createBrowserRouter([
   {
@@ -44,8 +46,16 @@ const router = createBrowserRouter([
         element: <Usuarios />,
       },
       {
+        path: '/usuario/:usuarioRut',
+        element: <Usuario />,
+      },
+      {
         path: '/proveedores',
         element: <Proveedores />,
+      },
+      {
+        path: '/proveedor/:proveedorId',
+        element: <Proveedor />,
       },
       {
         path: '/perfil',

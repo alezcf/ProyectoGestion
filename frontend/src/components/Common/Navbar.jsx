@@ -29,7 +29,7 @@ function Navbar() {
         <BootstrapNavbar.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto nav-links">
             <Nav.Link href="/" className="nav-link">Inicio</Nav.Link>
-            <Nav.Link href="/usuario" className="nav-link">Usuarios</Nav.Link>
+            <Nav.Link href="/usuarios" className="nav-link">Usuarios</Nav.Link>
             <Nav.Link href="/inventario" className="nav-link">Inventario</Nav.Link>
             <Nav.Link href="/producto" className="nav-link">Productos</Nav.Link>
             <Nav.Link href="/reporte" className="nav-link">Reportes</Nav.Link>

@@ -48,7 +48,7 @@ const Usuarios = () => {
             <td>{new Date(usuario.createdAt).toLocaleDateString()}</td>
             <td>
                 <ButtonsActionsTable
-                    itemId={usuario.id}  // ID del usuario
+                    itemId={usuario.rut}  // ID del usuario
                     itemName={usuario.nombreCompleto}  // Nombre del usuario
                     onExport={handleExport}  // Función de exportación
                     detailsRoute="/usuario"  // Ruta para los detalles del usuario

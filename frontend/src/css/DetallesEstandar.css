@@ -1,0 +1,28 @@
+/* Estilo para el título principal (Nombre del proveedor) */
+.detalles-marca {
+  color: #007bff; /* Cambiamos el color para reflejar más importancia */
+  font-weight: bold;
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+/* Estilo para subtítulo (RUT del proveedor) */
+.detalles-nombre {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #6c757d; /* Color neutral para el subtítulo */
+}
+
+/* Estilos para las etiquetas de información */
+.detalles-info {
+  font-size: 18px;
+  color: #495057;
+  margin-bottom: 10px;
+}
+
+/* Resaltamos la información con negrita */
+.detalles-info strong {
+  font-weight: 600;
+  color: #343a40; /* Color más oscuro para las etiquetas */
+}

@@ -48,7 +48,7 @@ const Proveedores = () => {
             <td>{proveedor.email}</td>
             <td>
                 <ButtonsActionsTable
-                    itemId={proveedor.id} 
+                    itemId={proveedor.id}
                     itemName={proveedor.nombre}
                     onExport={handleExport}
                     detailsRoute="/proveedor"
