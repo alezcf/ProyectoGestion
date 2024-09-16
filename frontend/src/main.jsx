@@ -12,6 +12,8 @@ import Productos from './routes/Producto/Productos.jsx';
 import Reporte from './routes/Reporte/Reporte.jsx';
 import Usuario from './routes/Usuario/Usuario.jsx';
 import Usuarios from './routes/Usuario/Usuarios.jsx';
+import Pedido from './routes/Pedido/Pedido.jsx';
+import Pedidos from './routes/Pedido/Pedidos.jsx';
 import Proveedores from './routes/Proveedor/Proveedores.jsx';
 import Proveedor from './routes/Proveedor/Proveedor.jsx';
 
@@ -36,6 +38,14 @@ const router = createBrowserRouter([
       {
         path: '/producto',
         element: <Productos />,
+      },
+      {
+        path: '/pedidos',
+        element: <Pedidos />,
+      },
+      {
+        path: '/pedido/:pedidoId',
+        element: <Pedido />,
       },
       {
         path: '/reporte',
