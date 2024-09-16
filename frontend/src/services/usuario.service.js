@@ -19,23 +19,35 @@ export const getAllUsuarios = async () => {
     }
 };
 
-export const getUsuario = async (rut) => {
+export const getUsuario = async (id) => {
     try {
         const token = cookies.get('jwt-auth');
         const headers = {
             Authorization: `Bearer ${token}`,
         };
-        const decodedToken = rut || jwtDecode(token);
 
-        const response = await axios.get(`api/user/detail?rut=${decodedToken.rut}`, { headers });
+        let query;
+
+        if (id) {
+
+            query = `id=${id}`;
+        } else {
+            const decodedToken = jwtDecode(token);
+            const rut = decodedToken.rut;
+            query = `rut=${rut}`;
+        }
+
+        const response = await axios.get(`api/user/detail?${query}`, { headers });
         const { status, data } = response;
+
         if (status === 200) {
-            return data.data;
+            return data.data; // Devolver los datos si la respuesta es exitosa
         }
     } catch (error) {
-        handleError(error);
+        handleError(error); // Manejar cualquier error que ocurra
     }
 };
+
 
 export const deleteUsuario = async (usuarioId) => {
     try {

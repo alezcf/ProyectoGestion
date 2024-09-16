@@ -6,7 +6,7 @@ import UsuarioDetalles from '../../components/Usuario/UsuarioDetalles';
 import ButtonsActions from '../../components/Common/ButtonsActions'; // Importamos el componente
 
 const Usuario = () => {
-    const { usuarioId } = useParams();
+    const { usuarioId } = useParams();  // Obtenemos el ID del usuario desde la URL
     const [usuario, setUsuario] = useState(null); // Inicializa el estado como null
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -14,7 +14,8 @@ const Usuario = () => {
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
-                const response = await usuarioService.getUsuario(usuarioId); // Cambia a tu servicio de usuario
+                console.log("usuarioid = ", usuarioId);
+                const response = await usuarioService.getUsuario(usuarioId); // Usamos el usuarioId de la URL
 
                 if (response) {
                     setUsuario(response); // Asigna los datos solo si existen
@@ -63,10 +64,9 @@ const Usuario = () => {
                     <UsuarioDetalles usuario={usuario} />
                     <ButtonsActions
                         itemId={usuario.id}
-                        itemName={usuario.nombre}
+                        itemName={usuario.nombreCompleto}
                         onEdit={handleEdit}
                         onExport={handleExport}
-                        detailsRoute="/usuario"
                     />
                 </Col>
             </Row>

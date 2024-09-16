@@ -1,4 +1,3 @@
-// src/pages/Usuarios/Usuarios.js
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Card, Alert } from 'react-bootstrap';
 import usuarioService from '../../services/usuario.service';
@@ -48,10 +47,10 @@ const Usuarios = () => {
             <td>{new Date(usuario.createdAt).toLocaleDateString()}</td>
             <td>
                 <ButtonsActionsTable
-                    itemId={usuario.rut}  // ID del usuario
+                    itemId={`${usuario.id}`}  // ID del usuario
                     itemName={usuario.nombreCompleto}  // Nombre del usuario
                     onExport={handleExport}  // Función de exportación
-                    detailsRoute="/usuario"  // Ruta para los detalles del usuario
+                    detailsRoute={`/usuario`}  // Ruta dinámica con el ID del usuario
                 />
             </td>
         </tr>

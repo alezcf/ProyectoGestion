@@ -1,29 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Card, ListGroup } from 'react-bootstrap';
 import '../../css/DetallesEstandar.css';  // Asegúrate de importar el CSS aquí
 
 const UsuarioDetalles = ({ usuario }) => {
     return (
-        <div>
-            <h3 className="detalles-marca">
-                {usuario.nombreCompleto || "No existe registro"} {/* Nombre completo del usuario */}
-            </h3>
-            <p className="detalles-nombre">
-                RUT: {usuario.rut || "No existe registro"} {/* RUT del usuario */}
-            </p>
-            <p className="detalles-info">
-                <strong>Email:</strong> {usuario.email || "No existe registro"} {/* Email del usuario */}
-            </p>
-            <p className="detalles-info">
-                <strong>Rol:</strong> {usuario.rol || "No existe registro"} {/* Rol del usuario */}
-            </p>
-            <p className="detalles-info">
-                <strong>Creado el:</strong> {new Date(usuario.createdAt).toLocaleString() || "No existe registro"} {/* Fecha de creación */}
-            </p>
-            <p className="detalles-info">
-                <strong>Última actualización:</strong> {new Date(usuario.updatedAt).toLocaleString() || "No existe registro"} {/* Fecha de última actualización */}
-            </p>
-        </div>
+        <Card className="detalles-card">
+            <Card.Header className="detalles-card-header">
+                <h2>Información del Usuario</h2>
+            </Card.Header>
+            <ListGroup variant="flush">
+                <ListGroup.Item className="detalles-info">
+                    <strong>Nombre Completo: </strong>{usuario.nombreCompleto || "No existe registro"}
+                </ListGroup.Item>
+                <ListGroup.Item className="detalles-info">
+                    <strong>RUT: </strong>{usuario.rut || "No existe registro"}
+                </ListGroup.Item>
+                <ListGroup.Item className="detalles-info">
+                    <strong>Email: </strong>{usuario.email || "No existe registro"}
+                </ListGroup.Item>
+                <ListGroup.Item className="detalles-info">
+                    <strong>Rol: </strong>{usuario.rol || "No existe registro"}
+                </ListGroup.Item>
+                <ListGroup.Item className="detalles-info">
+                    <strong>Registro de Cuenta: </strong>{new Date(usuario.createdAt).toLocaleString() || "No existe registro"}
+                </ListGroup.Item>
+                <ListGroup.Item className="detalles-info">
+                    <strong>Última Actualización: </strong>{new Date(usuario.updatedAt).toLocaleString() || "No existe registro"}
+                </ListGroup.Item>
+            </ListGroup>
+        </Card>
     );
 };
 

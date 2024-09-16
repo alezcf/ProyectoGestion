@@ -1,12 +1,35 @@
-/* Estilo para el título principal (Nombre del proveedor) */
+/* Estilos generales para la tarjeta de detalles */
+.detalles-card {
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  border: none; /* Quitar el borde predeterminado */
+  background-color: #fff;
+  margin: 20px auto;
+  max-width: 600px; /* Ancho máximo de la tarjeta */
+  padding: 20px;
+}
+
+/* Estilos para el encabezado */
+.detalles-card-header {
+  background-color: #31004F; /* Azul moderno */
+  color: white; /* Texto en blanco */
+  border-bottom: none;
+  border-radius: 10px 10px 0 0; /* Bordes redondeados solo arriba */
+  text-align: center;
+  padding: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Estilo para el título principal (Nombre del proveedor o usuario) */
 .detalles-marca {
-  color: #007bff; /* Cambiamos el color para reflejar más importancia */
+  color: #007bff; /* Color para reflejar más importancia */
   font-weight: bold;
   font-size: 30px;
   margin-bottom: 20px;
 }
 
-/* Estilo para subtítulo (RUT del proveedor) */
+/* Estilo para subtítulo (RUT o identificación del proveedor/usuario) */
 .detalles-nombre {
   font-size: 24px;
   font-weight: 600;
@@ -25,4 +48,27 @@
 .detalles-info strong {
   font-weight: 600;
   color: #343a40; /* Color más oscuro para las etiquetas */
+}
+
+/* Hover para los elementos de la lista */
+.detalles-info:hover {
+  background-color: #f9f9f9;
+}
+
+/* Ajustes de responsive design */
+@media (max-width: 768px) {
+  .detalles-card {
+      padding: 10px;
+      margin: 10px;
+  }
+
+  .detalles-card-header {
+      font-size: 20px;
+      padding: 15px;
+  }
+
+  .detalles-info {
+      font-size: 16px;
+      padding: 10px;
+  }
 }
