@@ -25,8 +25,8 @@ export async function createUser(req, res) {
 
     if (userError) return handleErrorClient(res, 400, userError);
 
-    
-    const resEmail = await sendEmailDefault({ 
+
+    const resEmail = await sendEmailDefault({
       body: {
         email: body.email,
         subject: "Registro en Botilleria Santa Elena",
@@ -51,13 +51,14 @@ export async function createUser(req, res) {
  */
 export async function getUser(req, res) {
   try {
-    const { rut } = req.query;
+    const { id, rut } = req.query;
 
-    const { error } = userQueryValidation.validate({ rut });
+    const { error } = userQueryValidation.validate({ id, rut });
 
     if (error) return handleErrorClient(res, 400, "Error de validación", error.message);
 
-    const [user, errorUser] = await UserService.getUser({ rut });
+    // Enviamos ambos parámetros (id y rut) al servicio
+    const [user, errorUser] = await UserService.getUser({ id, rut });
 
     if (errorUser) return handleErrorClient(res, 404, errorUser);
 

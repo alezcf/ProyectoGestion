@@ -28,7 +28,7 @@ export const userQueryValidation = Joi.object({
     .min(9)
     .max(12)
     .pattern(/^\d{1,2}\.?\d{3}\.?\d{3}-[\dkK]$/)
-    .required()
+    .optional()
     .messages({
       "string.empty": "El rut no puede estar vacío.",
       "any.required": "El rut es obligatorio.",
@@ -38,12 +38,13 @@ export const userQueryValidation = Joi.object({
       "string.pattern.base": "El rut no tiene un formato válido.",
     }),
 })
-  .or("id", "email", "rut")
+  .xor("id", "rut") // Exige que solo uno de estos dos esté presente (id o rut, pero no ambos)
   .messages({
     "object.unknown": "No se permiten propiedades adicionales.",
-    "object.missing":
-      "Debes proporcionar al menos un parametro: id, email o rut.",
+    "object.missing": "Debes proporcionar al menos un parametro: id, email o rut.",
+    "object.xor": "Debes proporcionar solo uno entre id o rut, no ambos.",
   });
+
 
 export const userBodyValidation = Joi.object({
   nombreCompleto: Joi.string().min(3).max(50).required().messages({

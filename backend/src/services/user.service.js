@@ -38,24 +38,27 @@ async function createUser(body) {
     return [null, "Error interno del servidor"];
   }
 }
-
 /**
  * Obtiene un usuario por su ID, RUT o Email de la base de datos
- * @param {Object} query - Parámetros de consulta (id, rut, email)
+ * @param {Object} query - Parámetros de consulta (id, rut)
  * @returns {Promise} Promesa con el objeto de usuario
  */
 async function getUser(query) {
   try {
-    const { rut } = query;
+    const { id, rut } = query;
     const userRepository = AppDataSource.getRepository(User);
 
+    // Hacemos la búsqueda por ID o RUT (cualquiera que exista)
     const userFound = await userRepository.findOne({
-      where: { rut: rut },
+      where: [
+        { id: id },    // Busca por ID
+        { rut: rut },  // O busca por RUT
+      ],
     });
 
     if (!userFound) return [null, "Usuario no encontrado"];
 
-    const { password, ...userData } = userFound;
+    const { password, ...userData } = userFound; // Excluye el campo de la contraseña
 
     return [userData, null];
   } catch (error) {
