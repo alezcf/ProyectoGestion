@@ -11,6 +11,11 @@ import Producto from './routes/Producto/Producto.jsx';
 import Productos from './routes/Producto/Productos.jsx';
 import Reporte from './routes/Reporte/Reporte.jsx';
 import Usuario from './routes/Usuario/Usuario.jsx';
+import CrearUsuario from './routes/Usuario/CrearUsuario.jsx';
+import CrearPedido from './routes/Pedido/CrearPedido.jsx';
+import CrearProducto from './routes/Producto/CrearProducto.jsx';
+import CrearInventario from './routes/Inventario/CrearInventario.jsx';
+import CrearProveedor from './routes/Proveedor/CrearProveedor.jsx';
 import Usuarios from './routes/Usuario/Usuarios.jsx';
 import Pedido from './routes/Pedido/Pedido.jsx';
 import Pedidos from './routes/Pedido/Pedidos.jsx';
@@ -44,12 +49,32 @@ const router = createBrowserRouter([
         element: <Pedidos />,
       },
       {
+        path: '/crear-pedido',
+        element: <CrearPedido />,
+      },
+      {
+        path: '/crear-producto',
+        element: <CrearProducto />,
+      },
+      {
+        path: '/crear-proveedor',
+        element: <CrearProveedor />,
+      },
+      {
+        path: '/crear-inventario',
+        element: <CrearInventario />,
+      },
+      {
         path: '/pedido/:pedidoId',
         element: <Pedido />,
       },
       {
         path: '/reporte',
         element: <Reporte />,
+      },
+      {
+        path: '/crear-usuario',
+        element: <CrearUsuario />,
       },
       {
         path: '/usuarios',

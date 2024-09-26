@@ -21,7 +21,7 @@ const ButtonsActions = ({ itemId, itemName, onExport, detailsRoute }) => (
 
 ButtonsActions.propTypes = {
     itemId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,  // ID del item
-    itemName: PropTypes.string.isRequired,  // Nombre del item
+    itemName: PropTypes.number.isRequired,  // Nombre del item
     onExport: PropTypes.func.isRequired,  // Función de exportación
     detailsRoute: PropTypes.string.isRequired,  // Ruta base para el link de detalles
 };

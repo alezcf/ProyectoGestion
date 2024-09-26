@@ -66,6 +66,24 @@ export const deleteUsuario = async (usuarioId) => {
     }
 };
 
+export const createUsuario = async (nuevoUsuario) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json', // Aseguramos el tipo de contenido JSON
+        };
+
+        const response = await axios.post('api/user/', nuevoUsuario, { headers });
+        const { status, data } = response;
+        if (status === 201) { // Código 201 significa que el recurso fue creado exitosamente
+            return data.data; // Devolver los datos del nuevo usuario creado
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 const handleError = (error) => {
     console.error('API call error:', error);
     throw error;
@@ -75,4 +93,5 @@ export default {
     getAllUsuarios,
     getUsuario,
     deleteUsuario,
+    createUsuario,
 };

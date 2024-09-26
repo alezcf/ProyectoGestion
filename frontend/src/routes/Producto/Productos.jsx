@@ -1,6 +1,6 @@
-// src/pages/Productos/Productos.js
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Card, Alert } from 'react-bootstrap';
+import { Container, Row, Card, Alert, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import productoService from '../../services/producto.service';
 import CustomTable from '../../components/Common/CustomTable';
 import SearchBar from '../../components/Common/SearchBar';
@@ -77,6 +77,15 @@ const Productos = () => {
                                     data={filteredProductos}
                                     renderRow={renderRow}
                                 />
+                                {/* Botones para crear nuevo producto e inventario */}
+                                <div className="mt-3">
+                                    <Link to="/crear-producto">
+                                        <Button variant="success" className="me-2">Crear Producto</Button>
+                                    </Link>
+                                    <Link to="/crear-inventario">
+                                        <Button variant="primary" className="me-2">Crear Inventario</Button>
+                                    </Link>
+                                </div>
                             </>
                         )}
                     </Card.Body>

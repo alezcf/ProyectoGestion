@@ -1,9 +1,10 @@
 // src/pages/Inventario/Inventario.js
 import React, { useState } from 'react';
-import { Container, Row, Card, Alert } from 'react-bootstrap';
+import { Container, Row, Card, Alert, Button} from 'react-bootstrap';
 import useInventarioData, { filtrarInventario } from '../../logic/inventario.logic';
 import InventarioSelector from '../../components/Inventario/InventarioSelector';
 import InventarioDetalles from '../../components/Inventario/InventarioDetalles';
+import { Link } from 'react-router-dom';
 import '../../css/Inventario.css';
 
 const Inventario = () => {
@@ -54,6 +55,11 @@ const Inventario = () => {
                     </Card.Body>
                 </Card>
             </Row>
+            <div className="mt-3">
+                <Link to="/crear-inventario">
+                    <Button variant="primary" className="me-2">Crear Inventario</Button>
+                </Link>
+            </div>
         </Container>
     );
 };

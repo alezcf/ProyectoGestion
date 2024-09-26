@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Card, Alert } from 'react-bootstrap';
+import {Container, Row, Card, Alert, Button} from 'react-bootstrap';
 import usuarioService from '../../services/usuario.service';
 import CustomTable from '../../components/Common/CustomTable';
 import SearchBar from '../../components/Common/SearchBar';
-import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable'; // Importamos el componente ButtonsActions
+import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
+import {Link} from "react-router-dom"; // Importamos el componente ButtonsActions
 
 const Usuarios = () => {
     const [usuarios, setUsuarios] = useState([]);
@@ -68,13 +69,18 @@ const Usuarios = () => {
                             <Alert variant="danger">{error}</Alert>
                         ) : (
                             <>
-                                <SearchBar searchQuery={searchQuery} handleSearchChange={handleSearchChange} />
-                                <CustomTable headers={headers} data={filteredUsuarios} renderRow={renderRow} />
+                                <SearchBar searchQuery={searchQuery} handleSearchChange={handleSearchChange}/>
+                                <CustomTable headers={headers} data={filteredUsuarios} renderRow={renderRow}/>
                             </>
                         )}
                     </Card.Body>
                 </Card>
             </Row>
+            <div className="mt-3">
+                <Link to="/crear-usuario">
+                    <Button variant="success">Crear Usuario</Button>
+                </Link>
+            </div>
         </Container>
     );
 };

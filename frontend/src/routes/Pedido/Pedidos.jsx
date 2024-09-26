@@ -1,9 +1,9 @@
-// src/pages/Pedidos/Pedidos.js
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Card, Alert, Table } from 'react-bootstrap';
+import { Container, Row, Card, Alert, Table, Button } from 'react-bootstrap';
 import pedidoService from '../../services/pedido.service';
 import SearchBar from '../../components/Common/SearchBar';
 import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
+import { Link } from 'react-router-dom';
 
 const Pedidos = () => {
     const [pedidos, setPedidos] = useState([]);
@@ -32,18 +32,17 @@ const Pedidos = () => {
         // Aquí puedes implementar la lógica para exportar los datos (CSV, PDF, etc.)
     };
 
-// Función para sumar las cantidades de productos en cada pedido
-const calcularCantidadTotalProductos = (pedidoProductos) => {
-    return pedidoProductos.reduce((total, producto) => total + parseInt(producto.cantidad, 10), 0);
-};
+    // Función para sumar las cantidades de productos en cada pedido
+    const calcularCantidadTotalProductos = (pedidoProductos) => {
+        return pedidoProductos.reduce((total, producto) => total + parseInt(producto.cantidad, 10), 0);
+    };
 
-// Función para calcular el costo total de cada pedido (cantidad * precio por cada producto)
-const calcularCostoTotal = (pedidoProductos) => {
-    return pedidoProductos.reduce((total, producto) =>
-        total + parseInt(producto.cantidad, 10) * parseInt(producto.producto.precio, 10), 0
-    );
-};
-
+    // Función para calcular el costo total de cada pedido (cantidad * precio por cada producto)
+    const calcularCostoTotal = (pedidoProductos) => {
+        return pedidoProductos.reduce((total, producto) =>
+            total + parseInt(producto.cantidad, 10) * parseInt(producto.producto.precio, 10), 0
+        );
+    };
 
     // Filtrar los pedidos basados en la búsqueda por nombre del proveedor
     const filteredPedidos = pedidos.filter((pedido) =>
@@ -105,6 +104,11 @@ const calcularCostoTotal = (pedidoProductos) => {
                     </Card.Body>
                 </Card>
             </Row>
+            <div className="mt-3">
+                <Link to="/crear-pedido">
+                    <Button variant="success">Crear Pedido</Button>
+                </Link>
+            </div>
         </Container>
     );
 };

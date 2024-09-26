@@ -1,10 +1,10 @@
-// src/pages/Proveedores/Proveedores.js
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Card, Alert } from 'react-bootstrap';
+import { Container, Row, Card, Alert, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import proveedorService from '../../services/proveedor.service';
 import CustomTable from '../../components/Common/CustomTable';
 import SearchBar from '../../components/Common/SearchBar';
-import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable'; // Importamos el componente ButtonsActions
+import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
 
 const Proveedores = () => {
     const [proveedores, setProveedores] = useState([]);
@@ -71,6 +71,12 @@ const Proveedores = () => {
                             <>
                                 <SearchBar searchQuery={searchQuery} handleSearchChange={handleSearchChange} />
                                 <CustomTable headers={headers} data={filteredProveedores} renderRow={renderRow} />
+                                {/* Botón para crear nuevo proveedor */}
+                                <div className="mt-3">
+                                    <Link to="/crear-proveedor">
+                                        <Button variant="success">Crear Proveedor</Button>
+                                    </Link>
+                                </div>
                             </>
                         )}
                     </Card.Body>
