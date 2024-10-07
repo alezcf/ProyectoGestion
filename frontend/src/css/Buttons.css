@@ -34,7 +34,7 @@
     height: 100%;
     width: 100%;
     background-color: #bc221d;
-    color: white; 
+    color: white;
     display: flex;
     justify-content: center; /* Centra el texto horizontalmente */
     align-items: center; /* Centra el texto verticalmente */
@@ -77,4 +77,13 @@
 
 .button.btn-edit:hover {
     background-color: #0e0e67; /* Verde más oscuro al pasar el ratón */
+}
+
+
+.button-next {
+    margin-left: auto;
+}
+
+.button-previous {
+    margin-right: auto;
 }

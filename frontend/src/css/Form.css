@@ -1,0 +1,48 @@
+/* Contenedor general para formularios */
+.form-container {
+  margin-top: 0px;
+  padding: 1.5rem;
+  max-height: 100%;
+  max-width: 100%;
+  border: 1px solid black; /* Borde leve negro */
+  position: relative; /* Necesario para posicionar elementos relativos */
+  background-color: #f8f9fa;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  color: black;
+}
+
+/* Estilo global para etiquetas de formularios */
+.form-label {
+  color: black; /* Color de texto en etiquetas */
+  text-align: center; /* Centrar texto horizontalmente */
+  display: block; /* Ocupa todo el ancho disponible */
+  margin-bottom: 0.5rem; /* Espaciado inferior */
+}
+
+/* Estilo global para inputs en formularios */
+.form-input {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 0px;
+  border: 1px solid #ced4da;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Estado de input inválido */
+.is-invalid {
+  border-color: #e3342f;
+}
+
+/* Vista previa de imágenes global para formularios */
+.img-preview {
+  max-width: 50%;
+  height: auto;
+  border-radius: 5px;
+  margin-top: 0px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
