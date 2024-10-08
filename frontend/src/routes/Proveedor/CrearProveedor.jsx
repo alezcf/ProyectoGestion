@@ -64,7 +64,7 @@ const CrearProveedor = () => {
                                 {/* Campo Dirección */}
                                 <Col md={6}>
                                     <Form.Group controlId="direccion">
-                                        <Form.Label>Dirección</Form.Label>
+                                        <Form.Label>DIRECCIÓN</Form.Label>
                                         <Form.Control
                                             type="text"
                                             placeholder="Ingresa la dirección"
@@ -78,7 +78,7 @@ const CrearProveedor = () => {
                                 {/* Campo Teléfono */}
                                 <Col md={6}>
                                     <Form.Group controlId="telefono">
-                                        <Form.Label style={{ fontWeight: 'bold' }}>TELÉFONO (*)</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>TELÉFONO MÓVIL (*)</Form.Label>
                                         <Form.Control
                                             type="text"
                                             placeholder="Ingresa el teléfono"
@@ -100,7 +100,7 @@ const CrearProveedor = () => {
                                 {/* Campo Email */}
                                 <Col md={6}>
                                     <Form.Group controlId="email">
-                                        <Form.Label>EMAIL</Form.Label>
+                                        <Form.Label>CORREO ELECTRÓNICO</Form.Label>
                                         <Form.Control
                                             type="email"
                                             placeholder="Ingresa el email"

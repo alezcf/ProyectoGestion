@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Container, Row, Col } from 'react-bootstrap';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faCartShopping, faWineBottle, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faCartShopping, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import pedidoService from '../../services/pedido.service';
 import productoService from '../../services/producto.service';
 import proveedorService from '../../services/proveedor.service';
@@ -83,7 +83,7 @@ const CrearPedido = () => {
                         {/* Selección de proveedor */}
                         <Col md={6}>
                             <Form.Group controlId="proveedor_id">
-                                <Form.Label className="form-label">PROVEEDOR (*)</Form.Label>
+                                <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>PROVEEDOR (*)</Form.Label>
                                 <Form.Control
                                     as="select"
                                     {...register('proveedor_id', { required: 'El proveedor es obligatorio' })}
@@ -103,7 +103,7 @@ const CrearPedido = () => {
                         {/* Selección de inventario */}
                         <Col md={6}>
                             <Form.Group controlId="inventario_asignado_id">
-                                <Form.Label className="form-label">INVENTARIO (*)</Form.Label>
+                                <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>INVENTARIO (*)</Form.Label>
                                 <Form.Control
                                     as="select"
                                     {...register('inventario_asignado_id', { required: 'El inventario asignado es obligatorio' })}
@@ -125,7 +125,7 @@ const CrearPedido = () => {
                         {/* Selección de la fecha del pedido */}
                         <Col md={6}>
                             <Form.Group controlId="fecha_pedido">
-                                <Form.Label className="form-label">FECHA DEL PEDIDO (*)</Form.Label>
+                                <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>FECHA DEL PEDIDO (*)</Form.Label>
                                 <Form.Control
                                     type="date"
                                     {...register('fecha_pedido', { required: 'La fecha del pedido es obligatoria' })}
@@ -138,7 +138,7 @@ const CrearPedido = () => {
                         {/* Selección del estado */}
                         <Col md={6}>
                             <Form.Group controlId="estado">
-                                <Form.Label className="form-label">ESTADO ACTUAL (*)</Form.Label>
+                                <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>ESTADO ACTUAL (*)</Form.Label>
                                 <Form.Control
                                     type="text"
                                     placeholder="Ingresa el estado del pedido"
@@ -163,7 +163,7 @@ const CrearPedido = () => {
                             {/* Selección de producto */}
                             <Col md={6}>
                                 <Form.Group controlId={`producto_${index}`}>
-                                    <Form.Label className="form-label">PRODUCTO (*)</Form.Label>
+                                    <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>PRODUCTO (*)</Form.Label>
                                     <Form.Control
                                         as="select"
                                         {...register(`productos[${index}].productoId`, { required: 'El producto es obligatorio' })}
@@ -185,7 +185,7 @@ const CrearPedido = () => {
                             {/* Cantidad de producto */}
                             <Col md={6}>
                                 <Form.Group controlId={`cantidad_${index}`}>
-                                    <Form.Label className="form-label">CANTIDAD (*)</Form.Label>
+                                    <Form.Label style={{ fontWeight: 'bold' }} className="form-label" >CANTIDAD (*)</Form.Label>
                                     <Form.Control
                                         type="number"
                                         placeholder="Ingresa la cantidad"

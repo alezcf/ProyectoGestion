@@ -114,7 +114,7 @@
 }
 
 .button-next {
-    background-color: #21A99B; /* Color de fondo del botón Siguiente */
+    background-color: #f5b800; /* Color de fondo del botón Siguiente */
     color: black;
 }
 
@@ -125,7 +125,7 @@
 }
 
 .button-submit {
-    background-color: #e3ab02; /* Color de fondo del botón Enviar */
+    background-color: #fe5f87;
     color: black;
     margin-left: auto;
 }

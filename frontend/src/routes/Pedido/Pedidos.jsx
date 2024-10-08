@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Card, Alert, Table, Button } from 'react-bootstrap';
+import { Container, Row, Card, Alert, Button } from 'react-bootstrap';
 import pedidoService from '../../services/pedido.service';
 import SearchBar from '../../components/Common/SearchBar';
 import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
 import { Link } from 'react-router-dom';
+import CustomTable from '../../components/Common/CustomTable';
 
 const Pedidos = () => {
     const [pedidos, setPedidos] = useState([]);
@@ -57,7 +58,7 @@ const Pedidos = () => {
             <td>{new Date(pedido.fecha_pedido).toLocaleDateString()}</td>
             <td>{pedido.estado}</td>
             <td>{calcularCantidadTotalProductos(pedido.pedidoProductos)}</td>
-            <td>${calcularCostoTotal(pedido.pedidoProductos)}</td> {/* Nueva columna de costo */}
+            <td>${calcularCostoTotal(pedido.pedidoProductos)}</td>
             <td>{pedido.proveedor.nombre}</td>
             <td>{pedido.inventarioAsignado.nombre}</td>
             <td>
@@ -87,18 +88,11 @@ const Pedidos = () => {
                                     searchQuery={searchQuery}
                                     handleSearchChange={handleSearchChange}
                                 />
-                                <Table striped bordered hover>
-                                    <thead>
-                                        <tr>
-                                            {headers.map((header, index) => (
-                                                <th key={index}>{header}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredPedidos.map((pedido, index) => renderRow(pedido, index))}
-                                    </tbody>
-                                </Table>
+                                <CustomTable
+                                    headers={headers}
+                                    data={filteredPedidos}
+                                    renderRow={renderRow}
+                                />
                             </>
                         )}
                     </Card.Body>

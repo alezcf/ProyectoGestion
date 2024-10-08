@@ -44,7 +44,7 @@ const Productos = () => {
             <td>{producto.nombre}</td>
             <td>{producto.marca}</td>
             <td>{producto.categoria}</td>
-            <td>${producto.precio}</td>
+            <td>{producto.precio}</td>
             <td>{producto.cantidad} {producto.unidad_medida}</td>
             <td>
                 <ProductoAcciones
@@ -81,9 +81,6 @@ const Productos = () => {
                                 <div className="mt-3">
                                     <Link to="/crear-producto">
                                         <Button variant="success" className="me-2">Crear Producto</Button>
-                                    </Link>
-                                    <Link to="/crear-inventario">
-                                        <Button variant="primary" className="me-2">Crear Inventario</Button>
                                     </Link>
                                 </div>
                             </>

@@ -1,6 +1,5 @@
 "use strict";
 import ProductoService from "../services/producto.service.js";
-import upload from "../config/configMulter.js";
 import {
     productoBodyValidation,
     productoQueryValidation

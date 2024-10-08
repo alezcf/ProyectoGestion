@@ -28,7 +28,7 @@ const CrearInventario = () => {
                             <Row>
                                 <Col md={6}>
                                     <Form.Group controlId="nombre">
-                                        <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE (*)</Form.Label>
                                         <Form.Control
                                             type="text"
                                             placeholder="Ingresa el nombre del inventario"
@@ -41,7 +41,7 @@ const CrearInventario = () => {
 
                                 <Col md={6}>
                                     <Form.Group controlId="maximo_stock">
-                                        <Form.Label style={{ fontWeight: 'bold' }}>MÁXIMO STOCK</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>MÁXIMO STOCK (*)</Form.Label>
                                         <Form.Control
                                             type="number"
                                             placeholder="Ingresa el máximo stock del inventario"
