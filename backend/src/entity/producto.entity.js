@@ -25,7 +25,7 @@ const ProductoSchema = new EntitySchema({
             length: 255,
             nullable: true,
         },
-        cantidad: {
+        contenido: { // Corrección de cantidad a contenido.
             type: "numeric",
             nullable: true,
         },
@@ -56,7 +56,7 @@ const ProductoSchema = new EntitySchema({
     },
     relations: {
         proveedores: {
-            target: Proveedor, 
+            target: Proveedor,
             type: "many-to-many",
             joinTable: {
                 name: "producto_proveedor",

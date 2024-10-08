@@ -8,7 +8,7 @@ import productoRoutes from "./producto.routes.js";
 import inventarioRoutes from "./inventario.routes.js";
 import pedidoRoutes from "./pedido.routes.js";
 import emailRoutes from "./email.routes.js";
-
+import constantsRoutes from "./constants.routes.js";
 const router = Router();
 
 router
@@ -19,6 +19,7 @@ router
     .use("/producto", productoRoutes)
     .use("/inventario", inventarioRoutes)
     .use("/pedido", pedidoRoutes)
-    .use("/email", emailRoutes);
-    
+    .use("/email", emailRoutes)
+    .use("/constants", constantsRoutes);
+
 export default router;
