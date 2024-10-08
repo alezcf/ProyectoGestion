@@ -30,10 +30,10 @@
 
 /* Estilo para subtítulo (RUT o identificación del proveedor/usuario) */
 .detalles-nombre {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 600;
   margin-bottom: 15px;
-  color: #6c757d; /* Color neutral para el subtítulo */
+  color: #000000; /* Color neutral para el subtítulo */
 }
 
 /* Estilos para las etiquetas de información */

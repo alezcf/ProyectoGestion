@@ -1,11 +1,9 @@
-// src/components/Producto/ProductoCaracteristicas.js
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 const ProductoCaracteristicas = ({ producto }) => (
     <div className="mt-4">
-        <h4 style={{ fontSize: '22px', marginBottom: '15px' }}>Características Generales</h4>
         <Table striped bordered hover responsive style={{ textAlign: 'left' }}>
             <thead style={{ backgroundColor: '#f8f9fa' }}>
                 <tr>
@@ -16,23 +14,31 @@ const ProductoCaracteristicas = ({ producto }) => (
             <tbody>
                 <tr>
                     <td>Descripción</td>
-                    <td>{producto.descripcion || 'N/A'}</td>
+                    <td>{producto.descripcion || 'No hay registro'}</td>
                 </tr>
                 <tr>
                     <td>Categoría</td>
-                    <td>{producto.categoria || 'N/A'}</td>
+                    <td>{producto.categoria || 'No hay registro'}</td>
                 </tr>
                 <tr>
                     <td>Tipo</td>
-                    <td>{producto.tipo || 'N/A'}</td>
+                    <td>{producto.tipo || 'No hay registro'}</td>
                 </tr>
                 <tr>
-                    <td>Cantidad</td>
-                    <td>{producto.cantidad ? `${producto.cantidad} ${producto.unidad_medida}` : 'N/A'}</td>
+                    <td>Contenido</td>
+                    <td>{producto.contenido ? `${producto.contenido}` : 'No hay registro'}</td>
                 </tr>
                 <tr>
                     <td>Unidad de medida</td>
-                    <td>{producto.unidad_medida ? producto.unidad_medida.toUpperCase() : 'N/A'}</td>
+                    <td>{producto.unidad_medida ? producto.unidad_medida.toUpperCase() : 'No hay registro'}</td>
+                </tr>
+                <tr>
+                    <td>Código</td>
+                    <td>{producto.codigo || 'No hay registro'}</td>
+                </tr>
+                <tr>
+                    <td>Precio</td>
+                    <td>{producto.precio ? `$${producto.precio}` : 'No hay registro'}</td>
                 </tr>
             </tbody>
         </Table>
@@ -44,8 +50,10 @@ ProductoCaracteristicas.propTypes = {
         descripcion: PropTypes.string,
         categoria: PropTypes.string,
         tipo: PropTypes.string,
-        cantidad: PropTypes.string,
+        contenido: PropTypes.string,
         unidad_medida: PropTypes.string,
+        codigo: PropTypes.string,
+        precio: PropTypes.string,
     }).isRequired,
 };
 

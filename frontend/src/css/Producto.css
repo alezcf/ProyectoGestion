@@ -1,0 +1,19 @@
+
+.card-active {
+  border-color: #31004F;
+
+}
+
+.card-header-custom {
+  background-color: #f8f9fadd;
+
+}
+
+.header-title {
+  font-size: 1.5rem;
+  color: #000000;
+  margin: 0;
+  font-weight: bold;
+  flex-grow: 1;
+  text-align: center;
+}
