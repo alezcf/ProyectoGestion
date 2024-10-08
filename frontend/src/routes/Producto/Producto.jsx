@@ -4,7 +4,7 @@ import productoService from '../../services/producto.service';
 import { Container, Row, Col, Spinner, Alert, Form, Button, Modal, Collapse, Card } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Para los íconos
-import { faChevronDown, faChevronUp, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; // Íconos
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'; // Íconos
 import ProductoImagen from '../../components/Producto/ProductoImagen';
 import ProductoDetalles from '../../components/Producto/ProductoDetalles';
 import ProductoCaracteristicas from '../../components/Producto/ProductoCaracteristicas';
