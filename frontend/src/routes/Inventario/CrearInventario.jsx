@@ -1,5 +1,7 @@
 import React from 'react';
-import { Button, Form, Container, Row, Col } from 'react-bootstrap';
+import { Form, Container, Row, Col } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane, faWarehouse } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
 import inventarioService from '../../services/inventario.service';
 import '../../css/Form.css'; // Importar los estilos
@@ -21,12 +23,12 @@ const CrearInventario = () => {
         <Container>
 
                     <div className="form-container">
-                        <h2>Crear Inventario</h2>
+                        <h2 className="text-center mb-4"><FontAwesomeIcon icon={faWarehouse} /> CREAR INVENTARIO</h2>
                         <Form onSubmit={handleSubmit(onSubmit)}>
                             <Row>
                                 <Col md={6}>
                                     <Form.Group controlId="nombre">
-                                        <Form.Label>Nombre</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE</Form.Label>
                                         <Form.Control
                                             type="text"
                                             placeholder="Ingresa el nombre del inventario"
@@ -39,7 +41,7 @@ const CrearInventario = () => {
 
                                 <Col md={6}>
                                     <Form.Group controlId="maximo_stock">
-                                        <Form.Label>Máximo Stock</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>MÁXIMO STOCK</Form.Label>
                                         <Form.Control
                                             type="number"
                                             placeholder="Ingresa el máximo stock del inventario"
@@ -53,15 +55,13 @@ const CrearInventario = () => {
                                     </Form.Group>
                                 </Col>
                             </Row>
-
                             <div className="button-container">
-                                <Button variant="primary" type="submit">
-                                    Crear Inventario
-                                </Button>
+                                <button className="button-submit" type="submit"  >
+                                <FontAwesomeIcon icon={faPaperPlane} /> CREAR
+                                </button>
                             </div>
                         </Form>
                     </div>
-
         </Container>
     );
 };

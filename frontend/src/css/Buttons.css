@@ -79,11 +79,58 @@
     background-color: #0e0e67; /* Verde más oscuro al pasar el ratón */
 }
 
+.button-container {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
+
+.button-previous, .button-next, .button-submit {
+    background-color: #D5D4D4; /* Color base del botón Atrás */
+    color: rgb(0, 0, 0); /* Color del texto */
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center; /* Centra el contenido del botón */
+    min-width: 100px; /* Ancho mínimo común para todos los botones */
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    height: 45px; /* Altura fija para todos los botones */
+
+}
+
+/* Específicos para cada botón */
+.button-previous {
+    background-color: #D5D4D4; /* Color de fondo del botón Atrás */
+    color: rgb(0, 0, 0); /* Color del texto */
+    margin-right: auto; /* Asegura que el botón Atrás esté pegado a la izquierda */
+}
+
+.button-previous svg {
+    margin-right: 5px; /* Ajusta el valor según tus necesidades */
+}
 
 .button-next {
+    background-color: #21A99B; /* Color de fondo del botón Siguiente */
+    color: black;
+}
+
+.button-next svg {
+    margin-left: 5px; /* Ajusta el valor según tus necesidades */
+    color: black;
+
+}
+
+.button-submit {
+    background-color: #e3ab02; /* Color de fondo del botón Enviar */
+    color: black;
     margin-left: auto;
 }
 
-.button-previous {
-    margin-right: auto;
+.button-submit svg {
+    color: black;
+    margin-right: 8px; /* Ajusta según lo que necesites */
 }

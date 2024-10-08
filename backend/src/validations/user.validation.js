@@ -17,12 +17,10 @@ export const userQueryValidation = Joi.object({
       "string.empty": "El correo electrónico no puede estar vacío.",
       "any.required": "El correo electrónico es obligatorio.",
       "string.base": "El correo electrónico debe ser de tipo string.",
-      "string.email":
-        "El correo electrónico debe finalizar en @alumnos.ubiobio.cl.",
       "string.min":
         "El correo electrónico debe tener como mínimo 20 caracteres.",
       "string.max":
-        "El correo electrónico debe tener como máximo 36 caracteres.",
+        "El correo electrónico debe tener como máximo 50 caracteres.",
     }),
   rut: Joi.string()
     .min(9)
@@ -67,7 +65,7 @@ export const userBodyValidation = Joi.object({
       "string.min":
         "El correo electrónico debe tener como mínimo 17 caracteres.",
       "string.max":
-        "El correo electrónico debe tener como máximo 30 caracteres.",
+        "El correo electrónico debe tener como máximo 50 caracteres.",
     }),
   password: Joi.string()
     .min(3)

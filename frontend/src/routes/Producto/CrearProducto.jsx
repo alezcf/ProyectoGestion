@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Button, Form, Container, Row, Col } from 'react-bootstrap';
+import { Form, Container, Row, Col } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane, faArrowLeft, faArrowRight, faBottleDroplet } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
 import productoService from '../../services/producto.service';
 import '../../css/Form.css';
 import '../../css/Buttons.css';
 
 const CrearProducto = () => {
-    const { register, handleSubmit, formState: { errors }, setValue, getValues } = useForm({
+    const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
             nombre: "",
             descripcion: "",
@@ -76,7 +78,7 @@ const CrearProducto = () => {
                         <Row>
                             <Col md={6}>
                                 <Form.Group controlId="nombre">
-                                    <Form.Label>Nombre</Form.Label>
+                                    <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE (*)</Form.Label>
                                     <Form.Control
                                         type="text"
                                         placeholder="Ingresa el nombre del producto"
@@ -88,7 +90,7 @@ const CrearProducto = () => {
                             </Col>
                             <Col md={6}>
                                 <Form.Group controlId="descripcion">
-                                    <Form.Label>Descripción</Form.Label>
+                                    <Form.Label>DESCRIPCIÓN</Form.Label>
                                     <Form.Control
                                         type="text"
                                         placeholder="Ingresa la descripción"
@@ -102,7 +104,7 @@ const CrearProducto = () => {
                         <Row>
                             <Col md={6}>
                                 <Form.Group controlId="marca">
-                                    <Form.Label>Marca</Form.Label>
+                                    <Form.Label>MARCA</Form.Label>
                                     <Form.Control
                                         type="text"
                                         placeholder="Ingresa la marca"
@@ -114,7 +116,7 @@ const CrearProducto = () => {
                             </Col>
                             <Col md={6}>
                                 <Form.Group controlId="cantidad">
-                                    <Form.Label>Cantidad</Form.Label>
+                                    <Form.Label>CANTIDAD</Form.Label>
                                     <Form.Control
                                         type="number"
                                         placeholder="Ingresa la cantidad"
@@ -128,7 +130,7 @@ const CrearProducto = () => {
                         <Row>
                             <Col md={6}>
                                 <Form.Group controlId="unidad_medida">
-                                    <Form.Label>Unidad de Medida</Form.Label>
+                                    <Form.Label>UNIDAD DE MEDIDA</Form.Label>
                                     <Form.Control
                                         type="text"
                                         placeholder="Ingresa la unidad de medida"
@@ -140,7 +142,7 @@ const CrearProducto = () => {
                             </Col>
                             <Col md={6}>
                                 <Form.Group controlId="precio">
-                                    <Form.Label>Precio</Form.Label>
+                                    <Form.Label>PRECIO</Form.Label>
                                     <Form.Control
                                         type="number"
                                         placeholder="Ingresa el precio"
@@ -159,7 +161,7 @@ const CrearProducto = () => {
                         <Row>
                             <Col md={6}>
                                 <Form.Group controlId="categoria">
-                                    <Form.Label>Categoría</Form.Label>
+                                    <Form.Label style={{ fontWeight: 'bold' }}>CATEGORIA (*)</Form.Label>
                                     <Form.Control
                                         type="text"
                                         placeholder="Ingresa la categoría"
@@ -171,7 +173,7 @@ const CrearProducto = () => {
                             </Col>
                             <Col md={6}>
                                 <Form.Group controlId="tipo">
-                                    <Form.Label>Tipo</Form.Label>
+                                    <Form.Label style={{ fontWeight: 'bold' }}>TIPO (*)</Form.Label>
                                     <Form.Control
                                         type="text"
                                         placeholder="Ingresa el tipo"
@@ -185,7 +187,7 @@ const CrearProducto = () => {
                         <Row>
                             <Col md={6}>
                                 <Form.Group controlId="imagen">
-                                    <Form.Label>Imagen (solo PNG)</Form.Label>
+                                    <Form.Label>IMAGEN (solo PNG)</Form.Label>
                                     <Form.Control
                                         type="file"
                                         accept=".png"
@@ -211,25 +213,29 @@ const CrearProducto = () => {
 
     return (
         <Container fluid className="form-container">
-            <h2 className="text-center mb-4">Crear Producto</h2>
+            <h2 className="text-center mb-4"><FontAwesomeIcon icon={faBottleDroplet} /> REGISTRAR PRODUCTO</h2>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 {renderPageFields()}
-                <div className="d-flex justify-content-between mt-4">
-                    {page > 0 && (
-                        <Button variant="secondary" onClick={previousPage}>
-                            Anterior
-                        </Button>
-                    )}
-                    {page < totalPages - 1 ? (
-                        <Button variant="primary" className="button-next" onClick={nextPage}>
-                            Siguiente
-                        </Button>
-                    ) : (
-                        <Button variant="primary" type="submit">
-                            Crear Producto
-                        </Button>
-                    )}
+                <div className="button-container">
+                    <button
+                        className="button-previous"
+                        onClick={previousPage}
+                        disabled={page === 0} /* Bloquea el botón si estamos en la primera página */
+                        >
+                        <FontAwesomeIcon icon={faArrowLeft} /> ATRÁS
+                    </button>
+
+                        {page < totalPages - 1 ? (
+                            <button className="button-next" onClick={nextPage}>
+                                SIGUIENTE <FontAwesomeIcon icon={faArrowRight} />
+                            </button>
+                        ) : (
+                            <button className="button-submit" type="submit"  >
+                            <FontAwesomeIcon icon={faPaperPlane} /> CREAR
+                            </button>
+                        )}
                 </div>
+
             </Form>
         </Container>
     );

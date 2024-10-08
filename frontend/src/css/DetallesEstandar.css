@@ -18,13 +18,12 @@
   text-align: center;
   padding: 20px;
   font-size: 24px;
-  font-weight: bold;
 }
 
 /* Estilo para el título principal (Nombre del proveedor o usuario) */
 .detalles-marca {
   color: #007bff; /* Color para reflejar más importancia */
-  font-weight: bold;
+
   font-size: 30px;
   margin-bottom: 20px;
 }

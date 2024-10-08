@@ -2,8 +2,11 @@
 .form-container {
   margin-top: 0px;
   padding: 1.5rem;
+  min-height: 40%;
   max-height: 100%;
-  max-width: 100%;
+  min-width: 40%;
+  max-width: 90%;
+
   border: 1px solid black; /* Borde leve negro */
   position: relative; /* Necesario para posicionar elementos relativos */
   background-color: #f8f9fa;
@@ -17,11 +20,13 @@
   text-align: center; /* Centrar texto horizontalmente */
   display: block; /* Ocupa todo el ancho disponible */
   margin-bottom: 0.5rem; /* Espaciado inferior */
+  margin-top: 10px;
 }
 
 /* Estilo global para inputs en formularios */
 .form-input {
   padding: 0.75rem;
+  margin-top: 0px;
   font-size: 1rem;
   border-radius: 0px;
   border: 1px solid #ced4da;

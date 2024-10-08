@@ -1,5 +1,7 @@
 import React from 'react';
-import { Button, Form, Container, Row, Col } from 'react-bootstrap';
+import { Form, Container, Row, Col } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane, faBuilding } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
 import proveedorService from '../../services/proveedor.service';
 import '../../css/Form.css'; // Importar los estilos
@@ -20,13 +22,13 @@ const CrearProveedor = () => {
     return (
         <Container>
                     <div className="form-container">
-                        <h2>Crear Proveedor</h2>
+                    <h2 className="text-center mb-4"><FontAwesomeIcon icon={faBuilding} /> NUEVO  PROVEEDOR</h2>
                         <Form onSubmit={handleSubmit(onSubmit)}>
                             <Row>
                                 {/* Campo Nombre */}
                                 <Col md={6}>
                                     <Form.Group controlId="nombre">
-                                        <Form.Label>Nombre</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE (*)</Form.Label>
                                         <Form.Control
                                             type="text"
                                             placeholder="Ingresa el nombre del proveedor"
@@ -76,7 +78,7 @@ const CrearProveedor = () => {
                                 {/* Campo Teléfono */}
                                 <Col md={6}>
                                     <Form.Group controlId="telefono">
-                                        <Form.Label>Teléfono</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>TELÉFONO (*)</Form.Label>
                                         <Form.Control
                                             type="text"
                                             placeholder="Ingresa el teléfono"
@@ -98,7 +100,7 @@ const CrearProveedor = () => {
                                 {/* Campo Email */}
                                 <Col md={6}>
                                     <Form.Group controlId="email">
-                                        <Form.Label>Email</Form.Label>
+                                        <Form.Label>EMAIL</Form.Label>
                                         <Form.Control
                                             type="email"
                                             placeholder="Ingresa el email"
@@ -117,9 +119,9 @@ const CrearProveedor = () => {
                             </Row>
 
                             <div className="button-container">
-                                <Button variant="primary" type="submit">
-                                    Crear Proveedor
-                                </Button>
+                                <button className="button-submit" type="submit">
+                                    <FontAwesomeIcon icon={faPaperPlane} /> REGISTRAR
+                                </button>
                             </div>
                         </Form>
                     </div>

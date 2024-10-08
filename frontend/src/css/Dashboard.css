@@ -1,13 +1,11 @@
 .dashboard-title {
     font-size: 3rem;
-    font-weight: bold;
     margin-bottom: 30px;
     color: #343a40;
 }
 
 .dashboard-card .dashboard-card-title {
     font-size: 1.75rem; /* Incrementa el tamaño de fuente */
-    font-weight: bold;
     margin-bottom: 15px;
     color: #000000; /* Cambia esto al color exacto del morado de tu logo */
 }

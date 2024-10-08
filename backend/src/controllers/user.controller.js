@@ -16,7 +16,6 @@ import {
 export async function createUser(req, res) {
   try {
     const { body } = req;
-
     const { error } = userBodyValidation.validate(body);
 
     if (error) return handleErrorClient(res, 400, "Error de validación", error.message);

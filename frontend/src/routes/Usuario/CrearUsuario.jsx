@@ -1,5 +1,7 @@
 import React from 'react';
-import { Button, Form, Container, Row, Col } from 'react-bootstrap';
+import { Form, Container, Row, Col } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperPlane, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
 import usuarioService from '../../services/usuario.service';
 import '../../css/Form.css'; // Importar los estilos
@@ -20,29 +22,12 @@ const CrearUsuario = () => {
     return (
         <Container>
                     <div className="form-container">
-                        <h2>Crear Usuario</h2>
+                    <h2 className="text-center mb-4"><FontAwesomeIcon icon={faUser} /> CREAR USUARIO</h2>
                         <Form onSubmit={handleSubmit(onSubmit)}>
                             <Row>
                                 <Col md={6}>
-                                    <Form.Group controlId="nombreCompleto">
-                                        <Form.Label>Nombre Completo</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            placeholder="Ingresa el nombre completo"
-                                            {...register('nombreCompleto', {
-                                                required: 'El nombre completo es obligatorio',
-                                                minLength: { value: 3, message: 'El nombre completo debe tener al menos 3 caracteres' },
-                                                maxLength: { value: 50, message: 'El nombre completo no debe exceder los 50 caracteres' }
-                                            })}
-                                            className={errors.nombreCompleto ? 'is-invalid' : ''}
-                                        />
-                                        {errors.nombreCompleto && <span className="text-danger">{errors.nombreCompleto.message}</span>}
-                                    </Form.Group>
-                                </Col>
-
-                                <Col md={6}>
                                     <Form.Group controlId="rut">
-                                        <Form.Label>RUT</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>RUT (*)</Form.Label>
                                         <Form.Control
                                             type="text"
                                             placeholder="Ingresa el RUT"
@@ -60,12 +45,28 @@ const CrearUsuario = () => {
                                         {errors.rut && <span className="text-danger">{errors.rut.message}</span>}
                                     </Form.Group>
                                 </Col>
+                                <Col md={6}>
+                                    <Form.Group controlId="nombreCompleto">
+                                        <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE (*)</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            placeholder="Ingresa el nombre completo"
+                                            {...register('nombreCompleto', {
+                                                required: 'El nombre completo es obligatorio',
+                                                minLength: { value: 3, message: 'El nombre completo debe tener al menos 3 caracteres' },
+                                                maxLength: { value: 50, message: 'El nombre completo no debe exceder los 50 caracteres' }
+                                            })}
+                                            className={errors.nombreCompleto ? 'is-invalid' : ''}
+                                        />
+                                        {errors.nombreCompleto && <span className="text-danger">{errors.nombreCompleto.message}</span>}
+                                    </Form.Group>
+                                </Col>
                             </Row>
 
                             <Row>
                                 <Col md={6}>
                                     <Form.Group controlId="email">
-                                        <Form.Label>Email</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>CORREO ELECTRÓNICO (*)</Form.Label>
                                         <Form.Control
                                             type="email"
                                             placeholder="Ingresa el email"
@@ -83,7 +84,7 @@ const CrearUsuario = () => {
 
                                 <Col md={6}>
                                     <Form.Group controlId="rol">
-                                        <Form.Label>Rol</Form.Label>
+                                        <Form.Label>CARGO LABORAL</Form.Label>
                                         <Form.Control
                                             type="text"
                                             placeholder="Ingresa el rol"
@@ -102,7 +103,7 @@ const CrearUsuario = () => {
                             <Row>
                                 <Col md={6}>
                                     <Form.Group controlId="password">
-                                        <Form.Label>Contraseña</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>CONTRASEÑA (*)</Form.Label>
                                         <Form.Control
                                             type="password"
                                             placeholder="Ingresa la contraseña"
@@ -119,9 +120,9 @@ const CrearUsuario = () => {
                             </Row>
 
                             <div className="button-container">
-                                <Button variant="primary" type="submit">
-                                    Crear Usuario
-                                </Button>
+                                <button className="button-submit" type="submit"  >
+                                <FontAwesomeIcon icon={faPaperPlane} /> CREAR
+                                </button>
                             </div>
                         </Form>
                     </div>
