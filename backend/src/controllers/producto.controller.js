@@ -18,7 +18,7 @@ import {
 export async function createProducto(req, res) {
     try {
         const { body } = req;
-
+        console.log(body);
         const { error } = productoBodyValidation.validate(body);
         if (error) return handleErrorClient(res, 400, "Error de validación", error.message);
 

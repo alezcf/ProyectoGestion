@@ -1,5 +1,5 @@
 import { EntitySchema } from "typeorm";
-
+import ProductoProveedor from "./producto_proveedor.entity.js";
 const ProveedorSchema = new EntitySchema({
     name: "Proveedor",
     tableName: "proveedor",
@@ -49,6 +49,13 @@ const ProveedorSchema = new EntitySchema({
         unique: true,
         },
     ],
+    relations: {
+        productoProveedores: {
+            target: ProductoProveedor,
+            type: "one-to-many",
+            inverseSide: "proveedor",
+        },
+    }
 });
 
 export default ProveedorSchema;

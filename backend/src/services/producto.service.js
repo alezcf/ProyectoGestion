@@ -1,6 +1,7 @@
 "use strict";
 import Producto from "../entity/producto.entity.js";
 import Proveedor from "../entity/proveedor.entity.js";
+import ProductoProveedor from "../entity/producto_proveedor.entity.js";
 import fs from "fs";
 import path from "path";
 import { AppDataSource } from "../config/configDb.js";
@@ -15,20 +16,18 @@ async function createProducto(body) {
     try {
         const productoRepository = AppDataSource.getRepository(Producto);
         const proveedorRepository = AppDataSource.getRepository(Proveedor);
+        const productoProveedorRepository = AppDataSource.getRepository(ProductoProveedor);
 
         // Verificar si los proveedores existen solo si se proporcionan
+        let proveedores = [];
         if (body.proveedores && body.proveedores.length > 0) {
-            const proveedores = await proveedorRepository.findBy({
+            proveedores = await proveedorRepository.findBy({
                 id: In(body.proveedores),
             });
 
             if (proveedores.length !== body.proveedores.length) {
                 return [null, "Uno o más proveedores no existen"];
             }
-
-            body.proveedores = proveedores; // Asociar los proveedores encontrados
-        } else {
-            body.proveedores = [];
         }
 
         // Corregir la barra invertida en la ruta de la imagen
@@ -36,8 +35,22 @@ async function createProducto(body) {
             body.imagen_ruta = body.imagen_ruta.replace(/\\/g, "/");
         }
 
+        // Crear el producto
         const newProducto = productoRepository.create(body);
         const savedProducto = await productoRepository.save(newProducto);
+
+        // Crear las relaciones en la tabla producto_proveedor
+        if (proveedores.length > 0) {
+            const productoProveedores = proveedores.map(proveedor => {
+                return {
+                    producto: savedProducto,  // Relacionar con el producto recién creado
+                    proveedor: proveedor
+                };
+            });
+
+            // Guardar todas las relaciones en la tabla intermedia
+            await productoProveedorRepository.save(productoProveedores);
+        }
 
         return [savedProducto, null];
     } catch (error) {
@@ -92,18 +105,19 @@ async function getProductos() {
  * Actualiza un producto por su ID en la base de datos
  * @param {Object} query - Parámetros de consulta (id)
  * @param {Object} body - Datos del producto a actualizar
- * @returns {Promise} Promesa con el objeto de producto actualizado
+ * @returns {Promise} Promesa con el objeto de producto actualizado o un error
  */
 async function updateProducto(query, body) {
     try {
         const { id } = query;
         const productoRepository = AppDataSource.getRepository(Producto);
         const proveedorRepository = AppDataSource.getRepository(Proveedor);
+        const productoProveedorRepository = AppDataSource.getRepository(ProductoProveedor);
 
         // Verificar si el producto existe antes de actualizar
         const productoFound = await productoRepository.findOne({
             where: { id: id },
-            relations: ["proveedores"], // Incluimos la relación con los proveedores
+            relations: ["productoProveedores", "productoInventarios"]
         });
 
         if (!productoFound) {
@@ -119,7 +133,7 @@ async function updateProducto(query, body) {
             const imagenRutaNormalizada = nuevaImagen.replace(/\\/g, "/");
 
             const imagenActualRuta = productoFound.imagen_ruta;
-            
+
             if (imagenActualRuta) {
                 const filePath = path.resolve(imagenActualRuta);
 
@@ -137,12 +151,13 @@ async function updateProducto(query, body) {
             productoFound.imagen_ruta = imagenRutaNormalizada;
         }
 
-        Object.assign(productoFound, productoData);
         // Actualizar los campos del producto que no están relacionados con proveedores
+        Object.assign(productoFound, productoData);
         await productoRepository.update({ id: productoFound.id }, productoData);
 
-        // Actualizar la relación muchos a muchos (proveedores)
-        if (proveedores && proveedores.length > 0) {
+                // Actualizar la relación muchos a muchos (proveedores)
+            if (proveedores && proveedores.length > 0) {
+            // Encontrar las entidades de los proveedores por los IDs proporcionados
             const proveedoresEntities = await proveedorRepository.findBy({
                 id: In(proveedores),
             });
@@ -150,12 +165,21 @@ async function updateProducto(query, body) {
             if (proveedoresEntities.length !== proveedores.length) {
                 return [null, "Uno o más proveedores no existen"];
             }
-
-            productoFound.proveedores = proveedoresEntities; // Asociar los proveedores encontrados
+            // Crear nuevas relaciones en la tabla intermedia `producto_proveedor`
+            const nuevasRelaciones = proveedoresEntities.map(proveedor => {
+            return productoProveedorRepository.create({
+                producto: productoFound,  // Relacionar con el producto existente
+                proveedor: proveedor     // Relacionar con el proveedor existente
+            });
+        });
+            await productoProveedorRepository.save(nuevasRelaciones);
+            productoFound.productoProveedores = nuevasRelaciones;
         } else {
-            productoFound.proveedores = []; // Si no se proporcionan proveedores, desasociar todos
+            // Si no se proporcionan proveedores, eliminar todas las relaciones
+            await productoProveedorRepository.delete({ producto: { id: productoFound.id } });
+            productoFound.productoProveedores = [];
         }
-
+        await productoRepository.update({ id: productoFound.id }, productoData);
         // Guardar el producto actualizado
         const productoActualizado = await productoRepository.save(productoFound);
 
@@ -165,7 +189,6 @@ async function updateProducto(query, body) {
         return [null, "Error interno del servidor"];
     }
 }
-
 
 /**
  * Elimina un producto por su ID de la base de datos

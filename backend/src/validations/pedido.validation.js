@@ -30,12 +30,11 @@ export const pedidoBodyValidation = Joi.object({
         "date.format": "La fecha del pedido debe estar en formato ISO.",
         "any.required": "La fecha del pedido es obligatoria.",
     }),
-    estado: Joi.string().valid("pendiente", "completado", "cancelado").required().messages({
+    estado: Joi.string().valid("Completo", "Pendiente", "Cancelado").required().messages({
         "string.empty": "El estado no puede estar vacío.",
         "any.required": "El estado es obligatorio.",
         "string.base": "El estado debe ser de tipo string.",
-        "any.only": "El estado debe ser uno de los siguientes: " +
-            "'pendiente', 'completado', 'cancelado'.",
+        "any.only": "El estado del pedido debe ser completo, pendiente o cancelado.",
     }),
     productos: Joi.array().items(
         Joi.object({
