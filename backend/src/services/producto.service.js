@@ -2,6 +2,7 @@
 import Producto from "../entity/producto.entity.js";
 import Proveedor from "../entity/proveedor.entity.js";
 import ProductoProveedor from "../entity/producto_proveedor.entity.js";
+import ProductoInventario from "../entity/producto_inventario.entity.js";
 import fs from "fs";
 import path from "path";
 import { AppDataSource } from "../config/configDb.js";
@@ -18,6 +19,7 @@ async function createProducto(body) {
         const proveedorRepository = AppDataSource.getRepository(Proveedor);
         const productoProveedorRepository = AppDataSource.getRepository(ProductoProveedor);
 
+        console.log(body);
         // Verificar si los proveedores existen solo si se proporcionan
         let proveedores = [];
         if (body.proveedores && body.proveedores.length > 0) {
@@ -71,6 +73,10 @@ async function getProducto(query) {
 
         const productoFound = await productoRepository.findOne({
             where: { id: id },
+            relations: [
+                "productoInventarios.inventario",
+                "productoProveedores.proveedor"
+            ],
         });
 
         if (!productoFound) return [null, "Producto no encontrado"];
@@ -81,6 +87,7 @@ async function getProducto(query) {
         return [null, "Error interno del servidor"];
     }
 }
+
 
 /**
  * Obtiene todos los productos de la base de datos
@@ -113,7 +120,9 @@ async function updateProducto(query, body) {
         const productoRepository = AppDataSource.getRepository(Producto);
         const proveedorRepository = AppDataSource.getRepository(Proveedor);
         const productoProveedorRepository = AppDataSource.getRepository(ProductoProveedor);
-
+        const productoInventarioRepository = AppDataSource.getRepository(ProductoInventario);
+        console.log("id", id);
+        console.log("body", body);
         // Verificar si el producto existe antes de actualizar
         const productoFound = await productoRepository.findOne({
             where: { id: id },
@@ -126,6 +135,16 @@ async function updateProducto(query, body) {
 
         // Extraer los proveedores y la imagen del cuerpo de la solicitud
         const { proveedores, imagen_ruta: nuevaImagen, ...productoData } = body;
+
+        if (proveedores && proveedores.length > 0) {
+            const proveedoresEntities = await proveedorRepository.findBy({
+                id: In(proveedores),
+            });
+
+            if (proveedoresEntities.length !== proveedores.length) {
+                return [null, "Uno o más proveedores no existen"];
+            }
+        }
 
         // Si se proporciona una nueva imagen, procesar la actualización
         if (nuevaImagen) {
@@ -155,8 +174,12 @@ async function updateProducto(query, body) {
         Object.assign(productoFound, productoData);
         await productoRepository.update({ id: productoFound.id }, productoData);
 
-                // Actualizar la relación muchos a muchos (proveedores)
-            if (proveedores && proveedores.length > 0) {
+        // Eliminar todas las relaciones previas de proveedores e inventarios
+        await productoProveedorRepository.delete({ producto: { id: productoFound.id } });
+        await productoInventarioRepository.delete({ producto: { id: productoFound.id } });
+
+        // Actualizar la relación muchos a muchos (proveedores)
+        if (proveedores && proveedores.length > 0) {
             // Encontrar las entidades de los proveedores por los IDs proporcionados
             const proveedoresEntities = await proveedorRepository.findBy({
                 id: In(proveedores),
@@ -165,21 +188,23 @@ async function updateProducto(query, body) {
             if (proveedoresEntities.length !== proveedores.length) {
                 return [null, "Uno o más proveedores no existen"];
             }
+
             // Crear nuevas relaciones en la tabla intermedia `producto_proveedor`
-            const nuevasRelaciones = proveedoresEntities.map(proveedor => {
-            return productoProveedorRepository.create({
-                producto: productoFound,  // Relacionar con el producto existente
-                proveedor: proveedor     // Relacionar con el proveedor existente
+            const nuevasRelacionesProveedores = proveedoresEntities.map(proveedor => {
+                return productoProveedorRepository.create({
+                    producto: productoFound,  // Relacionar con el producto existente
+                    proveedor: proveedor     // Relacionar con el proveedor existente
+                });
             });
-        });
-            await productoProveedorRepository.save(nuevasRelaciones);
-            productoFound.productoProveedores = nuevasRelaciones;
+
+            // Guardar todas las nuevas relaciones de proveedores
+            await productoProveedorRepository.save(nuevasRelacionesProveedores);
+            productoFound.productoProveedores = nuevasRelacionesProveedores;
         } else {
-            // Si no se proporcionan proveedores, eliminar todas las relaciones
-            await productoProveedorRepository.delete({ producto: { id: productoFound.id } });
+            // Si no se proporcionan proveedores, asegurar que la relación esté vacía
             productoFound.productoProveedores = [];
         }
-        await productoRepository.update({ id: productoFound.id }, productoData);
+
         // Guardar el producto actualizado
         const productoActualizado = await productoRepository.save(productoFound);
 
@@ -189,6 +214,7 @@ async function updateProducto(query, body) {
         return [null, "Error interno del servidor"];
     }
 }
+
 
 /**
  * Elimina un producto por su ID de la base de datos

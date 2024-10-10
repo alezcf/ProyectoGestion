@@ -140,15 +140,15 @@ const CrearPedido = () => {
                             <Form.Group controlId="estado">
                                 <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>ESTADO ACTUAL (*)</Form.Label>
                                 <Form.Control
-                                    type="text"
-                                    placeholder="Ingresa el estado del pedido"
-                                    {...register('estado', {
-                                        required: 'El estado del pedido es obligatorio',
-                                        minLength: { value: 3, message: 'El estado debe tener al menos 3 caracteres' },
-                                        maxLength: { value: 50, message: 'El estado no debe exceder los 50 caracteres' },
-                                    })}
+                                    as="select"
+                                    {...register('estado', { required: 'El estado del pedido es obligatorio' })}
                                     className={`form-input ${errors.estado ? 'is-invalid' : ''}`}
-                                />
+                                >
+                                    <option value="">Selecciona el estado</option>
+                                    <option value="Completo">Completo</option>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="Cancelado">Cancelado</option>
+                                </Form.Control>
                                 {errors.estado && <span className="text-danger">{errors.estado.message}</span>}
                             </Form.Group>
                         </Col>

@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import productoService from '../../services/producto.service';
-import { Container, Row, Col, Spinner, Alert, Form, Button, Modal, Collapse, Card } from 'react-bootstrap';
+import { Container, Row, Col, Spinner, Alert, Button, Modal, Collapse, Card, Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Para los íconos
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'; // Íconos
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import ProductoImagen from '../../components/Producto/ProductoImagen';
 import ProductoDetalles from '../../components/Producto/ProductoDetalles';
 import ProductoCaracteristicas from '../../components/Producto/ProductoCaracteristicas';
 import ProductoBotones from '../../components/Common/ButtonsActions';
 import productoFields from '../../fields/producto.fields';
 import ProductoProveedor from '../../components/Producto/ProductoProveedor';
+import ProductoInventario from '../../components/Producto/ProductoInventario';
 import '../../css/Form.css';
-import '../../css/Producto.css';  // Nuevo archivo de estilos
+import '../../css/Producto.css';
 
 const Producto = () => {
     const { productoId } = useParams();
@@ -22,6 +23,7 @@ const Producto = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [openDetalles, setOpenDetalles] = useState(true); // Inicialmente abierta la tabla de detalles
     const [openProveedores, setOpenProveedores] = useState(false); // Tabla de proveedores cerrada por defecto
+    const [openInventarios, setOpenInventarios] = useState(false); // Tabla de inventarios cerrada por defecto
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
@@ -61,11 +63,19 @@ const Producto = () => {
     const toggleDetalles = () => {
         setOpenDetalles(true);
         setOpenProveedores(false); // Cierra proveedores al abrir detalles
+        setOpenInventarios(false); // Cierra inventarios al abrir detalles
     };
 
     const toggleProveedores = () => {
         setOpenProveedores(true);
         setOpenDetalles(false); // Cierra detalles al abrir proveedores
+        setOpenInventarios(false); // Cierra inventarios al abrir proveedores
+    };
+
+    const toggleInventarios = () => {
+        setOpenInventarios(true);
+        setOpenDetalles(false); // Cierra detalles al abrir inventarios
+        setOpenProveedores(false); // Cierra proveedores al abrir inventarios
     };
 
     if (loading) {
@@ -84,11 +94,31 @@ const Producto = () => {
         );
     }
 
-    const proveedores = [
-        { id: 1, nombre: 'Proveedor A', contacto: 'contactoA@example.com', telefono: '123456789' },
-        { id: 2, nombre: 'Proveedor B', contacto: 'contactoB@example.com', telefono: '987654321' },
-        { id: 3, nombre: 'Proveedor C', contacto: 'contactoC@example.com', telefono: '555444333' },
-    ];
+    const proveedores = producto?.productoProveedores?.map(proveedorRelacion => {
+        const { proveedor } = proveedorRelacion; // Extraemos el objeto proveedor directamente para simplificar
+        return {
+            id: proveedor.id,
+            nombre: proveedor.nombre,
+            rut: proveedor.rut,
+            direccion: proveedor.direccion,
+            telefono: proveedor.telefono,
+            email: proveedor.email
+        };
+    }) || [];
+
+    const inventarios = producto?.productoInventarios?.map(inventarioRelacion => {
+        const { inventario } = inventarioRelacion; // Extraemos el objeto inventario directamente para simplificar
+        return {
+            id: inventarioRelacion.id,
+            cantidad: inventarioRelacion.cantidad,
+            inventario: {
+                id: inventario.id,
+                nombre: inventario.nombre,
+                maximo_stock: inventario.maximo_stock,
+                ultima_actualizacion: inventario.ultima_actualizacion
+            }
+        };
+    }) || [];
 
     return (
         <Container fluid className="form-container">
@@ -102,58 +132,84 @@ const Producto = () => {
 
                     {/* Collapse para la tabla de detalles del producto */}
                     <Card className={`mb-3 custom-card ${openDetalles ? 'card-active' : ''}`}>
-    <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
-        <h5 className="header-title">Detalles del Producto</h5>
-        <Button
-            onClick={toggleDetalles}
-            aria-controls="detalles-producto"
-            aria-expanded={openDetalles}
-            variant="link"
-            className="toggle-btn"
-        >
-            {openDetalles ? (
-                <FontAwesomeIcon icon={faChevronUp} />
-            ) : (
-                <FontAwesomeIcon icon={faChevronDown} />
-            )}
-        </Button>
-    </Card.Header>
-    <Collapse in={openDetalles}>
-        <div id="detalles-producto">
-            <Card.Body>
-                <ProductoCaracteristicas producto={producto} />
-            </Card.Body>
-        </div>
-    </Collapse>
-</Card>
-
+                        <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
+                            <h5 className="header-title">Características generales</h5>
+                            <Button
+                                onClick={toggleDetalles}
+                                aria-controls="detalles-producto"
+                                aria-expanded={openDetalles}
+                                variant="link"
+                                className="toggle-btn"
+                            >
+                                {openDetalles ? (
+                                    <FontAwesomeIcon icon={faChevronUp} />
+                                ) : (
+                                    <FontAwesomeIcon icon={faChevronDown} />
+                                )}
+                            </Button>
+                        </Card.Header>
+                        <Collapse in={openDetalles}>
+                            <div id="detalles-producto">
+                                <Card.Body>
+                                    <ProductoCaracteristicas producto={producto} />
+                                </Card.Body>
+                            </div>
+                        </Collapse>
+                    </Card>
 
                     {/* Collapse para la tabla de proveedores */}
-                    <Card className={`custom-card ${openProveedores ? 'card-active' : ''}`}>
-    <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
-        <h5 className="header-title">Proveedores</h5>
-        <Button
-            onClick={toggleProveedores}
-            aria-controls="proveedores-producto"
-            aria-expanded={openProveedores}
-            variant="link"
-            className="toggle-btn"
-        >
-            {openProveedores ? (
-                <FontAwesomeIcon icon={faChevronUp} />
-            ) : (
-                <FontAwesomeIcon icon={faChevronDown} />
-            )}
-        </Button>
-    </Card.Header>
-    <Collapse in={openProveedores}>
-        <div id="proveedores-producto">
-            <Card.Body>
-                <ProductoProveedor proveedores={proveedores} />
-            </Card.Body>
-        </div>
-    </Collapse>
-</Card>
+                    <Card className={`custom-card ${openProveedores ? 'card-active' : ''} mt-4`}>
+                        <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
+                            <h5 className="header-title">Proveedores</h5>
+                            <Button
+                                onClick={toggleProveedores}
+                                aria-controls="proveedores-producto"
+                                aria-expanded={openProveedores}
+                                variant="link"
+                                className="toggle-btn"
+                            >
+                                {openProveedores ? (
+                                    <FontAwesomeIcon icon={faChevronUp} />
+                                ) : (
+                                    <FontAwesomeIcon icon={faChevronDown} />
+                                )}
+                            </Button>
+                        </Card.Header>
+                        <Collapse in={openProveedores}>
+                            <div id="proveedores-producto">
+                                <Card.Body>
+                                    <ProductoProveedor producto={producto} proveedores={proveedores} />
+                                </Card.Body>
+                            </div>
+                        </Collapse>
+                    </Card>
+
+                    {/* Collapse para la tabla de inventarios */}
+                    <Card className={`custom-card ${openInventarios ? 'card-active' : ''} mt-4`}>
+                        <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
+                            <h5 className="header-title">Inventarios</h5>
+                            <Button
+                                onClick={toggleInventarios}
+                                aria-controls="inventarios-producto"
+                                aria-expanded={openInventarios}
+                                variant="link"
+                                className="toggle-btn"
+                            >
+                                {openInventarios ? (
+                                    <FontAwesomeIcon icon={faChevronUp} />
+                                ) : (
+                                    <FontAwesomeIcon icon={faChevronDown} />
+                                )}
+                            </Button>
+                        </Card.Header>
+                        <Collapse in={openInventarios}>
+                            <div id="inventarios-producto">
+                                <Card.Body>
+                                    <ProductoInventario inventarios={inventarios} />
+                                </Card.Body>
+                            </div>
+                        </Collapse>
+                    </Card>
 
                 </Col>
             </Row>

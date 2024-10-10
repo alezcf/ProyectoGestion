@@ -1,44 +1,45 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, ListGroup } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import '../../css/DetallesEstandar.css';  // Importamos el CSS estandarizado
 
 const PedidoDetalles = ({ pedido }) => {
     return (
-        <Card className="detalles-card">
-            <Card.Header className="detalles-card-header">
-                <h2>Información del Pedido</h2>
-            </Card.Header>
-            <ListGroup variant="flush">
-                <ListGroup.Item className="detalles-info">
-                    <strong>ID del Pedido:</strong> {pedido.id || "No existe registro"}
-                </ListGroup.Item>
-                <ListGroup.Item className="detalles-info">
-                    <strong>Fecha del Pedido:</strong> {new Date(pedido.fecha_pedido).toLocaleDateString() || "No existe registro"}
-                </ListGroup.Item>
-                <ListGroup.Item className="detalles-info">
-                    <strong>Estado:</strong> {pedido.estado || "No existe registro"}
-                </ListGroup.Item>
-                <ListGroup.Item className="detalles-info">
-                    <strong>Proveedor:</strong> {pedido.proveedor?.nombre || "No existe registro"}
-                </ListGroup.Item>
-                <ListGroup.Item className="detalles-info">
-                    <strong>RUT Proveedor:</strong> {pedido.proveedor?.rut || "No existe registro"}
-                </ListGroup.Item>
-                <ListGroup.Item className="detalles-info">
-                    <strong>Inventario Asignado:</strong> {pedido.inventarioAsignado?.nombre || "No existe registro"}
-                </ListGroup.Item>
-                <ListGroup.Item className="detalles-info">
-                    <strong>Última Actualización del Inventario:</strong> {new Date(pedido.inventarioAsignado?.ultima_actualizacion).toLocaleDateString() || "No existe registro"}
-                </ListGroup.Item>
-            </ListGroup>
-        </Card>
+        <div className="detalles-container">
+            <Table striped bordered hover>
+                <tbody>
+                    <tr>
+                        <td><strong>Fecha del Pedido:</strong></td>
+                        <td>{new Date(pedido.fecha_pedido).toLocaleDateString() || "No existe registro"}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estado:</strong></td>
+                        <td>{pedido.estado || "No existe registro"}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Proveedor:</strong></td>
+                        <td>{pedido.proveedor?.nombre || "No existe registro"}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RUT Proveedor:</strong></td>
+                        <td>{pedido.proveedor?.rut || "No existe registro"}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Inventario Asignado:</strong></td>
+                        <td>{pedido.inventarioAsignado?.nombre || "No existe registro"}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Última Actualización del Inventario:</strong></td>
+                        <td>{new Date(pedido.inventarioAsignado?.ultima_actualizacion).toLocaleDateString() || "No existe registro"}</td>
+                    </tr>
+                </tbody>
+            </Table>
+        </div>
     );
 };
 
 PedidoDetalles.propTypes = {
     pedido: PropTypes.shape({
-        id: PropTypes.number,
         fecha_pedido: PropTypes.string,
         estado: PropTypes.string,
         proveedor: PropTypes.shape({

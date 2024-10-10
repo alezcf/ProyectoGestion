@@ -68,6 +68,30 @@
     background-color: #19682a; /* Verde más oscuro al pasar el ratón */
 }
 
+/* Estilos simplificados para el botón de "Excel" */
+.btn-delete {
+    background-color: #e01e00; /* Verde para el botón de Excel */
+    color: white; /* Color del texto */
+    border: none;
+    margin-right: 5px;
+}
+
+.btn-delete:hover {
+    background-color: #b11800; /* Verde más oscuro al pasar el ratón */
+}
+
+/* Estilos simplificados para el botón de "Excel" */
+.btn-create {
+    background-color: #cf9c01; /* Verde para el botón de Excel */
+    color: white; /* Color del texto */
+    border: none;
+    margin-right: 5px;
+}
+
+.btn-create:hover {
+    background-color: #ae8302; /* Verde más oscuro al pasar el ratón */
+}
+
 .button.btn-edit {
     background-color: #1f1fb5; /* Verde para el botón de Excel */
     color: white; /* Color del texto */

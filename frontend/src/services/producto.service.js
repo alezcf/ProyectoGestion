@@ -56,6 +56,26 @@ export const createProducto = async (productoData) => {
     }
 };
 
+// Actualizar un producto por ID
+export const updateProducto = async (productoData) => {
+    try {
+        const { id: productoId } = productoData;
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        };
+
+        const response = await axios.put(`api/producto/?id=${productoId}`, productoData, { headers });
+        const { status, data } = response;
+        if (status === 200) {
+            return data.data;
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Manejo de errores
 const handleError = (error) => {
     console.error('API call error:', error);
@@ -66,4 +86,5 @@ export default {
     getAllProductos,
     getProducto,
     createProducto,
+    updateProducto,
 };
