@@ -7,6 +7,8 @@ import fs from "fs";
 import path from "path";
 import { AppDataSource } from "../config/configDb.js";
 import { In } from "typeorm";
+import Joi from "joi";
+import { productoBodyValidation, productoQueryValidation } from "../validations/producto.validation.js";
 
 /**
  * Crea un nuevo producto en la base de datos
@@ -15,6 +17,11 @@ import { In } from "typeorm";
  */
 async function createProducto(body) {
     try {
+        const { error: bodyError } = productoBodyValidation.validate(body);
+        if (bodyError) {
+            return [null, `Error de validación en el body: ${bodyError.message}`];
+        }
+
         const productoRepository = AppDataSource.getRepository(Producto);
         const proveedorRepository = AppDataSource.getRepository(Proveedor);
         const productoProveedorRepository = AppDataSource.getRepository(ProductoProveedor);
@@ -68,6 +75,11 @@ async function createProducto(body) {
  */
 async function getProducto(query) {
     try {
+        const { error: queryError } = productoQueryValidation.validate(query);
+        if (queryError) {
+            return [null, `Error de validación en el query: ${queryError.message}`];
+        }
+
         const { id } = query;
         const productoRepository = AppDataSource.getRepository(Producto);
 
@@ -87,7 +99,6 @@ async function getProducto(query) {
         return [null, "Error interno del servidor"];
     }
 }
-
 
 /**
  * Obtiene todos los productos de la base de datos
@@ -116,96 +127,31 @@ async function getProductos() {
  */
 async function updateProducto(query, body) {
     try {
+
         const { id } = query;
         const productoRepository = AppDataSource.getRepository(Producto);
         const proveedorRepository = AppDataSource.getRepository(Proveedor);
         const productoProveedorRepository = AppDataSource.getRepository(ProductoProveedor);
         const productoInventarioRepository = AppDataSource.getRepository(ProductoInventario);
-        console.log("id", id);
-        console.log("body", body);
-        // Verificar si el producto existe antes de actualizar
-        const productoFound = await productoRepository.findOne({
-            where: { id: id },
-            relations: ["productoProveedores", "productoInventarios"]
-        });
 
-        if (!productoFound) {
-            return [null, "Producto no encontrado"];
-        }
+        const productoFound = await findProductoById(id, productoRepository);
+        if (!productoFound) return [null, "Producto no encontrado"];
 
-        // Extraer los proveedores y la imagen del cuerpo de la solicitud
         const { proveedores, imagen_ruta: nuevaImagen, ...productoData } = body;
 
-        if (proveedores && proveedores.length > 0) {
-            const proveedoresEntities = await proveedorRepository.findBy({
-                id: In(proveedores),
-            });
+        const proveedoresEntities = await validateProveedores(proveedores, proveedorRepository);
+        if (proveedoresEntities === null) return [null, "Uno o más proveedores no existen"];
 
-            if (proveedoresEntities.length !== proveedores.length) {
-                return [null, "Uno o más proveedores no existen"];
-            }
-        }
+        await handleImagenUpdate(nuevaImagen, productoFound);
 
-        // Si se proporciona una nueva imagen, procesar la actualización
-        if (nuevaImagen) {
-            // Reemplazar las barras invertidas por barras inclinadas en la nueva imagen
-            const imagenRutaNormalizada = nuevaImagen.replace(/\\/g, "/");
-
-            const imagenActualRuta = productoFound.imagen_ruta;
-
-            if (imagenActualRuta) {
-                const filePath = path.resolve(imagenActualRuta);
-
-                if (fs.existsSync(filePath)) {
-                    fs.unlink(filePath, (err) => {
-                        if (err) {
-                            console.error("Error eliminando la imagen registrada:", err);
-                        } else {
-                            console.log("Imagen registrada eliminada:", filePath);
-                        }
-                    });
-                }
-            }
-
-            productoFound.imagen_ruta = imagenRutaNormalizada;
-        }
-
-        // Actualizar los campos del producto que no están relacionados con proveedores
         Object.assign(productoFound, productoData);
         await productoRepository.update({ id: productoFound.id }, productoData);
 
-        // Eliminar todas las relaciones previas de proveedores e inventarios
         await productoProveedorRepository.delete({ producto: { id: productoFound.id } });
         await productoInventarioRepository.delete({ producto: { id: productoFound.id } });
 
-        // Actualizar la relación muchos a muchos (proveedores)
-        if (proveedores && proveedores.length > 0) {
-            // Encontrar las entidades de los proveedores por los IDs proporcionados
-            const proveedoresEntities = await proveedorRepository.findBy({
-                id: In(proveedores),
-            });
+        await updateProveedores(proveedoresEntities, productoFound, productoProveedorRepository);
 
-            if (proveedoresEntities.length !== proveedores.length) {
-                return [null, "Uno o más proveedores no existen"];
-            }
-
-            // Crear nuevas relaciones en la tabla intermedia `producto_proveedor`
-            const nuevasRelacionesProveedores = proveedoresEntities.map(proveedor => {
-                return productoProveedorRepository.create({
-                    producto: productoFound,  // Relacionar con el producto existente
-                    proveedor: proveedor     // Relacionar con el proveedor existente
-                });
-            });
-
-            // Guardar todas las nuevas relaciones de proveedores
-            await productoProveedorRepository.save(nuevasRelacionesProveedores);
-            productoFound.productoProveedores = nuevasRelacionesProveedores;
-        } else {
-            // Si no se proporcionan proveedores, asegurar que la relación esté vacía
-            productoFound.productoProveedores = [];
-        }
-
-        // Guardar el producto actualizado
         const productoActualizado = await productoRepository.save(productoFound);
 
         return [productoActualizado, null];
@@ -215,6 +161,65 @@ async function updateProducto(query, body) {
     }
 }
 
+async function findProductoById(id, productoRepository) {
+    return await productoRepository.findOne({
+        where: { id: id },
+        relations: ["productoProveedores", "productoInventarios"]
+    });
+}
+
+async function validateProveedores(proveedores, proveedorRepository) {
+    if (proveedores && proveedores.length > 0) {
+        const proveedoresEntities = await proveedorRepository.findBy({
+            id: In(proveedores),
+        });
+
+        if (proveedoresEntities.length !== proveedores.length) {
+            return null;
+        }
+        return proveedoresEntities;
+    }
+    return [];
+}
+
+async function handleImagenUpdate(nuevaImagen, productoFound) {
+    if (nuevaImagen) {
+        const imagenRutaNormalizada = nuevaImagen.replace(/\\/g, "/");
+        const imagenActualRuta = productoFound.imagen_ruta;
+
+        if (imagenActualRuta) {
+            const filePath = path.resolve(imagenActualRuta);
+
+            if (fs.existsSync(filePath)) {
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                        console.error("Error eliminando la imagen registrada:", err);
+                    } else {
+                        console.log("Imagen registrada eliminada:", filePath);
+                    }
+                });
+            }
+        }
+
+        productoFound.imagen_ruta = imagenRutaNormalizada;
+    }
+}
+
+async function updateProveedores(proveedoresEntities, productoFound, productoProveedorRepository) {
+    if (proveedoresEntities.length > 0) {
+        const nuevasRelacionesProveedores = proveedoresEntities.map(proveedor => {
+            return productoProveedorRepository.create({
+                producto: productoFound,
+                proveedor: proveedor
+            });
+        });
+
+        await productoProveedorRepository.save(nuevasRelacionesProveedores);
+        productoFound.productoProveedores = nuevasRelacionesProveedores;
+    } else {
+        productoFound.productoProveedores = [];
+    }
+}
 
 /**
  * Elimina un producto por su ID de la base de datos
@@ -223,6 +228,11 @@ async function updateProducto(query, body) {
  */
 async function deleteProducto(query) {
     try {
+        const { error: queryError } = productoQueryValidation.validate(query);
+        if (queryError) {
+            return [null, `Error de validación en el query: ${queryError.message}`];
+        }
+
         const { id } = query;
         const productoRepository = AppDataSource.getRepository(Producto);
 

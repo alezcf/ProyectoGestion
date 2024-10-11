@@ -63,9 +63,10 @@ export const productoBodyValidation = Joi.object({
         "number.base": "El ID del proveedor debe ser un número.",
         "number.integer": "El ID del proveedor debe ser un número entero.",
         "number.positive": "El ID del proveedor debe ser un número positivo."
-    })).optional().allow(null).messages({
+    })).unique().optional().allow(null).messages({
         "array.base": "Proveedores debe ser un arreglo de IDs.",
-        "array.includes": "Proveedores debe contener solo IDs válidos."
+        "array.includes": "Proveedores debe contener solo IDs válidos.",
+        "array.unique": "Cada ID de proveedor debe ser único."
     })
 }).messages({
     "object.unknown": "No se permiten propiedades adicionales."
