@@ -32,7 +32,7 @@ const Producto = () => {
             try {
                 const data = await productoService.getProducto(productoId);
                 setProducto(data);
-                reset(data);
+                reset(data);  // Inicializa el formulario con los datos del producto
                 setLoading(false);
             } catch (err) {
                 setError('Error al cargar el producto.');
@@ -51,9 +51,19 @@ const Producto = () => {
         console.log("Exportar los datos del producto");
     };
 
-    const handleFormSubmit = (data) => {
-        console.log('Datos actualizados:', data);
-        setShowEditModal(false);
+    // Maneja el envío del formulario
+    const handleFormSubmit = async (data) => {
+        // Combina el objeto producto original con los campos actualizados
+        const productoActualizado = { ...producto, ...data };
+
+        try {
+            // Enviar el objeto actualizado al backend
+            await productoService.updateProducto(productoActualizado);
+            console.log('Producto actualizado con éxito:', productoActualizado);
+            setShowEditModal(false);
+        } catch (error) {
+            console.error('Error al actualizar el producto:', error);
+        }
     };
 
     const handleCloseModal = () => {

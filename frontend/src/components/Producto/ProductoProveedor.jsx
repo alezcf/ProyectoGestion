@@ -31,12 +31,16 @@ const ProductoProveedor = ({ producto }) => {
     const handleDelete = async (updatedProveedores) => {
         try {
             // Actualizar el producto con la nueva lista de proveedores
-            await productoService.updateProducto({
+            const response = await productoService.updateProducto({
                 id: productoId,
                 proveedores: updatedProveedores.map(proveedor => proveedor.id),
             });
             setProveedores(updatedProveedores);
+            if(response.status === 200){
+                alert('Proveedor eliminado correctamente');
+            }
         } catch (error) {
+            alert('Error al eliminar los proveedores');
             console.error('Error al eliminar el proveedor:', error);
         }
     };
@@ -50,16 +54,27 @@ const ProductoProveedor = ({ producto }) => {
         try {
             // Crear una nueva lista de proveedores con el proveedor agregado
             const updatedProveedores = [...proveedores, { id: parseInt(nuevoProveedorId) }];
-            await productoService.updateProducto({
+            const response = await productoService.updateProducto({
                 id: productoId,
                 proveedores: updatedProveedores.map(proveedor => proveedor.id),
             });
-            setProveedores(updatedProveedores);
-            setNuevoProveedorId('');
+
+            if(response.status === 200){
+                alert('Proveedor agregado correctamente');
+                setNuevoProveedorId('');
+                // Vuelve a obtener el producto actualizado para reflejar los cambios en la tabla
+                const productoActualizado = await productoService.getProducto(productoId);
+                setProveedores(productoActualizado.productoProveedores.map(proveedorRelacion => proveedorRelacion.proveedor));
+            }
         } catch (error) {
-            console.error('Error al agregar el proveedor:', error);
+            if(error.status === 400){
+                alert('El proveedor seleccionado ya se encuentra asociado al producto.');
+            } else {
+                console.error('Error al agregar el proveedor:', error);
+            }
         }
     };
+
 
     return (
         <div className="mt-2">

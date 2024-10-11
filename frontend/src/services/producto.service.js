@@ -67,10 +67,8 @@ export const updateProducto = async (productoData) => {
         };
 
         const response = await axios.put(`api/producto/?id=${productoId}`, productoData, { headers });
-        const { status, data } = response;
-        if (status === 200) {
-            return data.data;
-        }
+
+        return response;
     } catch (error) {
         handleError(error);
     }
@@ -78,7 +76,6 @@ export const updateProducto = async (productoData) => {
 
 // Manejo de errores
 const handleError = (error) => {
-    console.error('API call error:', error);
     throw error;
 };
 
