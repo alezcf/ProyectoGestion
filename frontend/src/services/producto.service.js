@@ -74,6 +74,30 @@ export const updateProducto = async (productoData) => {
     }
 };
 
+// Actualizar imagen de un producto
+export const updateProductoImagen = async (productoId, imagenData) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',  // Enviar la imagen como parte del formulario
+        };
+
+        const formData = new FormData();
+        formData.append('imagen', imagenData);  // Aquí se envía la imagen en sí
+        console.log('Imagen:', imagenData);
+        console.log('FormData:', formData);
+        console.log('id:', productoId);
+        const response = await axios.post(`api/producto/update-imagen?id=${productoId}`, formData, { headers });
+        const { status, data } = response;
+        if (status === 200) {
+            return data.data;
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Manejo de errores
 const handleError = (error) => {
     throw error;
@@ -84,4 +108,5 @@ export default {
     getProducto,
     createProducto,
     updateProducto,
+    updateProductoImagen,
 };

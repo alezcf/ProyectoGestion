@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Form } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {  faPaperPlane, faUserPen } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
+import '../../css/Modal.css';
 
 const DefaultEditModal = ({ show, handleClose, fields, defaultValues, onSubmit, title }) => {
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -15,14 +18,16 @@ const DefaultEditModal = ({ show, handleClose, fields, defaultValues, onSubmit, 
 
     return (
         <Modal show={show} onHide={handleClose} backdrop="static">
-            <Modal.Header closeButton>
-                <Modal.Title>{title}</Modal.Title>
+            <Modal.Header className="modal-header-purple modal-header-centered" closeButton>
+                <Modal.Title className="modal-title-custom">
+                    <FontAwesomeIcon icon={faUserPen} /> {title}
+                </Modal.Title>
             </Modal.Header>
-            <Modal.Body>
+            <Modal.Body className="modal-body-custom">
                 <Form onSubmit={handleSubmit(submitForm)}>
                     {fields.map((field, index) => (
-                        <Form.Group controlId={field.name} key={index}>
-                            <Form.Label>{field.label}</Form.Label>
+                        <Form.Group controlId={field.name} key={index} className="form-group-custom">
+                            <Form.Label><strong>{field.label}</strong></Form.Label>
                             {field.type === 'select' ? (
                                 <Form.Control as="select" {...register(field.name, field.validation)}>
                                     {field.options.map((option, idx) => (
@@ -40,9 +45,14 @@ const DefaultEditModal = ({ show, handleClose, fields, defaultValues, onSubmit, 
                         </Form.Group>
                     ))}
 
-                    <Button variant="primary" type="submit">
-                        Guardar cambios
-                    </Button>
+                    <div className="button-container">
+                            <button type="button" className="button-previous" onClick={handleClose}>
+                                CANCELAR
+                            </button>
+                            <button type="submit" className="button-next">
+                                GUARDAR <FontAwesomeIcon icon={faPaperPlane} />
+                            </button>
+                        </div>
                 </Form>
             </Modal.Body>
         </Modal>

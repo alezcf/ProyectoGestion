@@ -7,6 +7,10 @@ const ProductoCaracteristicas = ({ producto }) => (
         <Table striped bordered hover responsive>
             <tbody style={{ backgroundColor: '#f8f9fa' }}>
                 <tr>
+                    <td style={{ color: 'black', textAlign: 'left', fontWeight: 'bold' }}>Marca</td>
+                    <td style={{ textAlign: 'left' }}>{producto.marca || 'No hay registro'}</td>
+                </tr>
+                <tr>
                     <td style={{ color: 'black', textAlign: 'left', fontWeight: 'bold' }}>Descripción</td>
                     <td style={{ textAlign: 'left' }}>{producto.descripcion || 'No hay registro'}</td>
                 </tr>
@@ -42,6 +46,7 @@ const ProductoCaracteristicas = ({ producto }) => (
 ProductoCaracteristicas.propTypes = {
     producto: PropTypes.shape({
         descripcion: PropTypes.string,
+        marca: PropTypes.string,
         categoria: PropTypes.string,
         tipo: PropTypes.string,
         contenido: PropTypes.string,

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import productoService from '../../services/producto.service';
-import { Container, Row, Col, Spinner, Alert, Button, Modal, Collapse, Card, Form } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
+import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import ProductoImagen from '../../components/Producto/ProductoImagen';
@@ -12,8 +11,10 @@ import ProductoBotones from '../../components/Common/ButtonsActions';
 import productoFields from '../../fields/producto.fields';
 import ProductoProveedor from '../../components/Producto/ProductoProveedor';
 import ProductoInventario from '../../components/Producto/ProductoInventario';
+import DefaultEditModal from '../../components/Common/DefaultEditModal';
 import '../../css/Form.css';
 import '../../css/Producto.css';
+import '../../css/Modal.css';
 
 const Producto = () => {
     const { productoId } = useParams();
@@ -21,18 +22,15 @@ const Producto = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [openDetalles, setOpenDetalles] = useState(true); // Inicialmente abierta la tabla de detalles
-    const [openProveedores, setOpenProveedores] = useState(false); // Tabla de proveedores cerrada por defecto
-    const [openInventarios, setOpenInventarios] = useState(false); // Tabla de inventarios cerrada por defecto
-
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+    const [openDetalles, setOpenDetalles] = useState(true);
+    const [openProveedores, setOpenProveedores] = useState(false);
+    const [openInventarios, setOpenInventarios] = useState(false);
 
     useEffect(() => {
         const fetchProducto = async () => {
             try {
                 const data = await productoService.getProducto(productoId);
                 setProducto(data);
-                reset(data);  // Inicializa el formulario con los datos del producto
                 setLoading(false);
             } catch (err) {
                 setError('Error al cargar el producto.');
@@ -41,7 +39,7 @@ const Producto = () => {
         };
 
         fetchProducto();
-    }, [productoId, reset]);
+    }, [productoId]);
 
     const handleEdit = () => {
         setShowEditModal(true);
@@ -72,20 +70,20 @@ const Producto = () => {
 
     const toggleDetalles = () => {
         setOpenDetalles(true);
-        setOpenProveedores(false); // Cierra proveedores al abrir detalles
-        setOpenInventarios(false); // Cierra inventarios al abrir detalles
+        setOpenProveedores(false);
+        setOpenInventarios(false);
     };
 
     const toggleProveedores = () => {
         setOpenProveedores(true);
-        setOpenDetalles(false); // Cierra detalles al abrir proveedores
-        setOpenInventarios(false); // Cierra inventarios al abrir proveedores
+        setOpenDetalles(false);
+        setOpenInventarios(false);
     };
 
     const toggleInventarios = () => {
         setOpenInventarios(true);
-        setOpenDetalles(false); // Cierra detalles al abrir inventarios
-        setOpenProveedores(false); // Cierra proveedores al abrir inventarios
+        setOpenDetalles(false);
+        setOpenProveedores(false);
     };
 
     if (loading) {
@@ -105,7 +103,7 @@ const Producto = () => {
     }
 
     const proveedores = producto?.productoProveedores?.map(proveedorRelacion => {
-        const { proveedor } = proveedorRelacion; // Extraemos el objeto proveedor directamente para simplificar
+        const { proveedor } = proveedorRelacion;
         return {
             id: proveedor.id,
             nombre: proveedor.nombre,
@@ -117,7 +115,7 @@ const Producto = () => {
     }) || [];
 
     const inventarios = producto?.productoInventarios?.map(inventarioRelacion => {
-        const { inventario } = inventarioRelacion; // Extraemos el objeto inventario directamente para simplificar
+        const { inventario } = inventarioRelacion;
         return {
             id: inventarioRelacion.id,
             cantidad: inventarioRelacion.cantidad,
@@ -134,12 +132,11 @@ const Producto = () => {
         <Container fluid className="form-container">
             <Row className="my-4">
                 <Col md={4}>
-                <center><h1><ProductoDetalles producto={producto} /></h1></center>
-                    <ProductoImagen imagenRuta={producto?.imagen_ruta} />
+                    <center><h1><ProductoDetalles producto={producto} /></h1></center>
+                    <ProductoImagen productoId={productoId} imagenRuta={producto?.imagen_ruta} />
                     <ProductoBotones onEdit={handleEdit} onExport={handleExport} />
                 </Col>
                 <Col md={8}>
-
                     {/* Collapse para la tabla de detalles del producto */}
                     <Card className={`mb-3 custom-card ${openDetalles ? 'card-active' : ''}`}>
                         <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
@@ -220,42 +217,19 @@ const Producto = () => {
                             </div>
                         </Collapse>
                     </Card>
-
                 </Col>
             </Row>
 
-            {/* Modal para editar los datos del producto */}
-            <Modal show={showEditModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Editar Producto</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleSubmit(handleFormSubmit)}>
-                        {productoFields.map((field, index) => (
-                            <Form.Group controlId={field.name} key={index}>
-                                <Form.Label>{field.label}</Form.Label>
-                                <Form.Control
-                                    type={field.type}
-                                    placeholder={field.placeholder}
-                                    {...register(field.name, field.validation)}  // Registra el campo con validaciones
-                                />
-                                {errors[field.name] && (
-                                    <Alert variant="danger">{errors[field.name].message}</Alert>
-                                )}
-                            </Form.Group>
-                        ))}
+            {/* Modal para editar el producto usando DefaultEditModal */}
+            <DefaultEditModal
+                show={showEditModal}
+                handleClose={handleCloseModal}
+                fields={productoFields}
+                defaultValues={producto}
+                onSubmit={handleFormSubmit}
+                title="EDITAR PRODUCTO"
+            />
 
-                        <Button variant="primary" type="submit">
-                            Guardar cambios
-                        </Button>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
-                        Cancelar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
         </Container>
     );
 };

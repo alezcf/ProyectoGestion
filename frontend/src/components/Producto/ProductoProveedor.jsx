@@ -2,79 +2,98 @@ import React, { useState, useEffect } from 'react';
 import { Table, Form } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import productoService from '../../services/producto.service';
-import { getAllProveedores } from '../../services/proveedor.service';
+import productoProveedorService from '../../services/productoProveedor.service';  // Servicio para gestionar proveedores de producto
+import proveedorService from '../../services/proveedor.service';  // Servicio para obtener todos los proveedores
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faAddressBook } from '@fortawesome/free-solid-svg-icons';
 import { InfoCircle } from 'react-bootstrap-icons';
 import '../../css/Buttons.css';
 
-const ProductoProveedor = ({ producto }) => {
+const ProductoProveedor = ({ producto = { id: null, productoProveedores: [] } }) => {
     const navigate = useNavigate();
-    const { id: productoId, productoProveedores } = producto;
-    const [proveedores, setProveedores] = useState(productoProveedores.map(proveedorRelacion => proveedorRelacion.proveedor));
-    const [nuevoProveedorId, setNuevoProveedorId] = useState('');
-    const [allProveedores, setAllProveedores] = useState([]);
+    const { id: productoId } = producto;
+    const [proveedores, setProveedores] = useState([]); // Lista de proveedores asociados al producto
+    const [nuevoProveedorId, setNuevoProveedorId] = useState(''); // Para seleccionar un nuevo proveedor
+    const [allProveedores, setAllProveedores] = useState([]); // Lista de todos los proveedores disponibles para agregar
 
+    // Efecto para obtener los proveedores asociados al producto
     useEffect(() => {
-        const fetchProveedores = async () => {
+        const fetchProveedoresProducto = async () => {
             try {
-                const proveedoresData = await getAllProveedores();
-                setAllProveedores(proveedoresData);
+                const proveedoresData = await productoProveedorService.getProveedoresByProducto(productoId);
+                if (proveedoresData) {
+                    const proveedoresExtraidos = proveedoresData.map(relacion => ({
+                        idRelacion: relacion.id,  // Guardamos el id de la relación
+                        proveedor: relacion.proveedor
+                    }));
+                    setProveedores(proveedoresExtraidos); // Actualizamos los proveedores
+                }
             } catch (error) {
-                console.error('Error al obtener los proveedores:', error);
+                console.error('Error al obtener los proveedores del producto:', error);
             }
         };
-        fetchProveedores();
+
+        if (productoId) {
+            fetchProveedoresProducto(); // Solo ejecutar si hay un ID de producto
+        }
+    }, [productoId]);
+
+    // Efecto para obtener todos los proveedores
+    useEffect(() => {
+        const fetchAllProveedores = async () => {
+            try {
+                const response = await proveedorService.getAllProveedores(); // Llamada al servicio para obtener todos los proveedores
+                if (response) {
+                    setAllProveedores(response); // Almacenar todos los proveedores
+                }
+            } catch (error) {
+                console.error('Error al obtener la lista de proveedores:', error);
+            }
+        };
+
+        fetchAllProveedores(); // Ejecutar al cargar el componente
     }, []);
 
-    const handleDelete = async (updatedProveedores) => {
+    // Función para eliminar una relación producto-proveedor por el id de la relación
+    const handleDelete = async (relacionId) => {
         try {
-            // Actualizar el producto con la nueva lista de proveedores
-            const response = await productoService.updateProducto({
-                id: productoId,
-                proveedores: updatedProveedores.map(proveedor => proveedor.id),
-            });
+            await productoProveedorService.deleteProductoProveedores(relacionId);
+            // Actualizar la lista de proveedores después de eliminar
+            const updatedProveedores = proveedores.filter(p => p.idRelacion !== relacionId);
             setProveedores(updatedProveedores);
-            if(response.status === 200){
-                alert('Proveedor eliminado correctamente');
-            }
+            alert('Proveedor eliminado correctamente');
         } catch (error) {
-            alert('Error al eliminar los proveedores');
+            alert('Error al eliminar el proveedor');
             console.error('Error al eliminar el proveedor:', error);
         }
     };
 
+    // Navegar a la página de detalles del proveedor
     const handleInfo = (proveedorId) => {
         navigate(`/proveedor/${proveedorId}`);
     };
 
+    // Función para agregar un nuevo proveedor al producto
     const handleAddProveedor = async () => {
         if (!nuevoProveedorId) return;
         try {
-            // Crear una nueva lista de proveedores con el proveedor agregado
-            const updatedProveedores = [...proveedores, { id: parseInt(nuevoProveedorId) }];
-            const response = await productoService.updateProducto({
-                id: productoId,
-                proveedores: updatedProveedores.map(proveedor => proveedor.id),
-            });
-
-            if(response.status === 200){
+            await productoProveedorService.createProductoProveedores(productoId, [parseInt(nuevoProveedorId)]);
+            // Volver a obtener los proveedores actualizados automáticamente después de agregar el nuevo proveedor
+            const proveedoresActualizados = await productoProveedorService.getProveedoresByProducto(productoId);
+            if (proveedoresActualizados) {
+                const proveedoresExtraidos = proveedoresActualizados.map(relacion => ({
+                    idRelacion: relacion.id,
+                    proveedor: relacion.proveedor
+                }));
+                setProveedores(proveedoresExtraidos); // Actualizar el estado de los proveedores con los nuevos datos
+                setNuevoProveedorId(''); // Limpiar el selector
                 alert('Proveedor agregado correctamente');
-                setNuevoProveedorId('');
-                // Vuelve a obtener el producto actualizado para reflejar los cambios en la tabla
-                const productoActualizado = await productoService.getProducto(productoId);
-                setProveedores(productoActualizado.productoProveedores.map(proveedorRelacion => proveedorRelacion.proveedor));
             }
         } catch (error) {
-            if(error.status === 400){
-                alert('El proveedor seleccionado ya se encuentra asociado al producto.');
-            } else {
-                console.error('Error al agregar el proveedor:', error);
-            }
+            alert('Error al agregar el proveedor');
+            console.error('Error al agregar el proveedor:', error);
         }
     };
-
 
     return (
         <div className="mt-2">
@@ -89,7 +108,7 @@ const ProductoProveedor = ({ producto }) => {
                 </thead>
                 <tbody>
                     {proveedores.length > 0 ? (
-                        proveedores.map(proveedor => (
+                        proveedores.map(({ idRelacion, proveedor }) => (
                             <tr key={proveedor.id}>
                                 <td>{proveedor.nombre}</td>
                                 <td>{proveedor.rut}</td>
@@ -98,11 +117,7 @@ const ProductoProveedor = ({ producto }) => {
                                     <button type="button" className="button btn-info" onClick={() => handleInfo(proveedor.id)}>
                                         <InfoCircle />
                                     </button>
-                                    <button type="button" className="button btn-delete" onClick={() => {
-                                            const updatedProveedores = proveedores.filter(p => p.id !== proveedor.id);
-                                            handleDelete(updatedProveedores);
-                                        }}
-                                    >
+                                    <button type="button" className="button btn-delete" onClick={() => handleDelete(idRelacion)}>
                                         <FontAwesomeIcon icon={faTrash} />
                                     </button>
                                 </td>
@@ -110,12 +125,14 @@ const ProductoProveedor = ({ producto }) => {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="5" className="text-center">No hay proveedores disponibles</td>
+                            <td colSpan="4" className="text-center">No hay proveedores disponibles</td>
                         </tr>
                     )}
                 </tbody>
             </Table>
-            <Form className="d-flex align-items-center">
+
+            {/* Formulario para seleccionar y agregar un nuevo proveedor */}
+            <Form className="d-flex align-items-center mt-3">
                 <Form.Control
                     as="select"
                     value={nuevoProveedorId}
@@ -123,17 +140,20 @@ const ProductoProveedor = ({ producto }) => {
                 >
                     <option value="">Seleccione un nuevo proveedor</option>
                     {allProveedores.map((proveedor) => (
-                        <option key={proveedor.id} value={proveedor.id}>{proveedor.nombre}</option>
+                        <option key={proveedor.id} value={proveedor.id}>
+                            {proveedor.nombre}
+                        </option>
                     ))}
                 </Form.Control>
-                <button type="button" className="button btn-create" onClick={handleAddProveedor}>
-                    <FontAwesomeIcon icon={faAddressBook}/>
+                <button type="button" className="button btn-create ml-2" onClick={handleAddProveedor}>
+                    <FontAwesomeIcon icon={faAddressBook} />
                 </button>
             </Form>
         </div>
     );
 };
 
+// Ajuste en la validación de propTypes para aceptar productoProveedores vacío
 ProductoProveedor.propTypes = {
     producto: PropTypes.shape({
         id: PropTypes.number.isRequired,
@@ -148,8 +168,8 @@ ProductoProveedor.propTypes = {
                     email: PropTypes.string.isRequired,
                 }).isRequired,
             })
-        ).isRequired,
-    }).isRequired
+        ),
+    }),
 };
 
 export default ProductoProveedor;

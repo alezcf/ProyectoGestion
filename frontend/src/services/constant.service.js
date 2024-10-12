@@ -11,6 +11,7 @@ export const getConstants = async () => {
 
         const response = await axios.get('api/constants/', { headers });
         const { status, data } = response;
+        console.log(response.data.data);
         if (status === 200) {
             return data.data;
         }
