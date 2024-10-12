@@ -141,10 +141,55 @@ export async function deleteProducto(req, res) {
     }
 }
 
+/**
+ * Actualiza la imagen de un producto por su ID
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function updateProductoImagen(req, res) {
+    try {
+        const { id } = req.query;
+        console.log("id dentro del controller:", id);
+
+        // Validar si el producto existe
+        const [producto, errorProducto] = await ProductoService.getProducto({ id });
+        if (errorProducto) {
+            return handleErrorClient(res, 404, "Producto no encontrado");
+        }
+
+        // Comprobar si hay una nueva imagen en la solicitud
+        const nuevaImagenRuta = req.file ? req.file.path : null;
+
+        if (!nuevaImagenRuta && !req.body.eliminarImagen) {
+            return handleErrorClient(
+                res,
+                400,
+                "No se ha proporcionado una imagen ni se ha solicitado eliminarla."
+            );
+        }
+
+        // Actualizar la imagen o eliminarla
+        const [productoActualizado, errorActualizar] = await ProductoService.updateProductoImagen(
+            { id }, // Pasar el id en el primer argumento
+            { nuevaImagenRuta, eliminarImagen: req.body.eliminarImagen } // Pasar nuevaImagenRuta y eliminarImagen en el segundo argumento
+        );
+
+        if (errorActualizar) {
+            return handleErrorClient(res, 400, errorActualizar);
+        }
+
+        handleSuccess(res, 200, "Imagen del producto actualizada", productoActualizado);
+    } catch (error) {
+        handleErrorServer(res, 500, "Error al actualizar la imagen del producto", error.message);
+    }
+}
+
+
 export default {
     createProducto,
     getProducto,
     getProductos,
     updateProducto,
     deleteProducto,
+    updateProductoImagen
 };
