@@ -37,7 +37,7 @@ async function createInventario(body) {
 async function getInventario(query) {
     try {
         const inventarioRepository = AppDataSource.getRepository(Inventario);
-
+        console.log("buscamos una wea especifica");
         const inventarioFound = await inventarioRepository.findOne({
             where: { id: query.id },
             relations: ["productoInventarios", "productoInventarios.producto"],
@@ -103,9 +103,9 @@ async function updateInventario(query, body) {
             const productosExistentes = await productoRepository.find({
                 where: { id: In(productoIds) }
             });
-            
+
             if (productosExistentes.length !== productoIds.length) {
-                const productosNoExistentes = productoIds.filter(id => 
+                const productosNoExistentes = productoIds.filter(id =>
                     !productosExistentes.some(p => p.id === id)
                 );
                 return [null, `Los productos no existen: ${productosNoExistentes.join(", ")}`];
@@ -126,10 +126,10 @@ async function updateInventario(query, body) {
             await productoInventarioRepository.delete({ inventario: { id: inventarioFound.id } });
             const nuevosProductoInventarios = body.productos.map((producto) => {
                 const id = producto.id;
-                return productoInventarioRepository.create({ 
-                    inventario: { id: inventarioFound.id }, 
-                    producto: { id }, 
-                    cantidad: producto.cantidad 
+                return productoInventarioRepository.create({
+                    inventario: { id: inventarioFound.id },
+                    producto: { id },
+                    cantidad: producto.cantidad
                 });
             });
             await productoInventarioRepository.save(nuevosProductoInventarios);

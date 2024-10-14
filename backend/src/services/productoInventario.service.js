@@ -213,11 +213,41 @@ async function updateProductoInventarios(productoId, inventariosIds, cantidades)
     }
 }
 
+/**
+ * Obtiene todos los productos asociados a un inventario
+ * @param {number} inventarioId - ID del inventario
+ * @returns {Promise} Promesa con los productos o un error
+ */
+async function getProductosByInventario(inventarioId) {
+    try {
+        const productoInventarioRepository = AppDataSource.getRepository(ProductoInventario);
+
+        // Buscamos todas las relaciones en la tabla producto_inventario donde el inventario coincide
+        const relaciones = await productoInventarioRepository.find({
+            where: { inventario: { id: inventarioId } },
+            relations: ["producto", "inventario"]
+        });
+
+        if (relaciones.length === 0) {
+            return [null, "No se encontraron productos asociados a este inventario"];
+        }
+
+        // Extraemos solo los productos relacionados
+        const productos = relaciones.map(relacion => relacion.producto);
+
+        return [productos, null];
+    } catch (error) {
+        console.error("Error al obtener productos del inventario:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
 
 
 export default {
     createProductoInventarios,
     getInventariosByProducto,
     deleteInventarioByRelacionId,
-    updateProductoInventarios
+    updateProductoInventarios,
+    getProductosByInventario
 };

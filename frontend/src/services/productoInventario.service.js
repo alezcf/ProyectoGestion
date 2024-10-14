@@ -48,6 +48,25 @@ export const getInventariosByProducto = async (productoId) => {
     }
 };
 
+// Obtener todos los inventarios de un producto
+export const getProductosByInventario = async (inventarioId) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await axios.get(`api/producto-inventarios?inventarioId=${inventarioId}`, { headers });
+        const { status, data } = response;
+
+        if (status === 200) {
+            return data.data;
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Actualizar relaciones entre producto e inventarios
 export const updateProductoInventarios = async (productoId, inventariosIds, cantidades) => {
     try {
@@ -104,4 +123,5 @@ export default {
     getInventariosByProducto,
     updateProductoInventarios,
     deleteProductoInventarios,
+    getProductosByInventario
 };

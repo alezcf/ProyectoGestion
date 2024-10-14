@@ -18,6 +18,23 @@ export const getAllInventarios = async () => {
     }
 };
 
+export const getInventarioById = async (inventarioId) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await axios.get(`api/inventario/detail?id=${inventarioId}`, { headers });
+        const { status, data } = response;
+        if (status === 200) {
+            return data.data;
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Crear un nuevo inventario
 export const createInventario = async (inventarioData) => {
     try {
@@ -49,5 +66,6 @@ const handleError = (error) => {
 
 export default {
     getAllInventarios,
+    getInventarioById,
     createInventario,
 };

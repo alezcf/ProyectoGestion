@@ -33,7 +33,7 @@ export async function createInventario(req, res) {
 export async function getInventario(req, res) {
     try {
         const { id } = req.query;
-
+        console.log("get inventario especifico");
         const [inventario, errorInventario] = await InventarioService.getInventario({ id });
 
         if (errorInventario) return handleErrorClient(res, 404, errorInventario);

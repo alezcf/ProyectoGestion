@@ -5,6 +5,7 @@ import {
     createProductoInventarios,
     deleteInventarioByRelacionId,
     getInventariosByProducto,
+    getProductosByInventario,
     updateProductoInventarios
 } from "../controllers/productoInventario.controller.js";
 
@@ -17,6 +18,7 @@ router
     .post("/", createProductoInventarios)
     .put("/", updateProductoInventarios)
     .get("/", getInventariosByProducto)
+    .get("/", getProductosByInventario)
     .delete("/", deleteInventarioByRelacionId);
 
 export default router;

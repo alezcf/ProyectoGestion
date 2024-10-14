@@ -6,6 +6,7 @@ import Root from './routes/Root.jsx';
 import ErrorPage from './routes/ErrorPage.jsx';
 import Login from './routes/Login/Login.jsx';
 import Perfil from './routes/Perfil/Perfil.jsx';
+import Inventarios from './routes/Inventario/Inventarios.jsx';
 import Inventario from './routes/Inventario/Inventario.jsx';
 import Producto from './routes/Producto/Producto.jsx';
 import Productos from './routes/Producto/Productos.jsx';
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       },
       {
         path: '/inventario',
+        element: <Inventarios />,
+      },
+      {
+        path: '/inventario/:inventarioId',
         element: <Inventario />,
       },
       {
