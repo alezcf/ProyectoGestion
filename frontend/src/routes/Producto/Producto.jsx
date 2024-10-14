@@ -49,13 +49,10 @@ const Producto = () => {
         console.log("Exportar los datos del producto");
     };
 
-    // Maneja el envío del formulario
     const handleFormSubmit = async (data) => {
-        // Combina el objeto producto original con los campos actualizados
         const productoActualizado = { ...producto, ...data };
 
         try {
-            // Enviar el objeto actualizado al backend
             await productoService.updateProducto(productoActualizado);
             console.log('Producto actualizado con éxito:', productoActualizado);
             setShowEditModal(false);
@@ -212,7 +209,7 @@ const Producto = () => {
                         <Collapse in={openInventarios}>
                             <div id="inventarios-producto">
                                 <Card.Body>
-                                    <ProductoInventario inventarios={inventarios} />
+                                    <ProductoInventario producto={producto} inventarios={inventarios} />
                                 </Card.Body>
                             </div>
                         </Collapse>

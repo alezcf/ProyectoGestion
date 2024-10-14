@@ -1,0 +1,105 @@
+"use strict";
+import ProductoInventarioService from "../services/productoInventario.service.js";
+import {
+    handleErrorClient,
+    handleErrorServer,
+    handleSuccess
+} from "../handlers/responseHandlers.js";
+
+/**
+ * Crea relaciones entre un producto y varios inventarios
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function createProductoInventarios(req, res) {
+  try {
+      const { productoId, inventariosIds, cantidades } = req.body;
+      console.log("Producto ID:", productoId);
+      console.log("Inventarios IDs:", inventariosIds);
+      console.log("Cantidades:", cantidades);
+      const [relaciones, error] = await ProductoInventarioService
+          .createProductoInventarios(productoId, inventariosIds, cantidades);
+          console.log("dentro del catch" + error);
+      if (error) return handleErrorClient(res, 400, error);
+      console.log("dentro del catch" + error);
+      handleSuccess(res, 201, "Relaciones creadas correctamente", relaciones);
+  } catch (error) {
+    console.log("dentro del catch" + error);
+      handleErrorServer(res, 500, "Error creando relaciones producto-inventarios", error.message);
+  }
+}
+
+
+/**
+ * Obtiene todos los inventarios de un producto
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function getInventariosByProducto(req, res) {
+    try {
+        const { productoId } = req.query;
+
+        const [inventarios, error] = await ProductoInventarioService
+            .getInventariosByProducto(productoId);
+        if (error) return handleErrorClient(res, 404, error);
+
+        handleSuccess(res, 200, "Inventarios encontrados", inventarios);
+    } catch (error) {
+        handleErrorServer(res, 500, "Error obteniendo inventarios de un producto", error.message);
+    }
+}
+
+/**
+ * Elimina todas las relaciones entre un producto y sus inventarios
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function deleteInventarioByRelacionId(req, res) {
+    try {
+        const { relacionId } = req.query;
+
+        if (!relacionId) {
+            return handleErrorClient(res, 400, "ID de la relación es requerido");
+        }
+
+        const [resultado, error] = await ProductoInventarioService
+            .deleteInventarioByRelacionId(relacionId);
+
+        if (error) return handleErrorClient(res, 404, error);
+
+        handleSuccess(res, 200, "Relación eliminada correctamente", resultado);
+    } catch (error) {
+        handleErrorServer(res, 500, "Error eliminando producto-inventario", error.message);
+    }
+}
+
+/**
+ * Actualiza las relaciones entre un producto y sus inventarios
+ * Si la relación no existe, se crea automáticamente
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function updateProductoInventarios(req, res) {
+  try {
+    console.log("Producto ID:", req.body.productoId);
+    console.log("Inventarios IDs:", req.body.inventariosIds);
+    console.log("Cantidades:", req.body.cantidades);
+      const { productoId, inventariosIds, cantidades } = req.body;
+      const [relacionesActualizadas, error] = await ProductoInventarioService
+          .updateProductoInventarios(productoId, inventariosIds, cantidades);
+          console.log(error);
+      if (error) return handleErrorClient(res, 400, error);
+
+      handleSuccess(res, 200, "Relaciones actualizadas correctamente", relacionesActualizadas);
+  } catch (error) {
+      handleErrorServer(res, 500, "Error actualizando relaciones producto-inventarios", error.message);
+  }
+}
+
+
+export default {
+    createProductoInventarios,
+    getInventariosByProducto,
+    deleteInventarioByRelacionId,
+    updateProductoInventarios
+};
