@@ -37,7 +37,7 @@ const Productos = () => {
         producto.nombre.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const headers = ['Nombre', 'Marca', 'Categoría', 'Precio', 'Cantidad', 'Acciones'];
+    const headers = ['Nombre', 'Marca', 'Categoría', 'Precio', 'Contenido', 'Acciones'];
 
     const renderRow = (producto, index) => (
         <tr key={index}>
@@ -45,7 +45,7 @@ const Productos = () => {
             <td>{producto.marca}</td>
             <td>{producto.categoria}</td>
             <td>{producto.precio}</td>
-            <td>{producto.cantidad} {producto.unidad_medida}</td>
+            <td>{producto.contenido} {producto.unidad_medida}</td>
             <td>
                 <ProductoAcciones
                     productoId={producto.id}

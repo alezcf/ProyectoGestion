@@ -26,7 +26,7 @@ const InventarioDetalles = ({ selectedData }) => {
                 <td>{producto.nombre}</td>
                 <td>{producto.categoria}</td>
                 <td>{producto.marca}</td>
-                <td>{productoInventario.cantidad} {producto.unidad_medida}</td>
+                <td>{producto.contenido} {producto.unidad_medida}</td>
                 <td>${producto.precio}</td>
                 <td>
                     <img

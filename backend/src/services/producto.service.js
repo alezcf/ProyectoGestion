@@ -73,7 +73,6 @@ async function getProducto(query) {
         const productoFound = await productoRepository.findOne({
             where: { id: id }
         });
-
         if (!productoFound) return [null, "Producto no encontrado"];
 
         return [productoFound, null];
@@ -93,7 +92,6 @@ async function getProductos() {
         const productoRepository = AppDataSource.getRepository(Producto);
 
         const productos = await productoRepository.find();
-
         if (!productos || productos.length === 0) return [null, "No hay productos"];
 
         return [productos, null];
