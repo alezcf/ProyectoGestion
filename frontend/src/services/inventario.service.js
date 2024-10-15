@@ -54,6 +54,24 @@ export const createInventario = async (inventarioData) => {
     }
 };
 
+export const updateInventario = async (inventarioId, inventarioData) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json', // Formato JSON
+        };
+
+        const response = await axios.put(`api/inventario/?id=${inventarioId}`, inventarioData, { headers });
+        const { status, data } = response;
+        if (status === 200) {  // Estado 200 indica que el recurso fue actualizado correctamente
+            return data.data;
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Manejo de errores
 const handleError = (error) => {
     console.error('Error en la llamada a la API:', error);
@@ -68,4 +86,5 @@ export default {
     getAllInventarios,
     getInventarioById,
     createInventario,
+    updateInventario,
 };

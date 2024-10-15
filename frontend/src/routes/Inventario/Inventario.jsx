@@ -49,8 +49,9 @@ const Inventario = () => {
         const inventarioActualizado = { ...inventario, ...data };
 
         try {
-            await inventarioService.updateInventario(inventarioActualizado);
+            await inventarioService.updateInventario(inventarioId, inventarioActualizado);
             console.log('Inventario actualizado con éxito:', inventarioActualizado);
+            setInventario(inventarioActualizado);
             setShowEditModal(false);
         } catch (error) {
             console.error('Error al actualizar el inventario:', error);
@@ -91,7 +92,7 @@ const Inventario = () => {
         <Container fluid className="form-container">
             <Row className="my-4">
                 <Col md={4}>
-                    <center><h1>Detalles del Inventario</h1></center>
+                    <center><h1>{inventario.nombre}</h1></center>
                     <InventarioBotones onEdit={handleEdit} onExport={handleExport} />
                 </Col>
                 <Col md={8}>

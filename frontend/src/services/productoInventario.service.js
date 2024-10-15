@@ -102,6 +102,8 @@ export const deleteProductoInventarios = async (relacionId) => {
             Authorization: `Bearer ${token}`,
         };
 
+        console.log("relacionId: " + relacionId);
+
         const response = await axios.delete(`api/producto-inventarios?relacionId=${relacionId}`, { headers });
         const { status, data } = response;
         if (status === 200) {
