@@ -1,32 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, ListGroup } from 'react-bootstrap';
-import '../../css/PerfilInfo.css';
+import { Container, ListGroup } from 'react-bootstrap';
+import '../../css/DetallesEstandar.css';  // Asegúrate de importar el CSS aquí
 
 const PerfilInfo = ({ perfilData }) => {
     return (
-        <Card className="perfil-card">
-            <Card.Header className="perfil-card-header">
-                <h2>Perfil del Usuario</h2>
-            </Card.Header>
+        <Container>
             <ListGroup variant="flush">
-                <ListGroup.Item className="perfil-list-group-item">
-                    <strong>Nombre Completo: </strong>{perfilData.nombreCompleto}
+                <ListGroup.Item className="detalles-info">
+                    <strong>Nombre Completo: </strong>{perfilData.nombreCompleto || "No existe registro"}
                 </ListGroup.Item>
-                <ListGroup.Item className="perfil-list-group-item">
-                    <strong>RUT: </strong>{perfilData.rut}
+                <ListGroup.Item className="detalles-info">
+                    <strong>RUT: </strong>{perfilData.rut || "No existe registro"}
                 </ListGroup.Item>
-                <ListGroup.Item className="perfil-list-group-item">
-                    <strong>Email: </strong>{perfilData.email}
+                <ListGroup.Item className="detalles-info">
+                    <strong>Email: </strong>{perfilData.email || "No existe registro"}
                 </ListGroup.Item>
-                <ListGroup.Item className="perfil-list-group-item">
-                    <strong>Rol: </strong>{perfilData.rol}
+                <ListGroup.Item className="detalles-info">
+                    <strong>Rol: </strong>{perfilData.rol || "No existe registro"}
                 </ListGroup.Item>
-                <ListGroup.Item className="perfil-list-group-item">
-                    <strong>Registro de Cuenta: </strong>{perfilData.createdAt}
+                <ListGroup.Item className="detalles-info">
+                    <strong>Registro de Cuenta: </strong>{new Date(perfilData.createdAt).toLocaleString() || "No existe registro"}
+                </ListGroup.Item>
+                <ListGroup.Item className="detalles-info">
+                    <strong>Última Actualización: </strong>{new Date(perfilData.updatedAt).toLocaleString() || "No existe registro"}
                 </ListGroup.Item>
             </ListGroup>
-        </Card>
+        </Container>
     );
 };
 
@@ -37,6 +37,7 @@ PerfilInfo.propTypes = {
         email: PropTypes.string.isRequired,
         rol: PropTypes.string.isRequired,
         createdAt: PropTypes.string.isRequired,
+        updatedAt: PropTypes.string.isRequired,
     }).isRequired,
 };
 

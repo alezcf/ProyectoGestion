@@ -1,14 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, ListGroup } from 'react-bootstrap';
+import { Container, ListGroup } from 'react-bootstrap';
 import '../../css/DetallesEstandar.css';  // Asegúrate de importar el CSS aquí
 
 const UsuarioDetalles = ({ usuario }) => {
     return (
-        <Card className="detalles-card">
-            <Card.Header className="detalles-card-header">
-                <h2>Información del Usuario</h2>
-            </Card.Header>
+        <Container>
+
             <ListGroup variant="flush">
                 <ListGroup.Item className="detalles-info">
                     <strong>Nombre Completo: </strong>{usuario.nombreCompleto || "No existe registro"}
@@ -29,7 +27,7 @@ const UsuarioDetalles = ({ usuario }) => {
                     <strong>Última Actualización: </strong>{new Date(usuario.updatedAt).toLocaleString() || "No existe registro"}
                 </ListGroup.Item>
             </ListGroup>
-        </Card>
+        </Container>
     );
 };
 

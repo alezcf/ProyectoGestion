@@ -1,4 +1,3 @@
-// src/components/Producto/ProductoBotones.js
 import React from 'react';
 import { Button } from 'react-bootstrap';
 import PropTypes from 'prop-types';
@@ -10,7 +9,7 @@ const ProductoBotones = ({ onEdit, onExport }) => (
         <Button className=" button recover-button btn-edit" onClick={onEdit}>
             Editar
         </Button>
-        
+
         {/* Botón para Exportar */}
         <Button className="button recover-button btn-success" onClick={onExport}>
             Exportar

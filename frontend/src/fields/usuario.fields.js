@@ -1,7 +1,7 @@
 const usuarioFields = [
     {
         name: "nombreCompleto",
-        label: "Nombre Completo",
+        label: "NOMBRE COMPLETO (*)",
         type: "text",
         placeholder: "Ingresa el nombre completo",
         validation: {
@@ -15,10 +15,10 @@ const usuarioFields = [
             message: "No puede tener más de 50 caracteres"
             }
         }
-        },
-        {
+    },
+    {
         name: "email",
-        label: "Correo Electrónico",
+        label: "CORREO ELECTRÓNICO (*)",
         type: "email",
         placeholder: "Ingresa el correo electrónico",
         validation: {
@@ -36,10 +36,10 @@ const usuarioFields = [
             message: "No puede tener más de 50 caracteres"
             }
         }
-        },
-        {
+    },
+    {
         name: "rut",
-        label: "RUT",
+        label: "RUT (*)",
         type: "text",
         placeholder: "Ingresa el RUT",
         validation: {
@@ -57,23 +57,19 @@ const usuarioFields = [
             message: "No puede tener más de 12 caracteres"
             }
         }
-        },
-        {
+    },
+    {
         name: "rol",
-        label: "Rol",
-        type: "text",
-        placeholder: "Ingresa el rol (opcional)",
+        label: "ROL (*)",
+        type: "select",
+        options: [
+            { value: "Administrador", label: "Administrador" },
+            { value: "Empleado", label: "Empleado" }
+        ],
         validation: {
-            minLength: {
-            value: 4,
-            message: "Debe tener al menos 4 caracteres"
-            },
-            maxLength: {
-            value: 15,
-            message: "No puede tener más de 15 caracteres"
-            }
+            required: "El rol es obligatorio"
         }
-        },
+    }
 ];
 
 export default usuarioFields;

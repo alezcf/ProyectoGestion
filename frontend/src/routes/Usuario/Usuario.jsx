@@ -1,66 +1,64 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import usuarioService from '../../services/usuario.service'; // Importa el servicio para obtener los datos del usuario
-import { Container, Row, Col, Spinner, Alert, Form, Button, Modal } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';  // Importamos react-hook-form para manejar el formulario
-import UsuarioDetalles from '../../components/Usuario/UsuarioDetalles';
-import ButtonsActions from '../../components/Common/ButtonsActions'; // Importamos el componente
-import usuarioFields from '../../fields/usuario.fields'; // Importamos los campos de validación
+import usuarioService from '../../services/usuario.service'; // Servicio para obtener los datos del usuario
+import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import UsuarioDetalles from '../../components/Usuario/UsuarioDetalles'; // Detalles del usuario
+import UsuarioBotones from '../../components/Common/ButtonsActions'; // Botones para acciones
+import usuarioFields from '../../fields/usuario.fields'; // Campos del formulario de usuario
+import DefaultEditModal from '../../components/Common/DefaultEditModal'; // Modal para editar
+import '../../css/Form.css';
+import '../../css/Inventario.css';
+import '../../css/Modal.css';
 
 const Usuario = () => {
-    const { usuarioId } = useParams();  // Obtenemos el ID del usuario desde la URL
-    const [usuario, setUsuario] = useState(null); // Inicializa el estado como null
+    const { usuarioId } = useParams();
+    const [usuario, setUsuario] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showEditModal, setShowEditModal] = useState(false); // Estado para mostrar/ocultar el modal
-
-    // useForm setup para manejar el formulario
-    const {
-        register,  // Registra los campos del formulario
-        handleSubmit,  // Maneja el envío del formulario
-        formState: { errors },  // Errores de validación
-        reset,  // Para resetear el formulario con los valores iniciales
-    } = useForm();
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [openDetalles, setOpenDetalles] = useState(true);
 
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
-                console.log("usuarioid = ", usuarioId);
-                const response = await usuarioService.getUsuario(usuarioId); // Usamos el usuarioId de la URL
-
-                if (response) {
-                    setUsuario(response); // Asigna los datos solo si existen
-                    reset(response); // Inicializa el formulario con los datos del usuario
-                } else {
-                    setError('Usuario no encontrado.');
-                }
+                const data = await usuarioService.getUsuario(usuarioId);
+                setUsuario(data);
                 setLoading(false);
             } catch (err) {
-                setError('Error al cargar los datos del usuario.');
+                setError('Error al cargar el usuario.');
                 setLoading(false);
             }
         };
 
         fetchUsuario();
-    }, [usuarioId, reset]);
+    }, [usuarioId]);
 
     const handleEdit = () => {
-        setShowEditModal(true);  // Muestra el modal de edición
+        setShowEditModal(true);
     };
 
     const handleExport = () => {
         console.log("Exportar los datos del usuario");
-        // Implementar lógica de exportación aquí
     };
 
-    const handleFormSubmit = (data) => {
-        console.log('Datos actualizados:', data);
-        setShowEditModal(false);  // Cierra el modal al enviar
-        // Lógica para actualizar los datos del usuario aquí
+    const handleFormSubmit = async (data) => {
+        try {
+            await usuarioService.updateUsuario(usuarioId, data);
+            setUsuario({ ...usuario, ...data });
+            setShowEditModal(false);
+        } catch (error) {
+            console.error('Error al actualizar el usuario:', error);
+        }
     };
 
     const handleCloseModal = () => {
-        setShowEditModal(false);  // Cierra el modal sin guardar
+        setShowEditModal(false);
+    };
+
+    const toggleDetalles = () => {
+        setOpenDetalles(!openDetalles);
     };
 
     if (loading) {
@@ -71,60 +69,60 @@ const Usuario = () => {
         );
     }
 
-    if (error || !usuario) {
+    if (error) {
         return (
             <Container className="text-center">
-                <Alert variant="danger">{error || 'Usuario no encontrado.'}</Alert>
+                <Alert variant="danger">{error}</Alert>
             </Container>
         );
     }
 
     return (
-        <Container>
+        <Container fluid className="form-container">
             <Row className="my-4">
                 <Col md={4}>
-                    <UsuarioDetalles usuario={usuario} />
-                    <ButtonsActions
-                        itemId={usuario.id}
-                        itemName={usuario.nombreCompleto}
-                        onEdit={handleEdit}
-                        onExport={handleExport}
-                    />
+                    <center><h1>{usuario.nombreCompleto}</h1></center>
+                    <UsuarioBotones onEdit={handleEdit} onExport={handleExport} />
+                </Col>
+                <Col md={8}>
+                    {/* Collapse para los detalles del usuario */}
+                    <Card className={`mb-3 custom-card ${openDetalles ? 'card-active' : ''}`}>
+                        <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
+                            <h5 className="header-title">Detalles del Usuario</h5>
+                            <Button
+                                onClick={toggleDetalles}
+                                aria-controls="detalles-usuario"
+                                aria-expanded={openDetalles}
+                                variant="link"
+                                className="toggle-btn"
+                            >
+                                {openDetalles ? (
+                                    <FontAwesomeIcon icon={faChevronUp} />
+                                ) : (
+                                    <FontAwesomeIcon icon={faChevronDown} />
+                                )}
+                            </Button>
+                        </Card.Header>
+                        <Collapse in={openDetalles}>
+                            <div id="detalles-usuario">
+                                <Card.Body>
+                                    <UsuarioDetalles usuario={usuario} />
+                                </Card.Body>
+                            </div>
+                        </Collapse>
+                    </Card>
                 </Col>
             </Row>
 
-            {/* Modal para editar los datos del usuario */}
-            <Modal show={showEditModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Editar Usuario</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleSubmit(handleFormSubmit)}>
-                        {usuarioFields.map((field, index) => (
-                            <Form.Group controlId={field.name} key={index}>
-                                <Form.Label>{field.label}</Form.Label>
-                                <Form.Control
-                                    type={field.type}
-                                    placeholder={field.placeholder}
-                                    {...register(field.name, field.validation)}  // Registra el campo con validaciones
-                                />
-                                {errors[field.name] && (
-                                    <Alert variant="danger">{errors[field.name].message}</Alert>  // Muestra errores de validación
-                                )}
-                            </Form.Group>
-                        ))}
-
-                        <Button variant="primary" type="submit">
-                            Guardar cambios
-                        </Button>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
-                        Cancelar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            {/* Modal para editar el usuario */}
+            <DefaultEditModal
+                show={showEditModal}
+                handleClose={handleCloseModal}
+                fields={usuarioFields}
+                defaultValues={usuario}
+                onSubmit={handleFormSubmit}
+                title="EDITAR USUARIO"
+            />
         </Container>
     );
 };
