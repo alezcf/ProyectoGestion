@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Card, Alert, Button } from 'react-bootstrap';
+import { Container, Row, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import productoService from '../../services/producto.service';
 import CustomTable from '../../components/Common/CustomTable';
@@ -8,16 +8,16 @@ import ProductoAcciones from '../../components/Producto/ProductoAcciones';
 
 const Productos = () => {
     const [productos, setProductos] = useState([]);
-    const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const fetchProductos = async () => {
             try {
                 const data = await productoService.getAllProductos();
-                setProductos(data);
+                setProductos(data || []); // Asegura que siempre haya un array
             } catch (err) {
-                setError('Error al cargar los productos.');
+                console.error('Error al cargar los productos.', err);
+                setProductos([]); // En caso de error, asegurarse de que productos sea un array vacío
             }
         };
 
@@ -64,27 +64,24 @@ const Productos = () => {
             <Row className="justify-content-md-center">
                 <Card className="w-100">
                     <Card.Body>
-                        {error ? (
-                            <Alert variant="danger">{error}</Alert>
-                        ) : (
-                            <>
-                                <SearchBar
-                                    searchQuery={searchQuery}
-                                    handleSearchChange={handleSearchChange}
-                                />
-                                <CustomTable
-                                    headers={headers}
-                                    data={filteredProductos}
-                                    renderRow={renderRow}
-                                />
-                                {/* Botones para crear nuevo producto e inventario */}
-                                <div className="mt-3">
-                                    <Link to="/crear-producto">
-                                        <Button variant="success" className="me-2">Crear Producto</Button>
-                                    </Link>
-                                </div>
-                            </>
-                        )}
+                        <>
+                            <SearchBar
+                                searchQuery={searchQuery}
+                                handleSearchChange={handleSearchChange}
+                            />
+                            <CustomTable
+                                headers={headers}
+                                data={filteredProductos}
+                                renderRow={renderRow}
+                                emptyMessage="No hay productos disponibles." // Mensaje cuando no hay productos
+                            />
+                            {/* Botones para crear nuevo producto e inventario */}
+                            <div className="mt-3">
+                                <Link to="/crear-producto">
+                                    <Button variant="success" className="me-2">Crear Producto</Button>
+                                </Link>
+                            </div>
+                        </>
                     </Card.Body>
                 </Card>
             </Row>
