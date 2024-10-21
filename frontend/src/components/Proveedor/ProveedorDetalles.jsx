@@ -1,32 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Card, ListGroup } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import '../../css/DetallesEstandar.css';  // Importamos el CSS estandarizado
 
 const ProveedorDetalles = ({ proveedor }) => {
     return (
-        <Card className="detalles-card">
-            <Card.Header className="detalles-card-header">
-                <h2>Información del Proveedor</h2>
-            </Card.Header>
-            <ListGroup variant="flush">
-                <ListGroup.Item className="detalles-info">
-                    <strong>Nombre:</strong> {proveedor.nombre || "No existe registro"}
-                </ListGroup.Item>
-                <ListGroup.Item className="detalles-info">
-                    <strong>RUT:</strong> {proveedor.rut || "No existe registro"}
-                </ListGroup.Item>
-                <ListGroup.Item className="detalles-info">
-                    <strong>Dirección:</strong> {proveedor.direccion || "No existe registro"}
-                </ListGroup.Item>
-                <ListGroup.Item className="detalles-info">
-                    <strong>Teléfono:</strong> {proveedor.telefono || "No existe registro"}
-                </ListGroup.Item>
-                <ListGroup.Item className="detalles-info">
-                    <strong>Email:</strong> {proveedor.email || "No existe registro"}
-                </ListGroup.Item>
-            </ListGroup>
-        </Card>
+        <div className="detalles-container">
+            <Table striped bordered hover>
+                <tbody>
+                    <tr>
+                        <td><strong>Nombre del Proveedor:</strong></td>
+                        <td>{proveedor.nombre || "No existe registro"}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RUT:</strong></td>
+                        <td>{proveedor.rut || "No existe registro"}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dirección:</strong></td>
+                        <td>{proveedor.direccion || "No existe registro"}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Teléfono:</strong></td>
+                        <td>{proveedor.telefono || "No existe registro"}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email:</strong></td>
+                        <td>{proveedor.email || "No existe registro"}</td>
+                    </tr>
+                </tbody>
+            </Table>
+        </div>
     );
 };
 

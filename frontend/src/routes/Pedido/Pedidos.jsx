@@ -50,11 +50,10 @@ const Pedidos = () => {
         pedido.proveedor.nombre.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const headers = ['ID', 'Fecha de Pedido', 'Estado', 'Cantidad de Productos', 'Costo', 'Proveedor', 'Inventario Asignado', 'Acciones'];
+    const headers = ['Fecha de Pedido', 'Estado', 'Cantidad de Productos', 'Costo', 'Proveedor', 'Inventario Asignado', 'Acciones'];
 
     const renderRow = (pedido, index) => (
         <tr key={index}>
-            <td>{pedido.id}</td>
             <td>{new Date(pedido.fecha_pedido).toLocaleDateString()}</td>
             <td>{pedido.estado}</td>
             <td>{calcularCantidadTotalProductos(pedido.pedidoProductos)}</td>
@@ -74,7 +73,7 @@ const Pedidos = () => {
 
     return (
         <Container fluid className="pedido-container mt-2">
-            <div className="pedido-header">
+            <div className="inventario-header">
                 <h1>Pedidos</h1>
             </div>
             <Row className="justify-content-md-center">

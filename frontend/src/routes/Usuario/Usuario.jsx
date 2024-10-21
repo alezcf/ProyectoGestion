@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import usuarioService from '../../services/usuario.service'; // Servicio para obtener los datos del usuario
-import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card } from 'react-bootstrap';
+import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card, Image } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import UsuarioDetalles from '../../components/Usuario/UsuarioDetalles'; // Detalles del usuario
@@ -19,7 +19,7 @@ const Usuario = () => {
     const [error, setError] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [openDetalles, setOpenDetalles] = useState(true);
-
+    const defaultProfileImage = '../images/avatar.png';
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
@@ -81,7 +81,17 @@ const Usuario = () => {
         <Container fluid className="form-container">
             <Row className="my-4">
                 <Col md={4}>
-                    <center><h1>{usuario.nombreCompleto}</h1></center>
+                    <Image
+                            src={usuario.fotoPerfil || defaultProfileImage} // Usa imagen predefinida si no tiene foto
+                            fluid
+                            style={{
+                                objectFit: 'cover',
+                                width: '100%',
+                                maxHeight: '500px',
+                                borderRadius: '10px',
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                            }}
+                        />
                     <UsuarioBotones onEdit={handleEdit} onExport={handleExport} />
                 </Col>
                 <Col md={8}>

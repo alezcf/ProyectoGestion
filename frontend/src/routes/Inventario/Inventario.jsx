@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import inventarioService from '../../services/inventario.service';
-import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card } from 'react-bootstrap';
+import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card, Image} from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import InventarioCaracteristicas from '../../components/Inventario/InventarioCaracteristicas';
@@ -21,6 +21,7 @@ const Inventario = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [openDetalles, setOpenDetalles] = useState(true);
     const [openProductos, setOpenProductos] = useState(false);
+    const defaultInventario = '../images/inventario.png';
 
     useEffect(() => {
         const fetchInventario = async () => {
@@ -92,7 +93,17 @@ const Inventario = () => {
         <Container fluid className="form-container">
             <Row className="my-4">
                 <Col md={4}>
-                    <center><h1>{inventario.nombre}</h1></center>
+                    <Image
+                            src={inventario.fotoPerfil || defaultInventario} // Usa imagen predefinida si no tiene foto
+                            fluid
+                            style={{
+                                objectFit: 'cover',
+                                width: '100%',
+                                maxHeight: '500px',
+                                borderRadius: '10px',
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                            }}
+                        />
                     <InventarioBotones onEdit={handleEdit} onExport={handleExport} />
                 </Col>
                 <Col md={8}>

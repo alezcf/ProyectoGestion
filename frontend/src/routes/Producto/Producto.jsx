@@ -4,7 +4,7 @@ import productoService from '../../services/producto.service';
 import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
-import ProductoImagen from '../../components/Producto/ProductoImagen';
+import ProductoImagen from '../../components/Common/LoadImage';
 import ProductoDetalles from '../../components/Producto/ProductoDetalles';
 import ProductoCaracteristicas from '../../components/Producto/ProductoCaracteristicas';
 import ProductoBotones from '../../components/Common/ButtonsActions';

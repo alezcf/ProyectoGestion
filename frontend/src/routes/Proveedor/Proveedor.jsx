@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import proveedorService from '../../services/proveedor.service';
-import { Container, Row, Col, Spinner, Alert, Form, Button, Modal } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
+import { Container, Row, Col, Spinner, Alert, Button, Modal, Collapse, Card } from 'react-bootstrap';
 import ProveedorDetalles from '../../components/Proveedor/ProveedorDetalles';
 import ButtonsActions from '../../components/Common/ButtonsActions';
-import proveedorFields from '../../fields/proveedor.fields'; // Importamos los campos de validación
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import '../../css/Form.css';
+import '../../css/Producto.css';
 
 const Proveedor = () => {
     const { proveedorId } = useParams();
@@ -13,14 +15,7 @@ const Proveedor = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
-
-    // Configuración de useForm para manejar el formulario de edición
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        reset,
-    } = useForm();
+    const [openDetalles, setOpenDetalles] = useState(true);
 
     useEffect(() => {
         const fetchProveedor = async () => {
@@ -29,7 +24,6 @@ const Proveedor = () => {
 
                 if (response) {
                     setProveedor(response);
-                    reset(response); // Resetea el formulario con los datos del proveedor
                 } else {
                     setError('Proveedor no encontrado.');
                 }
@@ -41,24 +35,22 @@ const Proveedor = () => {
         };
 
         fetchProveedor();
-    }, [proveedorId, reset]);
+    }, [proveedorId]);
 
     const handleEdit = () => {
-        setShowEditModal(true); // Muestra el modal de edición
+        setShowEditModal(true);
     };
 
     const handleExport = () => {
-        console.log("Exportar los datos del proveedor");
-    };
-
-    const handleFormSubmit = (data) => {
-        console.log('Datos actualizados:', data);
-        setShowEditModal(false);  // Cierra el modal al enviar
-        // Implementar lógica para guardar los datos editados del proveedor
+        console.log('Exportar los datos del proveedor');
     };
 
     const handleCloseModal = () => {
-        setShowEditModal(false);  // Cierra el modal sin guardar
+        setShowEditModal(false);
+    };
+
+    const toggleDetalles = () => {
+        setOpenDetalles(!openDetalles);
     };
 
     if (loading) {
@@ -78,10 +70,36 @@ const Proveedor = () => {
     }
 
     return (
-        <Container>
+        <Container fluid className="form-container">
+            <center><h2>Información del Proveedor</h2></center>
             <Row className="my-4">
                 <Col md={4}>
-                    <ProveedorDetalles proveedor={proveedor} />
+                    {/* Mostrar los detalles del proveedor */}
+                    <Card className={`custom-card ${openDetalles ? 'card-active' : ''}`}>
+                        <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
+                            <h5 className="header-title">Detalles del Proveedor</h5>
+                            <Button
+                                onClick={toggleDetalles}
+                                aria-controls="detalles-proveedor"
+                                aria-expanded={openDetalles}
+                                variant="link"
+                                className="toggle-btn"
+                            >
+                                {openDetalles ? (
+                                    <FontAwesomeIcon icon={faChevronUp} />
+                                ) : (
+                                    <FontAwesomeIcon icon={faChevronDown} />
+                                )}
+                            </Button>
+                        </Card.Header>
+                        <Collapse in={openDetalles}>
+                            <div id="detalles-proveedor">
+                                <Card.Body>
+                                    <ProveedorDetalles proveedor={proveedor} />
+                                </Card.Body>
+                            </div>
+                        </Collapse>
+                    </Card>
                     <ButtonsActions
                         itemId={proveedor.id}
                         itemName={proveedor.nombre}
@@ -97,29 +115,14 @@ const Proveedor = () => {
                     <Modal.Title>Editar Proveedor</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={handleSubmit(handleFormSubmit)}>
-                        {proveedorFields.map((field, index) => (
-                            <Form.Group controlId={field.name} key={index}>
-                                <Form.Label>{field.label}</Form.Label>
-                                <Form.Control
-                                    type={field.type}
-                                    placeholder={field.placeholder}
-                                    {...register(field.name, field.validation)}  // Registra el campo con validaciones
-                                />
-                                {errors[field.name] && (
-                                    <Alert variant="danger">{errors[field.name].message}</Alert>  // Muestra errores de validación
-                                )}
-                            </Form.Group>
-                        ))}
-
-                        <Button variant="primary" type="submit">
-                            Guardar cambios
-                        </Button>
-                    </Form>
+                    <p>Aquí puedes incluir el formulario de edición del proveedor.</p>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCloseModal}>
                         Cancelar
+                    </Button>
+                    <Button variant="primary" onClick={handleCloseModal}>
+                        Guardar cambios
                     </Button>
                 </Modal.Footer>
             </Modal>

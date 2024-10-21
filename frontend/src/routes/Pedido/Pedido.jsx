@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import pedidoService from '../../services/pedido.service';
-import { Container, Row, Col, Spinner, Alert, Table, Button, Modal, Collapse, Card } from 'react-bootstrap';
+import { Container, Row, Col, Spinner, Alert, Table, Button, Modal, Collapse, Card, Image } from 'react-bootstrap';
 import PedidoDetalles from '../../components/Pedido/PedidoDetalles';
 import ButtonsActions from '../../components/Common/ButtonsActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,6 +16,7 @@ const Pedido = () => {
     const [error, setError] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [openProductos, setOpenProductos] = useState(true);
+    const defaultInventario = '../images/inventario.png';
 
     useEffect(() => {
         const fetchPedido = async () => {
@@ -71,11 +72,21 @@ const Pedido = () => {
 
     return (
         <Container fluid className="form-container">
-                        <center><h2>Información del Pedido</h2></center>
             <Row className="my-4">
+
                 <Col md={4}>
-                    {/* Mostrar los detalles del pedido */}
-                    <PedidoDetalles pedido={pedido} />
+                <Image
+                            src={defaultInventario} // Usa imagen predefinida si no tiene foto
+                            fluid
+                            style={{
+                                objectFit: 'cover',
+                                width: '100%',
+                                maxHeight: '500px',
+                                borderRadius: '10px',
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                            }}
+                        />
+
                     <ButtonsActions
                         itemId={pedido.id}
                         itemName={`Pedido #${pedido.id}`}
@@ -84,6 +95,7 @@ const Pedido = () => {
                     />
                 </Col>
                 <Col md={8}>
+                <PedidoDetalles pedido={pedido} />
                     {/* Collapse para productos del pedido */}
                     <Card className={`custom-card ${openProductos ? 'card-active' : ''}`}>
                         <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import usuarioService from '../../services/usuario.service'; // Servicio para obtener los datos del usuario
-import { Container, Row, Col, Spinner, Alert, Card } from 'react-bootstrap';
+import { Container, Row, Col, Spinner, Alert, Card, Image} from 'react-bootstrap';
 import PerfilInfo from '../../components/Perfil/PerfilInfo'; // Detalles del perfil
 import UsuarioBotones from '../../components/Common/ButtonsActions'; // Botones para acciones
 import usuarioFields from '../../fields/usuario.fields'; // Campos del formulario de usuario
@@ -14,7 +14,7 @@ const Perfil = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false); // Estado para manejar el modal de edición
-
+    const defaultProfileImage = '../images/avatar.png';
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
@@ -73,7 +73,17 @@ const Perfil = () => {
         <Container fluid className="form-container">
             <Row className="my-4">
                 <Col md={4}>
-                    <center><h1>{perfilData.nombreCompleto}</h1></center>
+                    <Image
+                            src={defaultProfileImage} // Usa imagen predefinida si no tiene foto
+                            fluid
+                            style={{
+                                objectFit: 'cover',
+                                width: '100%',
+                                maxHeight: '500px',
+                                borderRadius: '10px',
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                            }}
+                        />
                     <UsuarioBotones onEdit={handleEdit} onExport={handleExport} />
                 </Col>
                 <Col md={8}>
