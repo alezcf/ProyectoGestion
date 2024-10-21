@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Container, ListGroup } from 'react-bootstrap';
 import '../../css/DetallesEstandar.css';  // Asegúrate de importar el CSS aquí
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic'; // Importamos la función de formateo
 
 const UsuarioDetalles = ({ usuario }) => {
     return (
         <Container>
-
             <ListGroup variant="flush">
                 <ListGroup.Item className="detalles-info">
                     <strong>Nombre Completo: </strong>{usuario.nombreCompleto || "No existe registro"}
@@ -21,10 +21,10 @@ const UsuarioDetalles = ({ usuario }) => {
                     <strong>Rol: </strong>{usuario.rol || "No existe registro"}
                 </ListGroup.Item>
                 <ListGroup.Item className="detalles-info">
-                    <strong>Registro de Cuenta: </strong>{new Date(usuario.createdAt).toLocaleString() || "No existe registro"}
+                    <strong>Registro de Cuenta: </strong>{usuario.createdAt ? formatDateToDDMMYYYY(usuario.createdAt) : "No existe registro"}
                 </ListGroup.Item>
                 <ListGroup.Item className="detalles-info">
-                    <strong>Última Actualización: </strong>{new Date(usuario.updatedAt).toLocaleString() || "No existe registro"}
+                    <strong>Última Actualización: </strong>{usuario.updatedAt ? formatDateToDDMMYYYY(usuario.updatedAt) : "No existe registro"}
                 </ListGroup.Item>
             </ListGroup>
         </Container>

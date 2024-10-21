@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Card, Button } from 'react-bootstrap';
+import { Container, Row, Card, Button, Image } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import productoService from '../../services/producto.service';
 import CustomTable from '../../components/Common/CustomTable';
 import SearchBar from '../../components/Common/SearchBar';
 import ProductoAcciones from '../../components/Producto/ProductoAcciones';
+
+const BASE_URL = import.meta.env.VITE_BASE_URL;  // Base URL del backend
 
 const Productos = () => {
     const [productos, setProductos] = useState([]);
@@ -37,15 +39,35 @@ const Productos = () => {
         producto.nombre.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const headers = ['Nombre', 'Marca', 'Categoría', 'Precio', 'Contenido', 'Acciones'];
+    // Añadimos una nueva columna para la imagen
+    const headers = ['Nombre', 'Marca', 'Categoría', 'Precio', 'Contenido', 'Acciones', 'Imagen'];
 
     const renderRow = (producto, index) => (
         <tr key={index}>
+
             <td>{producto.nombre}</td>
             <td>{producto.marca}</td>
             <td>{producto.categoria}</td>
             <td>{producto.precio}</td>
             <td>{producto.contenido} {producto.unidad_medida}</td>
+                        {/* Renderizamos la imagen directamente desde el backend */}
+                        <td>
+                <Image
+                    src={`${BASE_URL}${producto.imagen_ruta}`} // Obtenemos la imagen desde el backend
+                    alt={`Imagen de ${producto.nombre}`}
+                    fluid
+                    style={{
+                        width: '50px', // Definir el tamaño pequeño de la imagen
+                        height: '50px',
+                        objectFit: 'cover',
+                        borderRadius: '5px'
+                    }}
+                    onError={(e) => {
+                        // Mostrar imagen por defecto si falla la carga de la imagen
+                        e.target.src = '../images/NoExiste.png';
+                    }}
+                />
+            </td>
             <td>
                 <ProductoAcciones
                     productoId={producto.id}

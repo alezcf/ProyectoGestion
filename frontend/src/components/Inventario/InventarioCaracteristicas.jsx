@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic'; // Importamos la función de formateo
 
 const InventarioCaracteristicas = ({ inventario }) => (
     <div>
@@ -16,7 +17,9 @@ const InventarioCaracteristicas = ({ inventario }) => (
                 </tr>
                 <tr>
                     <td style={{ color: 'black', textAlign: 'left', fontWeight: 'bold' }}>Última Actualización</td>
-                    <td style={{ textAlign: 'left' }}>{inventario.ultima_actualizacion ? new Date(inventario.ultima_actualizacion).toLocaleDateString() : 'No hay registro'}</td>
+                    <td style={{ textAlign: 'left' }}>
+                        {inventario.ultima_actualizacion ? formatDateToDDMMYYYY(inventario.ultima_actualizacion) : 'No hay registro'}
+                    </td>
                 </tr>
             </tbody>
         </Table>

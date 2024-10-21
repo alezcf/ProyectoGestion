@@ -7,15 +7,16 @@ import inventarioService from '../../services/inventario.service'; // Servicio p
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faWarehouse } from '@fortawesome/free-solid-svg-icons';
 import { InfoCircle } from 'react-bootstrap-icons';
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';  // Importa la función de formato
 import '../../css/Buttons.css';
 
 const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }) => {
     const navigate = useNavigate();
     const { id: productoId } = producto;
-    const [inventarios, setInventarios] = useState([]); // Lista de inventarios asociados al producto
-    const [nuevoInventarioId, setNuevoInventarioId] = useState(''); // Para seleccionar un nuevo inventario
-    const [cantidad, setCantidad] = useState(''); // Para ingresar la cantidad del inventario
-    const [allInventarios, setAllInventarios] = useState([]); // Lista de todos los inventarios disponibles para agregar
+    const [inventarios, setInventarios] = useState([]);
+    const [nuevoInventarioId, setNuevoInventarioId] = useState('');
+    const [cantidad, setCantidad] = useState('');
+    const [allInventarios, setAllInventarios] = useState([]);
 
     // Efecto para obtener los inventarios asociados al producto
     useEffect(() => {
@@ -24,11 +25,11 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
                 const inventariosData = await productoInventarioService.getInventariosByProducto(productoId);
                 if (inventariosData) {
                     const inventariosExtraidos = inventariosData.map(relacion => ({
-                        idRelacion: relacion.id, // Guardamos el id de la relación
+                        idRelacion: relacion.id,
                         inventario: relacion.inventario,
                         cantidad: relacion.cantidad
                     }));
-                    setInventarios(inventariosExtraidos); // Actualizamos los inventarios
+                    setInventarios(inventariosExtraidos);
                 }
             } catch (error) {
                 console.error('Error al obtener los inventarios del producto:', error);
@@ -36,31 +37,28 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
         };
 
         if (productoId) {
-            fetchInventariosProducto(); // Solo ejecutar si hay un ID de producto
+            fetchInventariosProducto();
         }
     }, [productoId]);
 
-    // Efecto para obtener todos los inventarios
     useEffect(() => {
         const fetchAllInventarios = async () => {
             try {
-                const response = await inventarioService.getAllInventarios(); // Llamada al servicio para obtener todos los inventarios
+                const response = await inventarioService.getAllInventarios();
                 if (response) {
-                    setAllInventarios(response); // Almacenar todos los inventarios
+                    setAllInventarios(response);
                 }
             } catch (error) {
                 console.error('Error al obtener la lista de inventarios:', error);
             }
         };
 
-        fetchAllInventarios(); // Ejecutar al cargar el componente
+        fetchAllInventarios();
     }, []);
 
-    // Función para eliminar una relación producto-inventario por el id de la relación
     const handleDelete = async (relacionId) => {
         try {
             await productoInventarioService.deleteProductoInventarios(relacionId);
-            // Actualizar la lista de inventarios después de eliminar
             const updatedInventarios = inventarios.filter(i => i.idRelacion !== relacionId);
             setInventarios(updatedInventarios);
             alert('Inventario eliminado correctamente');
@@ -70,12 +68,10 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
         }
     };
 
-    // Navegar a la página de detalles del inventario
     const handleInfo = (inventarioId) => {
         navigate(`/inventario/${inventarioId}`);
     };
 
-    // Función para agregar un nuevo inventario al producto usando createProductoInventarios
     const handleAddInventario = async () => {
         if (!nuevoInventarioId || !cantidad) {
             alert('Debe seleccionar un inventario y especificar una cantidad.');
@@ -83,14 +79,12 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
         }
 
         try {
-            // Llamar al método de creación con el productoId, inventariosIds y cantidades
             const response = await productoInventarioService.createProductoInventarios(
                 productoId,
-                [parseInt(nuevoInventarioId)], // Convertir el ID a número y pasarlo en un array
-                [parseInt(cantidad)] // Convertir la cantidad a número y pasarlo en un array
+                [parseInt(nuevoInventarioId)],
+                [parseInt(cantidad)]
             );
-            console.log(response);
-            // Si la respuesta fue exitosa, actualizar los inventarios
+
             const inventariosActualizados = await productoInventarioService.getInventariosByProducto(productoId);
 
             if (inventariosActualizados) {
@@ -99,15 +93,10 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
                     inventario: relacion.inventario,
                     cantidad: relacion.cantidad
                 }));
-                setInventarios(inventariosExtraidos); // Actualizar el estado de los inventarios con los nuevos datos
-                setNuevoInventarioId(''); // Limpiar el selector
-                setCantidad(''); // Limpiar la cantidad
-                if(response.message){
-                    alert(response.message);
-                }
-                else{
-                    alert('Inventario agregado correctamente');
-                }
+                setInventarios(inventariosExtraidos);
+                setNuevoInventarioId('');
+                setCantidad('');
+                alert(response.message || 'Inventario agregado correctamente');
             }
         } catch (error) {
             alert('Error al agregar el inventario');
@@ -134,7 +123,7 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
                                 <td>{inventario.nombre}</td>
                                 <td>{cantidad}</td>
                                 <td>{inventario.maximo_stock}</td>
-                                <td>{new Date(inventario.ultima_actualizacion).toLocaleString()}</td>
+                                <td>{inventario.ultima_actualizacion ? formatDateToDDMMYYYY(inventario.ultima_actualizacion) : 'No hay registro'}</td>
                                 <td>
                                     <button type="button" className="button btn-info" onClick={() => handleInfo(inventario.id)}>
                                         <InfoCircle />
@@ -153,7 +142,6 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
                 </tbody>
             </Table>
 
-            {/* Formulario para seleccionar y agregar un nuevo inventario con cantidad */}
             <Form className="d-flex align-items-center mt-3">
                 <Form.Control
                     as="select"
@@ -182,7 +170,6 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
     );
 };
 
-// Ajuste en la validación de propTypes para aceptar productoInventarios vacío
 ProductoInventario.propTypes = {
     producto: PropTypes.shape({
         id: PropTypes.number.isRequired,
