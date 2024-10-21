@@ -74,13 +74,6 @@ async function getInventarios() {
     }
 }
 
-
-/**
- * Actualiza un inventario por su ID en la base de datos, incluyendo productos asociados
- * @param {Object} query - Parámetros de consulta (id)
- * @param {Object} body - Datos del inventario a actualizar
- * @returns {Promise} Promesa con el objeto de inventario actualizado o un error
- */
 /**
  * Actualiza un inventario por su ID en la base de datos, incluyendo productos asociados
  * @param {Object} query - Parámetros de consulta (id)
@@ -156,8 +149,6 @@ async function updateInventario(query, body) {
         return [null, "Error interno del servidor"];
     }
 }
-
-
 
 /**
  * Elimina un inventario por su ID de la base de datos, incluyendo productos asociados

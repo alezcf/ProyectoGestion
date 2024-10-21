@@ -5,6 +5,7 @@ import SearchBar from '../../components/Common/SearchBar';
 import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
 import { Link } from 'react-router-dom';
 import CustomTable from '../../components/Common/CustomTable';
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic'; // Importamos las funciones desde logic
 
 const Pedidos = () => {
     const [pedidos, setPedidos] = useState([]);
@@ -15,7 +16,7 @@ const Pedidos = () => {
         const fetchPedidos = async () => {
             try {
                 const response = await pedidoService.getAllPedidos();
-                setPedidos(response); // Accedemos a la clave 'data' de la respuesta
+                setPedidos(response);
             } catch (err) {
                 setError('Error al cargar los pedidos.');
             }
@@ -30,22 +31,19 @@ const Pedidos = () => {
 
     const handleExport = (pedidoId) => {
         console.log(`Exportar datos del pedido: ${pedidoId}`);
-        // Aquí puedes implementar la lógica para exportar los datos (CSV, PDF, etc.)
+        // Implementar lógica para exportar los datos (CSV, PDF, etc.)
     };
 
-    // Función para sumar las cantidades de productos en cada pedido
     const calcularCantidadTotalProductos = (pedidoProductos) => {
         return pedidoProductos.reduce((total, producto) => total + parseInt(producto.cantidad, 10), 0);
     };
 
-    // Función para calcular el costo total de cada pedido (cantidad * precio por cada producto)
     const calcularCostoTotal = (pedidoProductos) => {
         return pedidoProductos.reduce((total, producto) =>
             total + parseInt(producto.cantidad, 10) * parseInt(producto.producto.precio, 10), 0
         );
     };
 
-    // Filtrar los pedidos basados en la búsqueda por nombre del proveedor
     const filteredPedidos = pedidos.filter((pedido) =>
         pedido.proveedor.nombre.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -54,7 +52,7 @@ const Pedidos = () => {
 
     const renderRow = (pedido, index) => (
         <tr key={index}>
-            <td>{new Date(pedido.fecha_pedido).toLocaleDateString()}</td>
+            <td>{formatDateToDDMMYYYY(pedido.fecha_pedido)}</td> {/* Usamos la función de formateo */}
             <td>{pedido.estado}</td>
             <td>{calcularCantidadTotalProductos(pedido.pedidoProductos)}</td>
             <td>${calcularCostoTotal(pedido.pedidoProductos)}</td>

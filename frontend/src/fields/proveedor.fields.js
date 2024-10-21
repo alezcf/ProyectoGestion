@@ -67,6 +67,19 @@ const proveedorFields = [
       }
     }
   },
+  {
+    name: "rut",
+    label: "RUT",
+    type: "text",
+    placeholder: "Ingresa el RUT del proveedor",
+    validation: {
+      required: "El RUT es obligatorio",
+      pattern: {
+        value: /^[0-9]+-[0-9Kk]{1}$/,  // Ejemplo de formato RUT: 12345678-9
+        message: "El RUT debe estar en formato correcto (ej: 12345678-9)"
+      }
+    }
+  },
 ];
 
 export default proveedorFields;

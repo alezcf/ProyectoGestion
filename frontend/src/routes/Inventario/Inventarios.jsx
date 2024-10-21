@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import inventarioService from '../../services/inventario.service';
 import CustomTable from '../../components/Common/CustomTable';
 import InventarioAcciones from '../../components/Inventario/InventarioAcciones';
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic'; // Importamos la función de formateo
 import '../../css/Inventario.css';
 
 const Inventario = () => {
@@ -45,7 +46,7 @@ const Inventario = () => {
         <tr key={index}>
             <td>{inventario.nombre}</td>
             <td>{inventario.maximo_stock}</td>
-            <td>{new Date(inventario.ultima_actualizacion).toLocaleDateString()}</td>
+            <td>{formatDateToDDMMYYYY(inventario.ultima_actualizacion)}</td> {/* Formatear la fecha */}
             <td>
                 <InventarioAcciones
                     inventarioId={inventario.id}

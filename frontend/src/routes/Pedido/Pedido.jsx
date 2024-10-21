@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import pedidoService from '../../services/pedido.service';
-import { Container, Row, Col, Spinner, Alert, Table, Button, Modal, Collapse, Card, Image } from 'react-bootstrap';
+import { Container, Row, Col, Spinner, Alert, Table, Button, Collapse, Card, Image } from 'react-bootstrap';
 import PedidoDetalles from '../../components/Pedido/PedidoDetalles';
 import ButtonsActions from '../../components/Common/ButtonsActions';
+import DefaultEditModal from '../../components/Common/DefaultEditModal';  // Modal reutilizable
+import pedidoFields from '../../fields/pedido.fields'; // Importa los campos de pedido
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import '../../css/Form.css';
@@ -22,7 +24,6 @@ const Pedido = () => {
         const fetchPedido = async () => {
             try {
                 const response = await pedidoService.getPedido(pedidoId);
-
                 if (response) {
                     setPedido(response);
                 } else {
@@ -44,6 +45,19 @@ const Pedido = () => {
 
     const handleExport = () => {
         console.log('Exportar los datos del pedido');
+    };
+
+    const handleFormSubmit = async (data) => {
+        const pedidoActualizado = { ...pedido, ...data };
+
+        try {
+            console.log('Pedido actualizado:', pedidoActualizado);
+            await pedidoService.updatePedido(pedidoId, pedidoActualizado);
+            setPedido(pedidoActualizado);
+            setShowEditModal(false);
+        } catch (error) {
+            console.error('Error al actualizar el pedido:', error);
+        }
     };
 
     const handleCloseModal = () => {
@@ -73,19 +87,18 @@ const Pedido = () => {
     return (
         <Container fluid className="form-container">
             <Row className="my-4">
-
                 <Col md={4}>
-                <Image
-                            src={defaultInventario} // Usa imagen predefinida si no tiene foto
-                            fluid
-                            style={{
-                                objectFit: 'cover',
-                                width: '100%',
-                                maxHeight: '500px',
-                                borderRadius: '10px',
-                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                            }}
-                        />
+                    <Image
+                        src={defaultInventario} // Usa imagen predefinida si no tiene imagen
+                        fluid
+                        style={{
+                            objectFit: 'cover',
+                            width: '100%',
+                            maxHeight: '500px',
+                            borderRadius: '10px',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                        }}
+                    />
 
                     <ButtonsActions
                         itemId={pedido.id}
@@ -95,7 +108,7 @@ const Pedido = () => {
                     />
                 </Col>
                 <Col md={8}>
-                <PedidoDetalles pedido={pedido} />
+                    <PedidoDetalles pedido={pedido} />
                     {/* Collapse para productos del pedido */}
                     <Card className={`custom-card ${openProductos ? 'card-active' : ''}`}>
                         <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
@@ -146,23 +159,15 @@ const Pedido = () => {
                 </Col>
             </Row>
 
-            {/* Modal para editar los datos del pedido */}
-            <Modal show={showEditModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Editar Pedido</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p>Aquí puedes incluir el formulario de edición del pedido.</p>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
-                        Cancelar
-                    </Button>
-                    <Button variant="primary" onClick={handleCloseModal}>
-                        Guardar cambios
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            {/* Modal para editar el pedido usando DefaultEditModal */}
+            <DefaultEditModal
+                show={showEditModal}
+                handleClose={handleCloseModal}
+                fields={pedidoFields}  // Campos para el formulario de pedido
+                defaultValues={pedido}  // Valores predeterminados del pedido actual
+                onSubmit={handleFormSubmit}  // Enviar el formulario
+                title="EDITAR PEDIDO"
+            />
         </Container>
     );
 };

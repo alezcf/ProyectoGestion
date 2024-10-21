@@ -24,7 +24,7 @@ const usuarioFields = [
         validation: {
             required: "El correo electrónico es obligatorio",
             pattern: {
-            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            value: /^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/,
             message: "Formato de correo inválido"
             },
             minLength: {
@@ -45,12 +45,12 @@ const usuarioFields = [
         validation: {
             required: "El RUT es obligatorio",
             pattern: {
-            value: /^\d{1,2}\.?\d{3}\.?\d{3}-[\dkK]$/,
-            message: "Formato de RUT inválido"
+             value: /^([1-9]|[1-9]\d|[1-9]\d{2})(\.\d{3})*\-(\d|k|K)$/,  // Expresión regular proporcionada
+                message: "Formato de RUT inválido. Ejemplo: xx.xxx.xxx-x o x.xxx.xxx-x"
             },
             minLength: {
-            value: 9,
-            message: "Debe tener al menos 9 caracteres"
+            value: 11,
+            message: "Debe tener al menos 11 caracteres"
             },
             maxLength: {
             value: 12,

@@ -7,6 +7,9 @@ import pedidoService from '../../services/pedido.service';
 import productoService from '../../services/producto.service';
 import proveedorService from '../../services/proveedor.service';
 import inventarioService from '../../services/inventario.service';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { formatDateToYYYYMMDD, formatDateToDDMMYYYY } from '../../logic/dateFormat.logic'; // Importar funciones
 import '../../css/Form.css';
 
 const CrearPedido = () => {
@@ -14,6 +17,7 @@ const CrearPedido = () => {
     const [proveedoresDisponibles, setProveedoresDisponibles] = useState([]);
     const [inventariosDisponibles, setInventariosDisponibles] = useState([]);
     const [page, setPage] = useState(0); // Controla la página actual del formulario
+    const [fechaPedido, setFechaPedido] = useState(null); // Manejar la fecha seleccionada
 
     const { register, handleSubmit, control, formState: { errors }, reset } = useForm({
         defaultValues: {
@@ -64,8 +68,13 @@ const CrearPedido = () => {
             setPage(page + 1);
         } else {
             try {
-                console.log(data);
-                await pedidoService.createPedido(data);
+                // Convertir la fecha a yyyy-mm-dd antes de enviar los datos
+                const formattedData = {
+                    ...data,
+                    fecha_pedido: formatDateToYYYYMMDD(fechaPedido),
+                };
+                console.log(formattedData);
+                await pedidoService.createPedido(formattedData);
                 alert('Pedido creado exitosamente');
                 reset();
                 setPage(0);
@@ -126,9 +135,11 @@ const CrearPedido = () => {
                         <Col md={6}>
                             <Form.Group controlId="fecha_pedido">
                                 <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>FECHA DEL PEDIDO (*)</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    {...register('fecha_pedido', { required: 'La fecha del pedido es obligatoria' })}
+                                <DatePicker
+                                    selected={fechaPedido}
+                                    onChange={(date) => setFechaPedido(date)} // Manejamos el cambio de fecha aquí
+                                    dateFormat="dd/MM/yyyy" // Mostrar como dd/mm/yyyy
+                                    placeholderText="Selecciona la fecha"
                                     className={`form-input ${errors.fecha_pedido ? 'is-invalid' : ''}`}
                                 />
                                 {errors.fecha_pedido && <span className="text-danger">{errors.fecha_pedido.message}</span>}

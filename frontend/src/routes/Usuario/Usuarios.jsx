@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {Container, Row, Card, Alert, Button} from 'react-bootstrap';
+import { Container, Row, Card, Alert, Button } from 'react-bootstrap';
 import usuarioService from '../../services/usuario.service';
 import CustomTable from '../../components/Common/CustomTable';
 import SearchBar from '../../components/Common/SearchBar';
 import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
-import {Link} from "react-router-dom"; // Importamos el componente ButtonsActions
+import { Link } from "react-router-dom"; // Importamos el componente ButtonsActions
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic'; // Importamos la función de formateo
 
 const Usuarios = () => {
     const [usuarios, setUsuarios] = useState([]);
@@ -45,7 +46,7 @@ const Usuarios = () => {
             <td>{usuario.rut}</td>
             <td>{usuario.email}</td>
             <td>{usuario.rol}</td>
-            <td>{new Date(usuario.createdAt).toLocaleDateString()}</td>
+            <td>{formatDateToDDMMYYYY(usuario.createdAt)}</td> {/* Formatear la fecha de registro */}
             <td>
                 <ButtonsActionsTable
                     itemId={`${usuario.id}`}  // ID del usuario
@@ -69,8 +70,8 @@ const Usuarios = () => {
                             <Alert variant="danger">{error}</Alert>
                         ) : (
                             <>
-                                <SearchBar searchQuery={searchQuery} handleSearchChange={handleSearchChange}/>
-                                <CustomTable headers={headers} data={filteredUsuarios} renderRow={renderRow}/>
+                                <SearchBar searchQuery={searchQuery} handleSearchChange={handleSearchChange} />
+                                <CustomTable headers={headers} data={filteredUsuarios} renderRow={renderRow} />
                             </>
                         )}
                     </Card.Body>
