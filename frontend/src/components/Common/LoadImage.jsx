@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Image, Button, Form } from 'react-bootstrap';
 import PropTypes from 'prop-types';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImage } from '@fortawesome/free-solid-svg-icons';
 import productoService from '../../services/producto.service'; // Servicio para actualizar el producto
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -43,33 +45,29 @@ const ProductoImagen = ({ productoId, imagenRuta, onImagenUpdated }) => {
     };
 
     return (
-        <div className="producto-imagen-container">
-            <Image
-                src={previewImagen}
-                fluid
-                style={{
-                    objectFit: 'cover',
-                    width: '100%',
-                    maxHeight: '500px',
-                    borderRadius: '10px',
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                }}
-            />
-            <Form className="mt-3">
-                <Form.Group controlId="formFile" className="mb-3">
-                    <Form.Label>Cambiar imagen del producto</Form.Label>
-                    <Form.Control type="file" accept="image/*" onChange={handleImagenChange} />
-                </Form.Group>
-
-                <Button
-                    variant="primary"
-                    disabled={!nuevaImagen || cargando}
-                    onClick={handleReemplazarImagen}
-                >
-                    {cargando ? 'Reemplazando...' : 'Reemplazar Imagen'}
-                </Button>
-            </Form>
-        </div>
+<div className="producto-imagen-container">
+    <Image
+        src={previewImagen}
+        fluid
+        style={{
+            objectFit: 'cover',
+            width: '100%',
+            maxHeight: '400px',
+            borderRadius: '10px',
+            marginBottom: '15px',
+        }}
+    />
+    <Form.Group controlId="formFile" className="mb-3">
+        <Form.Control type="file" accept="image/*" onChange={handleImagenChange} />
+    </Form.Group>
+    <Button
+        variant="primary"
+        disabled={!nuevaImagen || cargando}
+        onClick={handleReemplazarImagen}
+        className="btn-replace-inside"
+    > <FontAwesomeIcon icon={faImage} />  {cargando ? 'Reemplazando...' : 'Guardar'}
+    </Button>
+</div>
     );
 };
 

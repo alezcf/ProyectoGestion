@@ -17,3 +17,47 @@
   flex-grow: 1;
   text-align: center;
 }
+
+/* Contenedor de la imagen y acciones */
+.producto-imagen-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border: 2px dashed #ced4da;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  max-width: 400px;
+  margin: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo de la imagen dentro del contenedor */
+.producto-imagen-container img {
+  max-height: 300px;
+  width: auto;
+  margin-bottom: 5px;
+}
+
+/* Estilos para el botón dentro del recuadro */
+.btn-replace-inside {
+  margin-top: -5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: #CF9C01;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-replace-inside:hover {
+  background-color: #0056b3;
+}
+
+.btn-replace-inside:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
