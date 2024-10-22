@@ -26,18 +26,19 @@ const Producto = () => {
     const [openProveedores, setOpenProveedores] = useState(false);
     const [openInventarios, setOpenInventarios] = useState(false);
 
-    useEffect(() => {
-        const fetchProducto = async () => {
-            try {
-                const data = await productoService.getProducto(productoId);
-                setProducto(data);
-                setLoading(false);
-            } catch (err) {
-                setError('Error al cargar el producto.');
-                setLoading(false);
-            }
-        };
+    // Mover fetchProducto fuera del useEffect para poder reutilizarlo
+    const fetchProducto = async () => {
+        try {
+            const data = await productoService.getProducto(productoId);
+            setProducto(data);
+            setLoading(false);
+        } catch (err) {
+            setError('Error al cargar el producto.');
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchProducto();
     }, [productoId]);
 
@@ -56,6 +57,10 @@ const Producto = () => {
             await productoService.updateProducto(productoActualizado);
             console.log('Producto actualizado con éxito:', productoActualizado);
             setShowEditModal(false);
+
+            // Llamar nuevamente a fetchProducto para obtener los datos actualizados
+            fetchProducto();
+
         } catch (error) {
             console.error('Error al actualizar el producto:', error);
         }
