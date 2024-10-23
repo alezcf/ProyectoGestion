@@ -20,6 +20,7 @@ const Inventario = () => {
                 const data = await inventarioService.getAllInventarios(); // Obtener todos los inventarios
                 setInventarioData(data);
                 setFilteredData(data);
+                console.log(data);
             } catch (err) {
                 setError('Error al cargar los inventarios.');
             }

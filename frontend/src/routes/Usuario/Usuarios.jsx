@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Card, Alert, Button } from 'react-bootstrap';
 import usuarioService from '../../services/usuario.service';
+import exportService from '../../services/export.service'; // Importar el servicio de exportación
 import CustomTable from '../../components/Common/CustomTable';
 import SearchBar from '../../components/Common/SearchBar';
 import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
-import { Link } from "react-router-dom"; // Importamos el componente ButtonsActions
-import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic'; // Importamos la función de formateo
+import { Link } from "react-router-dom";
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 
 const Usuarios = () => {
     const [usuarios, setUsuarios] = useState([]);
@@ -17,6 +18,7 @@ const Usuarios = () => {
             try {
                 const data = await usuarioService.getAllUsuarios();
                 setUsuarios(data);
+                console.log(data);
             } catch (err) {
                 setError('Error al cargar los usuarios.');
             }
@@ -29,9 +31,23 @@ const Usuarios = () => {
         setSearchQuery(event.target.value);
     };
 
-    const handleExport = (usuarioNombre) => {
-        console.log(`Exportando datos del usuario: ${usuarioNombre}`);
-        // Implementar la lógica de exportación aquí
+    const handleExport = async () => {
+        try {
+            const usuariosData = usuarios.map(usuario => ({
+                NOMBRE: usuario.nombreCompleto,
+                RUT: usuario.rut,
+                'CORREO ELECTRÓNICO': usuario.email,
+                ROL: usuario.rol,
+                REGISTRO: formatDateToDDMMYYYY(usuario.createdAt)
+            }));
+            console.log('Datos a exportar:', usuariosData);
+            const filePath = await exportService.exportDataToExcel(usuariosData);
+            console.log('Archivo Excel exportado:', filePath);
+            alert('Datos exportados con éxito. Archivo disponible en: ' + filePath);
+        } catch (error) {
+            console.error('Error exportando a Excel:', error);
+            alert('Error al exportar los datos.');
+        }
     };
 
     const filteredUsuarios = usuarios.filter((usuario) =>
@@ -77,6 +93,9 @@ const Usuarios = () => {
                     </Card.Body>
                 </Card>
             </Row>
+            <div className="mt-3">
+                <Button variant="primary" onClick={handleExport}>Exportar a Excel</Button>
+            </div>
             <div className="mt-3">
                 <Link to="/crear-usuario">
                     <Button variant="success">Crear Usuario</Button>
