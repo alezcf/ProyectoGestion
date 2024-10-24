@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import productoService from '../../services/producto.service';
+import exportService from '../../services/export.service'; // Importar el servicio de exportación
 import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
@@ -12,6 +13,8 @@ import productoFields from '../../fields/producto.fields';
 import ProductoProveedor from '../../components/Producto/ProductoProveedor';
 import ProductoInventario from '../../components/Producto/ProductoInventario';
 import DefaultEditModal from '../../components/Common/DefaultEditModal';
+import productoProveedorService from '../../services/productoProveedor.service';
+import productoInventarioService from '../../services/productoInventario.service';
 import '../../css/Form.css';
 import '../../css/Producto.css';
 import '../../css/Modal.css';
@@ -46,9 +49,61 @@ const Producto = () => {
         setShowEditModal(true);
     };
 
-    const handleExport = () => {
-        console.log("Exportar los datos del producto");
+    const handleExport = async () => {
+        try {
+            // Estructura para exportar el producto
+            const productoData = {
+                NOMBRE: producto.nombre,
+                DESCRIPCIÓN: producto.descripcion,
+                MARCA: producto.marca,
+                CONTENIDO: producto.contenido,
+                'UNIDAD DE MEDIDA': producto.unidad_medida,
+                TIPO: producto.tipo,
+                PRECIO: producto.precio,
+                'CATEGORÍA': producto.categoria || 'No registrada',
+            };
+
+            // Obtener proveedores asociados al producto desde el servicio
+            const proveedoresData = await productoProveedorService.getProveedoresByProducto(producto.id);
+
+            // Mapea solo la información del proveedor, excluyendo los datos del producto
+            const proveedoresExport = proveedoresData.map(relacion => ({
+                NOMBRE: relacion.proveedor?.nombre || 'No disponible',
+                RUT: relacion.proveedor?.rut || 'No disponible',
+                DIRECCIÓN: relacion.proveedor?.direccion || 'No disponible',
+                TELÉFONO: relacion.proveedor?.telefono || 'No disponible',
+                EMAIL: relacion.proveedor?.email || 'No disponible',
+            }));
+
+            // Obtener inventarios asociados al producto desde el servicio
+            const inventariosData = await productoInventarioService.getInventariosByProducto(producto.id);
+
+            // Mapea solo la información del inventario, excluyendo los datos del producto
+            const inventariosExport = inventariosData.map(inventarioRelacion => ({
+                NOMBRE: inventarioRelacion.inventario?.nombre || 'No disponible',
+                CANTIDAD: inventarioRelacion.cantidad || 0,
+                'MÁXIMO STOCK': inventarioRelacion.inventario?.maximo_stock || 'No disponible',
+                'FECHA DE ACTUALIZACIÓN': inventarioRelacion.inventario?.ultima_actualizacion || 'No disponible',
+            }));
+
+            // Nombres personalizados para las hojas de Excel
+            const sheetNames = {
+                mainSheet: "Producto",       // Nombre de la hoja principal (datos del producto)
+                arraySheet1: "Proveedores",  // Nombre de la hoja para proveedores
+                arraySheet2: "Inventarios"   // Nombre de la hoja para inventarios
+            };
+
+            // Llamar al servicio de exportación para generar el archivo Excel con nombres de hoja personalizados
+            await exportService.exportObjectAndArraysToExcel(productoData, [proveedoresExport, inventariosExport], sheetNames);
+            alert('Datos exportados con éxito');
+        } catch (error) {
+            console.error('Error exportando los datos del producto:', error);
+            alert('Error al exportar los datos.');
+        }
     };
+
+
+
 
     const handleFormSubmit = async (data) => {
         const productoActualizado = { ...producto, ...data };

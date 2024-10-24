@@ -8,6 +8,8 @@ import UsuarioDetalles from '../../components/Usuario/UsuarioDetalles'; // Detal
 import UsuarioBotones from '../../components/Common/ButtonsActions'; // Botones para acciones
 import usuarioFields from '../../fields/usuario.fields'; // Campos del formulario de usuario
 import DefaultEditModal from '../../components/Common/DefaultEditModal'; // Modal para editar
+import { exportObjectAndArraysToExcel } from '../../services/export.service'; // Servicio de exportación
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 import '../../css/Form.css';
 import '../../css/Inventario.css';
 import '../../css/Modal.css';
@@ -20,6 +22,7 @@ const Usuario = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [openDetalles, setOpenDetalles] = useState(true);
     const defaultProfileImage = '../images/avatar.png';
+
     useEffect(() => {
         const fetchUsuario = async () => {
             try {
@@ -39,8 +42,30 @@ const Usuario = () => {
         setShowEditModal(true);
     };
 
-    const handleExport = () => {
-        console.log("Exportar los datos del usuario");
+    const handleExport = async () => {
+        try {
+            const dataObject = {
+                RUT: usuario.rut,
+                EMAIL: usuario.email,
+                ROL: usuario.rol,
+                "NOMBRE COMPLETO": usuario.nombreCompleto,
+                "FECHA DE REGISTRO": formatDateToDDMMYYYY(usuario.createdAt),
+                "ÚLTIMA ACTUALIZACIÓN": formatDateToDDMMYYYY(usuario.updatedAt),
+            };
+
+            const sheetNames = {
+                mainSheet: "Usuario",
+            };
+
+            const arrayData = [
+                [
+                ]
+            ];
+
+            await exportObjectAndArraysToExcel(dataObject, arrayData, sheetNames);
+        } catch (error) {
+            console.error('Error al exportar los datos del usuario:', error);
+        }
     };
 
     const handleFormSubmit = async (data) => {

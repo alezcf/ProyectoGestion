@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import pedidoService from '../../services/pedido.service';
+import exportService from '../../services/export.service'; // Importar el servicio de exportación
 import { Container, Row, Col, Spinner, Alert, Table, Button, Collapse, Card, Image } from 'react-bootstrap';
 import PedidoDetalles from '../../components/Pedido/PedidoDetalles';
 import ButtonsActions from '../../components/Common/ButtonsActions';
@@ -43,8 +44,37 @@ const Pedido = () => {
         setShowEditModal(true); // Muestra el modal de edición
     };
 
-    const handleExport = () => {
-        console.log('Exportar los datos del pedido');
+    const handleExport = async () => {
+        try {
+            // Estructura para exportar el pedido
+            const pedidoData = {
+                "NÚMERO": pedido.id,
+                'FECHA DEL PEDIDO': pedido.estado,
+                'ESTADO ACTUAL': pedido.fecha_pedido,
+            };
+
+            // Mapea los productos asociados al pedido
+            const productosExport = pedido.pedidoProductos.map(productoPedido => ({
+                "NOMBRE DEL PRODUCTO": productoPedido.producto.nombre,
+                CANTIDAD: productoPedido.cantidad,
+                "UNIDAD DE MEDIDA": productoPedido.producto.unidad_medida,
+                PRECIO: productoPedido.producto.precio,
+                SUBTOTAL: productoPedido.cantidad * productoPedido.producto.precio
+            }));
+
+            // Nombres personalizados para las hojas de Excel
+            const sheetNames = {
+                mainSheet: "Pedido",        // Nombre de la hoja principal (datos del pedido)
+                arraySheet1: "Productos"    // Nombre de la hoja para los productos
+            };
+
+            // Llamar al servicio de exportación para generar el archivo Excel con nombres de hoja personalizados
+            await exportService.exportObjectAndArraysToExcel(pedidoData, [productosExport], sheetNames);
+            alert('Datos exportados con éxito');
+        } catch (error) {
+            console.error('Error exportando los datos del pedido:', error);
+            alert('Error al exportar los datos.');
+        }
     };
 
     const handleFormSubmit = async (data) => {

@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import inventarioService from '../../services/inventario.service';
-import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card, Image} from 'react-bootstrap';
+import productoInventarioService from '../../services/productoInventario.service'; // Servicio para obtener productos en inventario
+import exportService from '../../services/export.service'; // Importar el servicio de exportación
+import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card, Image } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import InventarioCaracteristicas from '../../components/Inventario/InventarioCaracteristicas';
 import InventarioBotones from '../../components/Common/ButtonsActions';
 import inventarioFields from '../../fields/inventario.fields';
 import DefaultEditModal from '../../components/Common/DefaultEditModal';
-import InventarioProducto from '../../components/Inventario/InventarioProducto'; // Componente recién creado
+import InventarioProducto from '../../components/Inventario/InventarioProducto';
 import '../../css/Form.css';
 import '../../css/Inventario.css';
 import '../../css/Modal.css';
@@ -16,6 +18,7 @@ import '../../css/Modal.css';
 const Inventario = () => {
     const { inventarioId } = useParams();
     const [inventario, setInventario] = useState(null);
+    const [productos, setProductos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -26,11 +29,17 @@ const Inventario = () => {
     useEffect(() => {
         const fetchInventario = async () => {
             try {
+                // Obtener detalles del inventario
                 const data = await inventarioService.getInventarioById(inventarioId);
                 setInventario(data);
+
+                // Obtener los productos del inventario usando productoInventarioService
+                const productosData = await productoInventarioService.getProductosByInventario(inventarioId);
+                setProductos(productosData);
+
                 setLoading(false);
             } catch (err) {
-                setError('Error al cargar el inventario.');
+                setError('Error al cargar el inventario o productos.');
                 setLoading(false);
             }
         };
@@ -42,8 +51,37 @@ const Inventario = () => {
         setShowEditModal(true);
     };
 
-    const handleExport = () => {
-        console.log("Exportar los datos del inventario");
+    const handleExport = async () => {
+        try {
+            // Estructura para exportar los datos del inventario
+            const inventarioData = {
+                NOMBRE: inventario.nombre,
+                'MÁXIMO STOCK': inventario.maximo_stock,
+                'FECHA DE ACTUALIZACIÓN': inventario.ultima_actualizacion,
+            };
+
+            // Mapea los productos del inventario obtenidos desde productoInventarioService
+            const productosExport = productos.map(productoInventario => ({
+                "NOMBRE DEL PRODUCTO": productoInventario.producto.nombre,
+                CANTIDAD: productoInventario.cantidad,
+                "UNIDAD DE MEDIDA": productoInventario.producto.unidad_medida,
+                PRECIO: productoInventario.producto.precio,
+                SUBTOTAL: productoInventario.cantidad * productoInventario.producto.precio
+            }));
+
+            // Nombres personalizados para las hojas de Excel
+            const sheetNames = {
+                mainSheet: "Inventario",     // Nombre de la hoja principal (datos del inventario)
+                arraySheet1: "Productos"     // Nombre de la hoja para los productos
+            };
+
+            // Llamar al servicio de exportación para generar el archivo Excel con nombres de hoja personalizados
+            await exportService.exportObjectAndArraysToExcel(inventarioData, [productosExport], sheetNames);
+            alert('Datos exportados con éxito');
+        } catch (error) {
+            console.error('Error exportando los datos del inventario:', error);
+            alert('Error al exportar los datos.');
+        }
     };
 
     const handleFormSubmit = async (data) => {
@@ -94,16 +132,16 @@ const Inventario = () => {
             <Row className="my-4">
                 <Col md={4}>
                     <Image
-                            src={inventario.fotoPerfil || defaultInventario} // Usa imagen predefinida si no tiene foto
-                            fluid
-                            style={{
-                                objectFit: 'cover',
-                                width: '100%',
-                                maxHeight: '500px',
-                                borderRadius: '10px',
-                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                            }}
-                        />
+                        src={inventario.fotoPerfil || defaultInventario} // Usa imagen predefinida si no tiene foto
+                        fluid
+                        style={{
+                            objectFit: 'cover',
+                            width: '100%',
+                            maxHeight: '500px',
+                            borderRadius: '10px',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                        }}
+                    />
                     <InventarioBotones onEdit={handleEdit} onExport={handleExport} />
                 </Col>
                 <Col md={8}>
@@ -155,7 +193,7 @@ const Inventario = () => {
                         <Collapse in={openProductos}>
                             <div id="productos-inventario">
                                 <Card.Body>
-                                    <InventarioProducto inventario={inventario} />
+                                    <InventarioProducto inventario={inventario} productos={productos} />
                                 </Card.Body>
                             </div>
                         </Collapse>
