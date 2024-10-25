@@ -5,6 +5,8 @@ import proveedorService from '../../services/proveedor.service';
 import exportService from '../../services/export.service'; // Importar el servicio de exportación
 import CustomTable from '../../components/Common/CustomTable';
 import SearchBar from '../../components/Common/SearchBar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
 
 const Proveedores = () => {
@@ -87,16 +89,19 @@ const Proveedores = () => {
                             <>
                                 <SearchBar searchQuery={searchQuery} handleSearchChange={handleSearchChange} />
                                 <CustomTable headers={headers} data={filteredProveedores} renderRow={renderRow} />
-                                {/* Botón para exportar proveedores */}
-                                <div className="mt-3">
-                                    <Button variant="primary" onClick={handleExport}>Exportar a Excel</Button>
-                                </div>
-                                {/* Botón para crear nuevo proveedor */}
-                                <div className="mt-3">
-                                    <Link to="/crear-proveedor">
-                                        <Button variant="success">Crear Proveedor</Button>
+
+                                <div className="button-container mt-3">
+                                    <Link to="/crear-proveedor" className="button-left">
+                                        <Button variant="success">
+                                            <FontAwesomeIcon icon={faPlus} /> Crear Proveedor
+                                        </Button>
                                     </Link>
+
+                                    <Button variant="primary" onClick={handleExport} className="button-right">
+                                        Exportar a Excel
+                                    </Button>
                                 </div>
+
                             </>
                         )}
                     </Card.Body>

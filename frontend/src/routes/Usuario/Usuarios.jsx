@@ -6,6 +6,8 @@ import CustomTable from '../../components/Common/CustomTable';
 import SearchBar from '../../components/Common/SearchBar';
 import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 
 const Usuarios = () => {
@@ -91,16 +93,21 @@ const Usuarios = () => {
                             </>
                         )}
                     </Card.Body>
+                    <div className="button-container mt-3">
+                        <Link to="/crear-usuario" className="button-left">
+                            <Button variant="success">
+                                <FontAwesomeIcon icon={faPlus} /> Crear Usuario
+                            </Button>
+                        </Link>
+
+                        <Button variant="primary" onClick={handleExport} className="button-right">
+                            Exportar a Excel
+                        </Button>
+                    </div>
+
                 </Card>
             </Row>
-            <div className="mt-3">
-                <Button variant="primary" onClick={handleExport}>Exportar a Excel</Button>
-            </div>
-            <div className="mt-3">
-                <Link to="/crear-usuario">
-                    <Button variant="success">Crear Usuario</Button>
-                </Link>
-            </div>
+
         </Container>
     );
 };

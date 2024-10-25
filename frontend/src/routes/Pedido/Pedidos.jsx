@@ -5,6 +5,8 @@ import exportService from '../../services/export.service'; // Importar el servic
 import SearchBar from '../../components/Common/SearchBar';
 import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import CustomTable from '../../components/Common/CustomTable';
 import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic'; // Importamos las funciones desde logic
 
@@ -114,16 +116,20 @@ const Pedidos = () => {
                             </>
                         )}
                     </Card.Body>
+                    <div className="button-container">
+                        <Link to="/crear-pedido" className="button-left">
+                            <Button variant="success">
+                                <FontAwesomeIcon icon={faPlus} /> Crear Pedido
+                            </Button>
+                        </Link>
+
+                        <Button variant="primary" onClick={handleExport} className="button-right">
+                            Exportar a Excel
+                        </Button>
+                    </div>
                 </Card>
+
             </Row>
-            <div className="mt-3">
-                <Button variant="primary" onClick={handleExport}>Exportar a Excel</Button>
-            </div>
-            <div className="mt-3">
-                <Link to="/crear-pedido">
-                    <Button variant="success">Crear Pedido</Button>
-                </Link>
-            </div>
         </Container>
     );
 };

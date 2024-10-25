@@ -28,8 +28,8 @@ const usuarioFields = [
             message: "Formato de correo inválido"
             },
             minLength: {
-            value: 20,
-            message: "Debe tener al menos 20 caracteres"
+            value: 10,
+            message: "Debe tener al menos 10 caracteres"
             },
             maxLength: {
             value: 50,

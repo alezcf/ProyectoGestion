@@ -53,7 +53,7 @@ export const userBodyValidation = Joi.object({
     "string.max": "El nombre completo debe tener como máximo 50 caracteres.",
   }),
   email: Joi.string()
-    .min(20)
+    .min(10)
     .max(50)
     .email()
     .required()
@@ -63,7 +63,7 @@ export const userBodyValidation = Joi.object({
       "string.base": "El correo electrónico debe ser de tipo string.",
       "string.email": "El correo electrónico debe tener un formato válido.",
       "string.min":
-        "El correo electrónico debe tener como mínimo 17 caracteres.",
+        "El correo electrónico debe tener como mínimo 10 caracteres.",
       "string.max":
         "El correo electrónico debe tener como máximo 50 caracteres.",
     }),

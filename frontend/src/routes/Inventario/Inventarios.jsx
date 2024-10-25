@@ -1,10 +1,12 @@
-// src/pages/Inventario/Inventario.js
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Card, Alert, Button, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import inventarioService from '../../services/inventario.service';
+import exportService from '../../services/export.service'; // Importar el servicio de exportación
 import CustomTable from '../../components/Common/CustomTable';
 import InventarioAcciones from '../../components/Inventario/InventarioAcciones';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic'; // Importamos la función de formateo
 import '../../css/Inventario.css';
 
@@ -36,9 +38,22 @@ const Inventario = () => {
         );
     }, [filter, inventarioData]);
 
-    const handleExport = (inventarioNombre) => {
-        console.log(`Exportar datos del inventario: ${inventarioNombre}`);
-        // Implementa la lógica para exportar los datos (CSV, PDF, etc.)
+    // Implementar la lógica de exportación
+    const handleExport = async () => {
+        try {
+            const inventarioDataToExport = filteredData.map(inventario => ({
+                NOMBRE: inventario.nombre,
+                'MÁXIMO STOCK': inventario.maximo_stock,
+                'ÚLTIMA ACTUALIZACIÓN': formatDateToDDMMYYYY(inventario.ultima_actualizacion),
+            }));
+            console.log('Datos a exportar:', inventarioDataToExport);
+            const filePath = await exportService.exportDataToExcel(inventarioDataToExport);
+            console.log('Archivo Excel exportado:', filePath);
+            alert('Datos exportados con éxito. Archivo disponible en: ' + filePath);
+        } catch (error) {
+            console.error('Error exportando a Excel:', error);
+            alert('Error al exportar los datos.');
+        }
     };
 
     const headers = ['Nombre', 'Máximo Stock', 'Última Actualización', 'Acciones'];
@@ -86,14 +101,23 @@ const Inventario = () => {
                                     data={filteredData}
                                     renderRow={renderRow}
                                 />
-                                <div className="mt-3">
-                                    <Link to="/crear-inventario">
-                                        <Button variant="primary" className="me-2">Crear Inventario</Button>
-                                    </Link>
-                                </div>
                             </>
                         )}
                     </Card.Body>
+
+                    <div className="button-container">
+    <Link to="/crear-inventario" className="button-left">
+        <Button className="me-2" variant="primary">
+            <FontAwesomeIcon icon={faPlus} /> Crear Inventario
+        </Button>
+    </Link>
+
+    {/* Botón para exportar a Excel */}
+    <Button className="button-right" variant="primary" onClick={handleExport}>
+        Exportar a Excel
+    </Button>
+</div>
+
                 </Card>
             </Row>
         </Container>

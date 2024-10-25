@@ -73,7 +73,7 @@ const CrearUsuario = () => {
                                     {...register('email', {
                                         required: 'El email es obligatorio',
                                         pattern: { value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/, message: 'Correo electrónico no válido' },
-                                        minLength: { value: 20, message: 'El correo debe tener al menos 20 caracteres' },
+                                        minLength: { value: 10, message: 'El correo debe tener al menos 10 caracteres' },
                                         maxLength: { value: 50, message: 'El correo debe tener máximo 50 caracteres' }
                                     })}
                                     className={errors.email ? 'is-invalid' : ''}

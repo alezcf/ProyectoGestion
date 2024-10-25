@@ -5,6 +5,8 @@ import productoService from '../../services/producto.service';
 import exportService from '../../services/export.service'; // Importamos el servicio de exportación
 import CustomTable from '../../components/Common/CustomTable';
 import SearchBar from '../../components/Common/SearchBar';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import ProductoAcciones from '../../components/Producto/ProductoAcciones';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;  // Base URL del backend
@@ -114,12 +116,18 @@ const Productos = () => {
                                 emptyMessage="No hay productos disponibles." // Mensaje cuando no hay productos
                             />
                             {/* Botones para crear nuevo producto e inventario */}
-                            <div className="mt-3">
-                                <Button variant="primary" onClick={handleExport}>Exportar a Excel</Button>
-                                <Link to="/crear-producto">
-                                    <Button variant="success" className="me-2">Crear Producto</Button>
+                            <div className="button-container mt-3">
+                                <Link to="/crear-producto" className="button-left">
+                                    <Button variant="success" className="me-2">
+                                        <FontAwesomeIcon icon={faPlus} /> Crear Producto
+                                    </Button>
                                 </Link>
+
+                                <Button variant="primary" onClick={handleExport} className="button-right">
+                                    Exportar a Excel
+                                </Button>
                             </div>
+
                         </>
                     </Card.Body>
                 </Card>

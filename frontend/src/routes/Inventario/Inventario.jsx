@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import inventarioService from '../../services/inventario.service';
-import productoInventarioService from '../../services/productoInventario.service'; // Servicio para obtener productos en inventario
 import exportService from '../../services/export.service'; // Importar el servicio de exportación
 import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card, Image } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -34,7 +33,7 @@ const Inventario = () => {
                 setInventario(data);
 
                 // Obtener los productos del inventario usando productoInventarioService
-                const productosData = await productoInventarioService.getProductosByInventario(inventarioId);
+                const productosData = data.productoInventarios;
                 setProductos(productosData);
 
                 setLoading(false);
@@ -59,16 +58,18 @@ const Inventario = () => {
                 'MÁXIMO STOCK': inventario.maximo_stock,
                 'FECHA DE ACTUALIZACIÓN': inventario.ultima_actualizacion,
             };
-
-            // Mapea los productos del inventario obtenidos desde productoInventarioService
+            console.log('Datos del producto:', productos);
             const productosExport = productos.map(productoInventario => ({
                 "NOMBRE DEL PRODUCTO": productoInventario.producto.nombre,
-                CANTIDAD: productoInventario.cantidad,
-                "UNIDAD DE MEDIDA": productoInventario.producto.unidad_medida,
-                PRECIO: productoInventario.producto.precio,
-                SUBTOTAL: productoInventario.cantidad * productoInventario.producto.precio
+                MARCA: productoInventario.producto.marca,
+                DESCRIPCION: productoInventario.producto.descripcion,
+                CATEGORIA: productoInventario.producto.categoria,
+                TIPO: productoInventario.producto.tipo,
+                CANTIDAD: productoInventario.cantidad
             }));
 
+
+            console.log('Datos a exportar:', inventarioData, productosExport);
             // Nombres personalizados para las hojas de Excel
             const sheetNames = {
                 mainSheet: "Inventario",     // Nombre de la hoja principal (datos del inventario)
