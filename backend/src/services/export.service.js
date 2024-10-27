@@ -94,53 +94,129 @@ export async function exportArrayToExcel(arrayData) {
 export async function exportObjectAndArraysToExcel(dataObject, arrayData = [], sheetNames = {}) {
     try {
         const workbook = new exceljs.Workbook();
-        console.log(sheetNames);
         const mainSheetName = sheetNames.mainSheet || "Datos Principales";
         const arraySheet1Name = sheetNames.arraySheet1 || "Array 1";
         const arraySheet2Name = sheetNames.arraySheet2 || "Array 2";
 
-
-        // Crear la hoja principal para los datos del objeto
+        // Crear la hoja principal para los datos del objeto con encabezado combinado
         const mainSheet = workbook.addWorksheet(mainSheetName);
         mainSheet.columns = [
-            { header: "Propiedad", key: "propiedad", width: 30 },
-            { header: "Valor", key: "valor", width: 50 }
+            { header: "", key: "propiedad", width: 30 },
+            { header: "", key: "valor", width: 50 }
         ];
 
-        // Rellenar la hoja con los datos del objeto
-        Object.keys(dataObject).forEach((key) => {
-            mainSheet.addRow({ propiedad: key, valor: dataObject[key] });
+        // Fusionar celdas para el encabezado combinado
+        mainSheet.mergeCells("A1:B1");
+        mainSheet.getCell("A1").value = "CARACTERISTICAS GENERALES";
+        mainSheet.getCell("A1").fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "FF4CAF50" },
+            bgColor: { argb: "FF000000" }
+        };
+        mainSheet.getCell("A1").font = {
+            bold: true,
+            color: { argb: "FFFFFFFF" }
+        };
+        mainSheet.getCell("A1").alignment = { vertical: "middle", horizontal: "center" };
+
+        // Rellenar la hoja principal con "NO REGISTRADO" para campos no definidos
+        Object.keys(dataObject).forEach((key, index) => {
+            const rowData = {
+                propiedad: key,
+                valor: dataObject[key] != null ? dataObject[key] : "NO REGISTRADO"
+            };
+            const row = mainSheet.addRow(rowData);
+            const fillColor = index % 2 === 0 ? "FFFFFFFF" : "FFEEEEEE";
+            row.eachCell((cell) => {
+                cell.fill = {
+                    type: "pattern",
+                    pattern: "solid",
+                    fgColor: { argb: fillColor },
+                };
+                cell.alignment = { vertical: "middle", horizontal: "center" };
+            });
         });
 
-        // Crear una hoja para los datos del primer array si existen
+        // Configurar y rellenar la primera hoja de datos del array con "NO REGISTRADO" para campos no definidos
         if (arrayData[0] && arrayData[0].length > 0) {
             const arraySheet1 = workbook.addWorksheet(arraySheet1Name);
-            const array1Columns = Object.keys(arrayData[0][0]).map(key => ({
+            arraySheet1.columns = Object.keys(arrayData[0][0]).map(key => ({
                 header: key.toUpperCase(),
                 key: key,
                 width: 30
             }));
-            arraySheet1.columns = array1Columns;
 
-            // Rellenar la hoja con los datos del array
-            arrayData[0].forEach((item) => {
-                arraySheet1.addRow(item);
+            arraySheet1.getRow(1).eachCell((cell) => {
+                cell.fill = {
+                    type: "pattern",
+                    pattern: "solid",
+                    fgColor: { argb: "FF4CAF50" },
+                    bgColor: { argb: "FF000000" }
+                };
+                cell.font = {
+                    bold: true,
+                    color: { argb: "FFFFFFFF" }
+                };
+                cell.alignment = { vertical: "middle", horizontal: "center" };
+            });
+
+            arrayData[0].forEach((item, index) => {
+                const rowData = {};
+                arraySheet1.columns.forEach(({ key }) => {
+                    rowData[key] = item[key] != null ? item[key] : "NO REGISTRADO";
+                });
+                const row = arraySheet1.addRow(rowData);
+                const fillColor = index % 2 === 0 ? "FFFFFFFF" : "FFEEEEEE";
+                row.eachCell((cell) => {
+                    cell.fill = {
+                        type: "pattern",
+                        pattern: "solid",
+                        fgColor: { argb: fillColor },
+                    };
+                    cell.alignment = { vertical: "middle", horizontal: "center" };
+                });
             });
         }
 
-        // Crear una hoja para los datos del segundo array si existen
+        // Configurar y rellenar la segunda hoja de datos del array con "NO REGISTRADO" para campos no definidos
         if (arrayData[1] && arrayData[1].length > 0) {
             const arraySheet2 = workbook.addWorksheet(arraySheet2Name);
-            const array2Columns = Object.keys(arrayData[1][0]).map(key => ({
+            arraySheet2.columns = Object.keys(arrayData[1][0]).map(key => ({
                 header: key.toUpperCase(),
                 key: key,
                 width: 30
             }));
-            arraySheet2.columns = array2Columns;
 
-            // Rellenar la hoja con los datos del array
-            arrayData[1].forEach((item) => {
-                arraySheet2.addRow(item);
+            arraySheet2.getRow(1).eachCell((cell) => {
+                cell.fill = {
+                    type: "pattern",
+                    pattern: "solid",
+                    fgColor: { argb: "FF4CAF50" },
+                    bgColor: { argb: "FF000000" }
+                };
+                cell.font = {
+                    bold: true,
+                    color: { argb: "FFFFFFFF" }
+                };
+                cell.alignment = { vertical: "middle", horizontal: "center" };
+            });
+
+            arrayData[1].forEach((item, index) => {
+                const rowData = {};
+                arraySheet2.columns.forEach(({ key }) => {
+                    rowData[key] = item[key] != null ? item[key] : "NO REGISTRADO";
+                });
+                const row = arraySheet2.addRow(rowData);
+                const fillColor = index % 2 === 0 ? "FFFFFFFF" : "FFEEEEEE";
+                row.eachCell((cell) => {
+                    cell.fill = {
+                        type: "pattern",
+                        pattern: "solid",
+                        fgColor: { argb: fillColor },
+                    };
+                    cell.alignment = { vertical: "middle", horizontal: "center" };
+                });
             });
         }
 
