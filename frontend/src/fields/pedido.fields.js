@@ -2,8 +2,9 @@ const pedidoFields = [
   {
     name: "fecha_pedido",
     label: "Fecha del Pedido",
-    type: "date",  // Permite seleccionar solo la fecha
+    type: "date",
     placeholder: "Selecciona la fecha del pedido",
+    tooltip: "Selecciona la fecha en la que se realizó el pedido.",
     validation: {
       required: "La fecha del pedido es obligatoria",
     }
@@ -13,14 +14,17 @@ const pedidoFields = [
     label: "Estado del Pedido",
     type: "select",
     options: [
-      { value: "pendiente", label: "Pendiente" },
-      { value: "completo", label: "Completo" },
-      { value: "cancelado", label: "Cancelado" }
+      { value: "", label: "Selecciona un estado" }, // Opción predeterminada
+      { value: "Pendiente", label: "Pendiente" },
+      { value: "Completo", label: "Completo" },
+      { value: "Cancelado", label: "Cancelado" }
     ],
     placeholder: "Selecciona el estado del pedido",
+    tooltip: "Indica el estado actual del pedido: Pendiente, Completo o Cancelado.",
     validation: {
       required: "El estado es obligatorio"
-    }
+    },
+    defaultValue: "Pendiente" // Ajusta a tu necesidad o usa el valor actual en el formulario
   }
 ];
 

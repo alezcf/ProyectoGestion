@@ -107,7 +107,7 @@ const Producto = () => {
 
     const handleFormSubmit = async (data) => {
         const productoActualizado = { ...producto, ...data };
-
+        console.log('Producto actualizado:', productoActualizado);
         try {
             await productoService.updateProducto(productoActualizado);
             console.log('Producto actualizado con éxito:', productoActualizado);

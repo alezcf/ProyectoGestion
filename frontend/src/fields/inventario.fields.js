@@ -4,6 +4,7 @@ const inventarioFields = [
         label: "NOMBRE (*)",
         type: "text",
         placeholder: "Ingresa el nombre del inventario",
+        tooltip: "Introduce el nombre del inventario. Debe tener entre 3 y 50 caracteres.",
         validation: {
             required: "El nombre es obligatorio",
             minLength: {
@@ -21,6 +22,7 @@ const inventarioFields = [
         label: "MÁXIMO STOCK",
         type: "number",
         placeholder: "Ingresa el máximo stock",
+        tooltip: "Define el stock máximo permitido. Debe ser mayor que 0.",
         validation: {
             required: "El máximo stock es obligatorio",
             min: {

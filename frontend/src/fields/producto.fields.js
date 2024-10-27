@@ -1,28 +1,10 @@
-const validCategorias = [
-  "Cerveza",
-  "Vino",
-  "Licor",
-  "Gaseosa",
-  "Néctar",
-  "Pisco",
-  "Ron",
-  "Whisky",
-  "Agua mineral",
-  "Cigarrillo",
-  "Snack",
-  "Otro"
-];
-
-const validUnidadesMedida = ["ML", "GR", "U", "L"];
-
-const validTipos = ["Alcohólico", "Sin Alcohol", "Otro"];
-
 const productoFields = [
   {
     name: "nombre",
     label: "NOMBRE (*)",
     type: "text",
     placeholder: "Ingresa el nombre del producto",
+    tooltip: "Introduce el nombre del producto. Debe tener entre 3 y 50 caracteres.",
     validation: {
       required: "El nombre es obligatorio",
       minLength: {
@@ -40,6 +22,7 @@ const productoFields = [
     label: "DESCRIPCIÓN",
     type: "textarea",
     placeholder: "Ingresa una descripción del producto",
+    tooltip: "Introduce una descripción breve. Debe tener entre 10 y 200 caracteres.",
     validation: {
       required: "La descripción es obligatoria",
       minLength: {
@@ -57,6 +40,7 @@ const productoFields = [
     label: "MARCA",
     type: "text",
     placeholder: "Ingresa la marca del producto",
+    tooltip: "Especifica la marca del producto. Debe tener entre 2 y 50 caracteres.",
     validation: {
       required: "La marca es obligatoria",
       minLength: {
@@ -74,6 +58,7 @@ const productoFields = [
     label: "CONTENIDO",
     type: "text",
     placeholder: "Ingresa el contenido del producto",
+    tooltip: "Cantidad de contenido en unidades. Máximo 20 caracteres.",
     validation: {
       required: "El contenido es obligatorio",
       minLength: {
@@ -90,10 +75,13 @@ const productoFields = [
     name: "unidad_medida",
     label: "UNIDAD DE MEDIDA",
     type: "select",
-    options: validUnidadesMedida.map(unidad => ({
-      value: unidad,
-      label: unidad
-    })),
+    options: [
+      { value: "ML", label: "ML" },
+      { value: "GR", label: "GR" },
+      { value: "U", label: "U" },
+      { value: "L", label: "L" }
+    ],
+    tooltip: "Selecciona la unidad de medida para el contenido del producto.",
     validation: {
       required: "La unidad de medida es obligatoria"
     }
@@ -103,6 +91,7 @@ const productoFields = [
     label: "PRECIO",
     type: "number",
     placeholder: "Ingresa el precio del producto",
+    tooltip: "Introduce el precio del producto, mayor a 0.",
     validation: {
       required: "El precio es obligatorio",
       min: {
@@ -115,22 +104,35 @@ const productoFields = [
     name: "categoria",
     label: "CATEGORÍA (*)",
     type: "select",
-    options: validCategorias.map(categoria => ({
-      value: categoria,
-      label: categoria
-    })),
+    options: [
+      { value: "Cerveza", label: "Cerveza" },
+      { value: "Vino", label: "Vino" },
+      { value: "Licor", label: "Licor" },
+      { value: "Gaseosa", label: "Gaseosa" },
+      { value: "Néctar", label: "Néctar" },
+      { value: "Pisco", label: "Pisco" },
+      { value: "Ron", label: "Ron" },
+      { value: "Whisky", label: "Whisky" },
+      { value: "Agua mineral", label: "Agua mineral" },
+      { value: "Cigarrillo", label: "Cigarrillo" },
+      { value: "Snack", label: "Snack" },
+      { value: "Otro", label: "Otro" }
+    ],
+    tooltip: "Selecciona una categoría para el producto.",
     validation: {
       required: "La categoría es obligatoria"
     }
   },
   {
-    name: "tipo_producto",
+    name: "tipo",
     label: "TIPO DE PRODUCTO (*)",
     type: "select",
-    options: validTipos.map(tipo => ({
-      value: tipo,
-      label: tipo
-    })),
+    options: [
+      { value: "Alcohólico", label: "Alcohólico" },
+      { value: "Sin Alcohol", label: "Sin Alcohol" },
+      { value: "Otro", label: "Otro" }
+    ],
+    tooltip: "Selecciona el tipo de producto (Alcohólico, Sin Alcohol, Otro).",
     validation: {
       required: "El tipo de producto es obligatorio"
     }

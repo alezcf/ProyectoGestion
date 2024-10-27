@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form } from 'react-bootstrap';
+import { Modal, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faUserPen } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
@@ -64,7 +64,21 @@ const DefaultEditModal = ({ show, handleClose, fields, defaultValues, onSubmit, 
                 <Form onSubmit={handleSubmit(submitForm)}>
                     {fields.map((field, index) => (
                         <Form.Group controlId={field.name} key={index} className="form-group-custom">
-                            <Form.Label><strong>{field.label}</strong></Form.Label>
+                            <OverlayTrigger
+                                placement="auto"
+                                overlay={
+                                    <Tooltip style={{ maxWidth: '200px', whiteSpace: 'normal' }}>
+                                        {field.tooltip}
+                                    </Tooltip>
+                                }
+                                popperConfig={{
+                                    modifiers: [
+                                        { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
+                                    ]
+                                }}
+                            >
+                                <Form.Label><strong>{field.label}</strong></Form.Label>
+                            </OverlayTrigger>
                             {field.type === 'select' ? (
                                 <Form.Control as="select" {...register(field.name, field.validation)}>
                                     {field.options.map((option, idx) => (
@@ -112,6 +126,7 @@ DefaultEditModal.propTypes = {
         label: PropTypes.string.isRequired,
         type: PropTypes.string,
         placeholder: PropTypes.string,
+        tooltip: PropTypes.string, // Tooltip added here
         validation: PropTypes.object,
         options: PropTypes.arrayOf(PropTypes.shape({
             value: PropTypes.string.isRequired,
