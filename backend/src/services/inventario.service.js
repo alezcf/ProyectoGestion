@@ -37,12 +37,12 @@ async function createInventario(body) {
 async function getInventario(query) {
     try {
         const inventarioRepository = AppDataSource.getRepository(Inventario);
-        console.log("buscamos una wea especifica");
+
         const inventarioFound = await inventarioRepository.findOne({
             where: { id: query.id },
             relations: ["productoInventarios", "productoInventarios.producto"],
         });
-
+    
         if (!inventarioFound) return [null, "Inventario no encontrado"];
 
         return [inventarioFound, null];

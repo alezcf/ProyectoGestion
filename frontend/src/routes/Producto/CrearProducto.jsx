@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Container, Row, Col } from 'react-bootstrap';
+import { Form, Container, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faArrowLeft, faArrowRight, faBottleDroplet } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
@@ -23,10 +23,9 @@ const CrearProducto = () => {
         }
     });
     const [imagePreview, setImagePreview] = useState(null);
-    const [page, setPage] = useState(0); // Controla la página actual
+    const [page, setPage] = useState(0);
     const [constants, setConstants] = useState({ categorias: [], medidas: [], tipos: [] });
-
-    const totalPages = 2; // Hay dos páginas
+    const totalPages = 2;
 
     useEffect(() => {
         const fetchConstants = async () => {
@@ -51,12 +50,11 @@ const CrearProducto = () => {
                 }
             });
 
-            console.log(formData);
             await productoService.createProducto(formData);
             alert('Producto creado exitosamente');
-            reset(); // Resetear el formulario después de enviar
-            setImagePreview(null); // Resetear la previsualización de la imagen
-            setPage(0); // Volver a la primera página después de la creación exitosa
+            reset();
+            setImagePreview(null);
+            setPage(0);
         } catch (err) {
             alert('Error al crear el producto: ' + err.response);
         }
@@ -90,6 +88,10 @@ const CrearProducto = () => {
         if (page > 0) setPage(page - 1);
     };
 
+    const renderTooltip = (message) => (
+        <Tooltip style={{ maxWidth: '200px', whiteSpace: 'normal' }}>{message}</Tooltip>
+    );
+
     const renderPageFields = () => {
         switch (page) {
             case 0:
@@ -98,7 +100,22 @@ const CrearProducto = () => {
                         <Row>
                             <Col md={6}>
                                 <Form.Group controlId="nombre">
-                                    <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE (*)</Form.Label>
+                                    <OverlayTrigger
+                                        placement="auto"
+                                        overlay={renderTooltip("Introduce el nombre del producto. Requerido y debe tener entre 3 y 255 caracteres.")}
+                                        popperConfig={{
+                                            modifiers: [
+                                                {
+                                                    name: 'flip',
+                                                    options: {
+                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
+                                                    }
+                                                }
+                                            ]
+                                        }}
+                                    >
+                                        <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE (*)</Form.Label>
+                                    </OverlayTrigger>
                                     <Form.Control
                                         type="text"
                                         placeholder="Ingresa el nombre del producto"
@@ -120,7 +137,22 @@ const CrearProducto = () => {
                             </Col>
                             <Col md={6}>
                                 <Form.Group controlId="descripcion">
-                                    <Form.Label style={{ fontWeight: 'bold' }}>DESCRIPCIÓN (*)</Form.Label>
+                                    <OverlayTrigger
+                                        placement="auto"
+                                        overlay={renderTooltip("Introduce una breve descripción del producto. Requerido y hasta 1000 caracteres.")}
+                                        popperConfig={{
+                                            modifiers: [
+                                                {
+                                                    name: 'flip',
+                                                    options: {
+                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
+                                                    }
+                                                }
+                                            ]
+                                        }}
+                                    >
+                                        <Form.Label style={{ fontWeight: 'bold' }}>DESCRIPCIÓN (*)</Form.Label>
+                                    </OverlayTrigger>
                                     <Form.Control
                                         type="text"
                                         placeholder="Ingresa la descripción"
@@ -140,7 +172,22 @@ const CrearProducto = () => {
                         <Row>
                             <Col md={6}>
                                 <Form.Group controlId="marca">
-                                    <Form.Label>MARCA</Form.Label>
+                                    <OverlayTrigger
+                                        placement="auto"
+                                        overlay={renderTooltip("Opcional. Introduce la marca del producto, hasta 255 caracteres.")}
+                                        popperConfig={{
+                                            modifiers: [
+                                                {
+                                                    name: 'flip',
+                                                    options: {
+                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
+                                                    }
+                                                }
+                                            ]
+                                        }}
+                                    >
+                                        <Form.Label>MARCA</Form.Label>
+                                    </OverlayTrigger>
                                     <Form.Control
                                         type="text"
                                         placeholder="Ingresa la marca"
@@ -157,7 +204,22 @@ const CrearProducto = () => {
                             </Col>
                             <Col md={6}>
                                 <Form.Group controlId="contenido">
-                                    <Form.Label>CONTENIDO</Form.Label>
+                                    <OverlayTrigger
+                                        placement="auto"
+                                        overlay={renderTooltip("Introduce el contenido en unidades, debe ser un número positivo.")}
+                                        popperConfig={{
+                                            modifiers: [
+                                                {
+                                                    name: 'flip',
+                                                    options: {
+                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
+                                                    }
+                                                }
+                                            ]
+                                        }}
+                                    >
+                                        <Form.Label>CONTENIDO</Form.Label>
+                                    </OverlayTrigger>
                                     <Form.Control
                                         type="number"
                                         placeholder="Ingresa el contenido"
@@ -176,7 +238,22 @@ const CrearProducto = () => {
                         <Row>
                             <Col md={6}>
                                 <Form.Group controlId="unidad_medida">
-                                    <Form.Label>UNIDAD DE MEDIDA</Form.Label>
+                                    <OverlayTrigger
+                                        placement="auto"
+                                        overlay={renderTooltip("Selecciona la unidad de medida para el contenido del producto.")}
+                                        popperConfig={{
+                                            modifiers: [
+                                                {
+                                                    name: 'flip',
+                                                    options: {
+                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
+                                                    }
+                                                }
+                                            ]
+                                        }}
+                                    >
+                                        <Form.Label>UNIDAD DE MEDIDA</Form.Label>
+                                    </OverlayTrigger>
                                     <Form.Control
                                         as="select"
                                         {...register('unidad_medida')}
@@ -192,7 +269,22 @@ const CrearProducto = () => {
                             </Col>
                             <Col md={6}>
                                 <Form.Group controlId="precio">
-                                    <Form.Label>PRECIO</Form.Label>
+                                    <OverlayTrigger
+                                        placement="auto"
+                                        overlay={renderTooltip("Introduce el precio del producto, debe ser un número positivo.")}
+                                        popperConfig={{
+                                            modifiers: [
+                                                {
+                                                    name: 'flip',
+                                                    options: {
+                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
+                                                    }
+                                                }
+                                            ]
+                                        }}
+                                    >
+                                        <Form.Label>PRECIO</Form.Label>
+                                    </OverlayTrigger>
                                     <Form.Control
                                         type="number"
                                         placeholder="Ingresa el precio"
@@ -216,7 +308,22 @@ const CrearProducto = () => {
                         <Row>
                             <Col md={6}>
                                 <Form.Group controlId="categoria">
-                                    <Form.Label style={{ fontWeight: 'bold' }}>CATEGORIA (*)</Form.Label>
+                                    <OverlayTrigger
+                                        placement="auto"
+                                        overlay={renderTooltip("Selecciona la categoría del producto. Campo obligatorio.")}
+                                        popperConfig={{
+                                            modifiers: [
+                                                {
+                                                    name: 'flip',
+                                                    options: {
+                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
+                                                    }
+                                                }
+                                            ]
+                                        }}
+                                    >
+                                        <Form.Label style={{ fontWeight: 'bold' }}>CATEGORIA (*)</Form.Label>
+                                    </OverlayTrigger>
                                     <Form.Control
                                         as="select"
                                         {...register('categoria', {
@@ -234,7 +341,22 @@ const CrearProducto = () => {
                             </Col>
                             <Col md={6}>
                                 <Form.Group controlId="tipo">
-                                    <Form.Label style={{ fontWeight: 'bold' }}>TIPO (*)</Form.Label>
+                                    <OverlayTrigger
+                                        placement="auto"
+                                        overlay={renderTooltip("Selecciona el tipo del producto. Campo obligatorio.")}
+                                        popperConfig={{
+                                            modifiers: [
+                                                {
+                                                    name: 'flip',
+                                                    options: {
+                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
+                                                    }
+                                                }
+                                            ]
+                                        }}
+                                    >
+                                        <Form.Label style={{ fontWeight: 'bold' }}>TIPO (*)</Form.Label>
+                                    </OverlayTrigger>
                                     <Form.Control
                                         as="select"
                                         {...register('tipo', {
@@ -254,7 +376,22 @@ const CrearProducto = () => {
                         <Row>
                             <Col md={6}>
                                 <Form.Group controlId="imagen">
-                                    <Form.Label>IMAGEN (solo PNG)</Form.Label>
+                                    <OverlayTrigger
+                                        placement="auto"
+                                        overlay={renderTooltip("Sube una imagen del producto en formato PNG.")}
+                                        popperConfig={{
+                                            modifiers: [
+                                                {
+                                                    name: 'flip',
+                                                    options: {
+                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
+                                                    }
+                                                }
+                                            ]
+                                        }}
+                                    >
+                                        <Form.Label>IMAGEN (solo PNG)</Form.Label>
+                                    </OverlayTrigger>
                                     <Form.Control
                                         type="file"
                                         accept=".png"
@@ -287,7 +424,7 @@ const CrearProducto = () => {
                     <button
                         className="button-previous"
                         onClick={previousPage}
-                        disabled={page === 0} /* Bloquea el botón si estamos en la primera página */
+                        disabled={page === 0}
                     >
                         <FontAwesomeIcon icon={faArrowLeft} /> ATRÁS
                     </button>
@@ -297,12 +434,11 @@ const CrearProducto = () => {
                             SIGUIENTE <FontAwesomeIcon icon={faArrowRight} />
                         </button>
                     ) : (
-                        <button className="button-submit" type="submit"  >
+                        <button className="button-submit" type="submit">
                             <FontAwesomeIcon icon={faPaperPlane} /> CREAR
                         </button>
                     )}
                 </div>
-
             </Form>
         </Container>
     );

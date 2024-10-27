@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Container, Row, Col } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faCartShopping, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
@@ -9,15 +9,15 @@ import proveedorService from '../../services/proveedor.service';
 import inventarioService from '../../services/inventario.service';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { formatDateToYYYYMMDD, formatDateToDDMMYYYY } from '../../logic/dateFormat.logic'; // Importar funciones
+import { formatDateToYYYYMMDD, formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 import '../../css/Form.css';
 
 const CrearPedido = () => {
     const [productosDisponibles, setProductosDisponibles] = useState([]);
     const [proveedoresDisponibles, setProveedoresDisponibles] = useState([]);
     const [inventariosDisponibles, setInventariosDisponibles] = useState([]);
-    const [page, setPage] = useState(0); // Controla la página actual del formulario
-    const [fechaPedido, setFechaPedido] = useState(null); // Manejar la fecha seleccionada
+    const [page, setPage] = useState(0);
+    const [fechaPedido, setFechaPedido] = useState(null);
 
     const { register, handleSubmit, control, formState: { errors }, reset } = useForm({
         defaultValues: {
@@ -68,12 +68,10 @@ const CrearPedido = () => {
             setPage(page + 1);
         } else {
             try {
-                // Convertir la fecha a yyyy-mm-dd antes de enviar los datos
                 const formattedData = {
                     ...data,
                     fecha_pedido: formatDateToYYYYMMDD(fechaPedido),
                 };
-                console.log(formattedData);
                 await pedidoService.createPedido(formattedData);
                 alert('Pedido creado exitosamente');
                 reset();
@@ -84,15 +82,25 @@ const CrearPedido = () => {
         }
     };
 
+    const renderTooltip = (message) => (
+        <Tooltip style={{ maxWidth: '200px' }}>{message}</Tooltip>
+    );
+
     const renderPageFields = () => {
         if (page === 0) {
             return (
                 <>
                     <Row>
-                        {/* Selección de proveedor */}
                         <Col md={6}>
                             <Form.Group controlId="proveedor_id">
-                                <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>PROVEEDOR (*)</Form.Label>
+                                <OverlayTrigger
+                                    placement="auto"
+                                    flip
+                                    overlay={renderTooltip("Selecciona el proveedor para este pedido. Campo obligatorio.")}
+                                    popperConfig={{ modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'left', 'right'] } }] }}
+                                >
+                                    <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>PROVEEDOR (*)</Form.Label>
+                                </OverlayTrigger>
                                 <Form.Control
                                     as="select"
                                     {...register('proveedor_id', { required: 'El proveedor es obligatorio' })}
@@ -109,10 +117,16 @@ const CrearPedido = () => {
                             </Form.Group>
                         </Col>
 
-                        {/* Selección de inventario */}
                         <Col md={6}>
                             <Form.Group controlId="inventario_asignado_id">
-                                <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>INVENTARIO (*)</Form.Label>
+                                <OverlayTrigger
+                                    placement="auto"
+                                    flip
+                                    overlay={renderTooltip("Selecciona el inventario donde se asignará este pedido. Campo obligatorio.")}
+                                    popperConfig={{ modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'left', 'right'] } }] }}
+                                >
+                                    <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>INVENTARIO (*)</Form.Label>
+                                </OverlayTrigger>
                                 <Form.Control
                                     as="select"
                                     {...register('inventario_asignado_id', { required: 'El inventario asignado es obligatorio' })}
@@ -131,14 +145,20 @@ const CrearPedido = () => {
                     </Row>
 
                     <Row>
-                        {/* Selección de la fecha del pedido */}
                         <Col md={6}>
                             <Form.Group controlId="fecha_pedido">
-                                <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>FECHA DEL PEDIDO (*)</Form.Label>
+                                <OverlayTrigger
+                                    placement="auto"
+                                    flip
+                                    overlay={renderTooltip("Selecciona la fecha para este pedido. Campo obligatorio.")}
+                                    popperConfig={{ modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'left', 'right'] } }] }}
+                                >
+                                    <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>FECHA DEL PEDIDO (*)</Form.Label>
+                                </OverlayTrigger>
                                 <DatePicker
                                     selected={fechaPedido}
-                                    onChange={(date) => setFechaPedido(date)} // Manejamos el cambio de fecha aquí
-                                    dateFormat="dd/MM/yyyy" // Mostrar como dd/mm/yyyy
+                                    onChange={(date) => setFechaPedido(date)}
+                                    dateFormat="dd/MM/yyyy"
                                     placeholderText="Selecciona la fecha"
                                     className={`form-input ${errors.fecha_pedido ? 'is-invalid' : ''}`}
                                 />
@@ -146,10 +166,16 @@ const CrearPedido = () => {
                             </Form.Group>
                         </Col>
 
-                        {/* Selección del estado */}
                         <Col md={6}>
                             <Form.Group controlId="estado">
-                                <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>ESTADO ACTUAL (*)</Form.Label>
+                                <OverlayTrigger
+                                    placement="auto"
+                                    flip
+                                    overlay={renderTooltip("Indica el estado actual del pedido: Completo, Pendiente o Cancelado.")}
+                                    popperConfig={{ modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'left', 'right'] } }] }}
+                                >
+                                    <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>ESTADO ACTUAL (*)</Form.Label>
+                                </OverlayTrigger>
                                 <Form.Control
                                     as="select"
                                     {...register('estado', { required: 'El estado del pedido es obligatorio' })}
@@ -171,10 +197,16 @@ const CrearPedido = () => {
                 <>
                     {fields.map((item, index) => (
                         <Row key={item.id}>
-                            {/* Selección de producto */}
                             <Col md={6}>
                                 <Form.Group controlId={`producto_${index}`}>
-                                    <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>PRODUCTO (*)</Form.Label>
+                                    <OverlayTrigger
+                                        placement="auto"
+                                        flip
+                                        overlay={renderTooltip("Selecciona el producto para agregar a este pedido. Campo obligatorio.")}
+                                        popperConfig={{ modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'left', 'right'] } }] }}
+                                    >
+                                        <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>PRODUCTO (*)</Form.Label>
+                                    </OverlayTrigger>
                                     <Form.Control
                                         as="select"
                                         {...register(`productos[${index}].productoId`, { required: 'El producto es obligatorio' })}
@@ -193,10 +225,16 @@ const CrearPedido = () => {
                                 </Form.Group>
                             </Col>
 
-                            {/* Cantidad de producto */}
                             <Col md={6}>
                                 <Form.Group controlId={`cantidad_${index}`}>
-                                    <Form.Label style={{ fontWeight: 'bold' }} className="form-label" >CANTIDAD (*)</Form.Label>
+                                    <OverlayTrigger
+                                        placement="auto"
+                                        flip
+                                        overlay={renderTooltip("Especifica la cantidad de este producto en el pedido. Debe ser un número positivo.")}
+                                        popperConfig={{ modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'left', 'right'] } }] }}
+                                    >
+                                        <Form.Label style={{ fontWeight: 'bold' }} className="form-label">CANTIDAD (*)</Form.Label>
+                                    </OverlayTrigger>
                                     <Form.Control
                                         type="number"
                                         placeholder="Ingresa la cantidad"
@@ -236,16 +274,15 @@ const CrearPedido = () => {
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         {renderPageFields()}
 
-                        <div className="button-container mt-4">
-                            {page > 0 && (
-                                <button
-                                    className="button-previous"
-                                    type="button"
-                                    onClick={() => setPage(page - 1)}
-                                >
-                                    <FontAwesomeIcon icon={faArrowLeft} /> ATRÁS
-                                </button>
-                            )}
+                        <div className="button-container mt-4 d-flex justify-content-between">
+                            <button
+                                className="button-previous"
+                                type="button"
+                                onClick={() => setPage(page - 1)}
+                                disabled={page === 0} // Desactiva el botón cuando page es 0
+                            >
+                                <FontAwesomeIcon icon={faArrowLeft} /> ATRÁS
+                            </button>
 
                             {page < 1 ? (
                                 <button
@@ -261,6 +298,7 @@ const CrearPedido = () => {
                                 </button>
                             )}
                         </div>
+
                     </Form>
                 </Col>
             </Row>

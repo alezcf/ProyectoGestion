@@ -1,10 +1,10 @@
 import React from 'react';
-import { Form, Container, Row, Col } from 'react-bootstrap';
+import { Form, Container, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faUser } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
 import usuarioService from '../../services/usuario.service';
-import '../../css/Form.css'; // Importar los estilos
+import '../../css/Form.css';
 
 const CrearUsuario = () => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -13,11 +13,15 @@ const CrearUsuario = () => {
         try {
             await usuarioService.createUsuario(data);
             alert('Usuario creado exitosamente');
-            reset(); // Resetea el formulario después del envío
+            reset();
         } catch (err) {
             alert(err.response.data.message);
         }
     };
+
+    const renderTooltip = (message) => (
+        <Tooltip style={{ maxWidth: '200px', whiteSpace: 'normal' }}>{message}</Tooltip>
+    );
 
     return (
         <Container>
@@ -27,7 +31,17 @@ const CrearUsuario = () => {
                     <Row>
                         <Col md={6}>
                             <Form.Group controlId="rut">
-                                <Form.Label style={{ fontWeight: 'bold' }}>RUT (*)</Form.Label>
+                                <OverlayTrigger
+                                    placement="auto"
+                                    overlay={renderTooltip("Introduce el RUT del usuario en el formato XX.XXX.XXX-X.")}
+                                    popperConfig={{
+                                        modifiers: [
+                                            { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
+                                        ]
+                                    }}
+                                >
+                                    <Form.Label style={{ fontWeight: 'bold' }}>RUT (*)</Form.Label>
+                                </OverlayTrigger>
                                 <Form.Control
                                     type="text"
                                     placeholder="Ingresa el RUT"
@@ -45,9 +59,20 @@ const CrearUsuario = () => {
                                 {errors.rut && <span className="text-danger">{errors.rut.message}</span>}
                             </Form.Group>
                         </Col>
+
                         <Col md={6}>
                             <Form.Group controlId="nombreCompleto">
-                                <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE (*)</Form.Label>
+                                <OverlayTrigger
+                                    placement="auto"
+                                    overlay={renderTooltip("Introduce el nombre completo del usuario, entre 3 y 50 caracteres.")}
+                                    popperConfig={{
+                                        modifiers: [
+                                            { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
+                                        ]
+                                    }}
+                                >
+                                    <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE (*)</Form.Label>
+                                </OverlayTrigger>
                                 <Form.Control
                                     type="text"
                                     placeholder="Ingresa el nombre completo"
@@ -66,7 +91,17 @@ const CrearUsuario = () => {
                     <Row>
                         <Col md={6}>
                             <Form.Group controlId="email">
-                                <Form.Label style={{ fontWeight: 'bold' }}>CORREO ELECTRÓNICO (*)</Form.Label>
+                                <OverlayTrigger
+                                    placement="auto"
+                                    overlay={renderTooltip("Introduce el correo electrónico del usuario en un formato válido.")}
+                                    popperConfig={{
+                                        modifiers: [
+                                            { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
+                                        ]
+                                    }}
+                                >
+                                    <Form.Label style={{ fontWeight: 'bold' }}>CORREO ELECTRÓNICO (*)</Form.Label>
+                                </OverlayTrigger>
                                 <Form.Control
                                     type="email"
                                     placeholder="Ingresa el email"
@@ -84,12 +119,20 @@ const CrearUsuario = () => {
 
                         <Col md={6}>
                             <Form.Group controlId="rol">
-                                <Form.Label>CARGO LABORAL</Form.Label>
+                                <OverlayTrigger
+                                    placement="auto"
+                                    overlay={renderTooltip("Selecciona el rol laboral del usuario.")}
+                                    popperConfig={{
+                                        modifiers: [
+                                            { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
+                                        ]
+                                    }}
+                                >
+                                    <Form.Label>CARGO LABORAL</Form.Label>
+                                </OverlayTrigger>
                                 <Form.Control
                                     as="select"
-                                    {...register('rol', {
-                                        required: 'El rol es obligatorio'
-                                    })}
+                                    {...register('rol', { required: 'El rol es obligatorio' })}
                                     className={errors.rol ? 'is-invalid' : ''}
                                 >
                                     <option value="">Selecciona el rol</option>
@@ -104,7 +147,17 @@ const CrearUsuario = () => {
                     <Row>
                         <Col md={6}>
                             <Form.Group controlId="password">
-                                <Form.Label style={{ fontWeight: 'bold' }}>CONTRASEÑA (*)</Form.Label>
+                                <OverlayTrigger
+                                    placement="auto"
+                                    overlay={renderTooltip("Introduce una contraseña de al menos 6 caracteres. Solo letras y números.")}
+                                    popperConfig={{
+                                        modifiers: [
+                                            { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
+                                        ]
+                                    }}
+                                >
+                                    <Form.Label style={{ fontWeight: 'bold' }}>CONTRASEÑA (*)</Form.Label>
+                                </OverlayTrigger>
                                 <Form.Control
                                     type="password"
                                     placeholder="Ingresa la contraseña"
@@ -121,7 +174,7 @@ const CrearUsuario = () => {
                     </Row>
 
                     <div className="button-container">
-                        <button className="button-submit" type="submit"  >
+                        <button className="button-submit" type="submit">
                             <FontAwesomeIcon icon={faPaperPlane} /> CREAR
                         </button>
                     </div>
