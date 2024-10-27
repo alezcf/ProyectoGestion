@@ -1,5 +1,5 @@
-import React from 'react';
-import { Form, Container, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Form, Container, Row, Col, OverlayTrigger, Tooltip, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faBuilding } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
@@ -8,14 +8,17 @@ import '../../css/Form.css';
 
 const CrearProveedor = () => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const onSubmit = async (data) => {
+    const confirmSubmit = async (data) => {
         try {
             await proveedorService.createProveedor(data);
             alert('Proveedor creado exitosamente');
             reset(); // Resetear el formulario
+            setShowConfirmation(false);
         } catch (err) {
             alert('Error al crear el proveedor: ' + err.response.data.message);
+            setShowConfirmation(false);
         }
     };
 
@@ -27,7 +30,7 @@ const CrearProveedor = () => {
         <Container>
             <div className="form-container">
                 <h2 className="text-center mb-4"><FontAwesomeIcon icon={faBuilding} /> NUEVO PROVEEDOR</h2>
-                <Form onSubmit={handleSubmit(onSubmit)}>
+                <Form onSubmit={handleSubmit((data) => setShowConfirmation(true))}>
                     <Row>
                         {/* Campo Nombre */}
                         <Col md={6}>
@@ -173,12 +176,29 @@ const CrearProveedor = () => {
                     </Row>
 
                     <div className="button-container">
-                        <button className="button-submit" type="submit">
+                        <button className="button-submit" type="button" onClick={() => setShowConfirmation(true)}>
                             <FontAwesomeIcon icon={faPaperPlane} /> REGISTRAR
                         </button>
                     </div>
                 </Form>
             </div>
+
+            <Modal show={showConfirmation} onHide={() => setShowConfirmation(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmar Creación</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>¿Estás seguro de que deseas crear el proveedor?</p>
+                </Modal.Body>
+                <Modal.Footer className="button-container">
+                    <button type="button" className="button-previous" onClick={() => setShowConfirmation(false)}>
+                        CANCELAR
+                    </button>
+                    <button type="button" className="button-next" onClick={handleSubmit(confirmSubmit)}>
+                        GUARDAR <FontAwesomeIcon icon={faPaperPlane} />
+                    </button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 };

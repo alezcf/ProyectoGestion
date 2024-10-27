@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Container, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col, OverlayTrigger, Tooltip, Modal } from 'react-bootstrap';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faCartShopping, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
@@ -9,7 +9,7 @@ import proveedorService from '../../services/proveedor.service';
 import inventarioService from '../../services/inventario.service';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { formatDateToYYYYMMDD, formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
+import { formatDateToYYYYMMDD } from '../../logic/dateFormat.logic';
 import '../../css/Form.css';
 
 const CrearPedido = () => {
@@ -18,7 +18,7 @@ const CrearPedido = () => {
     const [inventariosDisponibles, setInventariosDisponibles] = useState([]);
     const [page, setPage] = useState(0);
     const [fechaPedido, setFechaPedido] = useState(null);
-
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const { register, handleSubmit, control, formState: { errors }, reset } = useForm({
         defaultValues: {
             productos: [{ productoId: '', cantidad: '' }]
@@ -63,22 +63,20 @@ const CrearPedido = () => {
         fetchInventarios();
     }, []);
 
-    const onSubmit = async (data) => {
-        if (page < 1) {
-            setPage(page + 1);
-        } else {
-            try {
-                const formattedData = {
-                    ...data,
-                    fecha_pedido: formatDateToYYYYMMDD(fechaPedido),
-                };
-                await pedidoService.createPedido(formattedData);
-                alert('Pedido creado exitosamente');
-                reset();
-                setPage(0);
-            } catch (err) {
-                alert(err.response.data.message);
-            }
+    const confirmSubmit = async (data) => {
+        try {
+            const formattedData = {
+                ...data,
+                fecha_pedido: formatDateToYYYYMMDD(fechaPedido),
+            };
+            await pedidoService.createPedido(formattedData);
+            alert('Pedido creado exitosamente');
+            reset();
+            setPage(0);
+            setShowConfirmation(false);
+        } catch (err) {
+            alert(err.response.data.message);
+            setShowConfirmation(false);
         }
     };
 
@@ -97,7 +95,6 @@ const CrearPedido = () => {
                                     placement="auto"
                                     flip
                                     overlay={renderTooltip("Selecciona el proveedor para este pedido. Campo obligatorio.")}
-                                    popperConfig={{ modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'left', 'right'] } }] }}
                                 >
                                     <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>PROVEEDOR (*)</Form.Label>
                                 </OverlayTrigger>
@@ -123,7 +120,6 @@ const CrearPedido = () => {
                                     placement="auto"
                                     flip
                                     overlay={renderTooltip("Selecciona el inventario donde se asignará este pedido. Campo obligatorio.")}
-                                    popperConfig={{ modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'left', 'right'] } }] }}
                                 >
                                     <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>INVENTARIO (*)</Form.Label>
                                 </OverlayTrigger>
@@ -151,7 +147,6 @@ const CrearPedido = () => {
                                     placement="auto"
                                     flip
                                     overlay={renderTooltip("Selecciona la fecha para este pedido. Campo obligatorio.")}
-                                    popperConfig={{ modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'left', 'right'] } }] }}
                                 >
                                     <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>FECHA DEL PEDIDO (*)</Form.Label>
                                 </OverlayTrigger>
@@ -172,7 +167,6 @@ const CrearPedido = () => {
                                     placement="auto"
                                     flip
                                     overlay={renderTooltip("Indica el estado actual del pedido: Completo, Pendiente o Cancelado.")}
-                                    popperConfig={{ modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'left', 'right'] } }] }}
                                 >
                                     <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>ESTADO ACTUAL (*)</Form.Label>
                                 </OverlayTrigger>
@@ -203,7 +197,6 @@ const CrearPedido = () => {
                                         placement="auto"
                                         flip
                                         overlay={renderTooltip("Selecciona el producto para agregar a este pedido. Campo obligatorio.")}
-                                        popperConfig={{ modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'left', 'right'] } }] }}
                                     >
                                         <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>PRODUCTO (*)</Form.Label>
                                     </OverlayTrigger>
@@ -231,7 +224,6 @@ const CrearPedido = () => {
                                         placement="auto"
                                         flip
                                         overlay={renderTooltip("Especifica la cantidad de este producto en el pedido. Debe ser un número positivo.")}
-                                        popperConfig={{ modifiers: [{ name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'left', 'right'] } }] }}
                                     >
                                         <Form.Label style={{ fontWeight: 'bold' }} className="form-label">CANTIDAD (*)</Form.Label>
                                     </OverlayTrigger>
@@ -271,7 +263,7 @@ const CrearPedido = () => {
             <Row className="justify-content-md-center mt-5">
                 <Col md={8}>
                     <h2 className="text-center mb-4"><FontAwesomeIcon icon={faCartShopping} /> REGISTRAR PEDIDO</h2>
-                    <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Form onSubmit={handleSubmit(() => setShowConfirmation(true))}>
                         {renderPageFields()}
 
                         <div className="button-container mt-4 d-flex justify-content-between">
@@ -279,7 +271,7 @@ const CrearPedido = () => {
                                 className="button-previous"
                                 type="button"
                                 onClick={() => setPage(page - 1)}
-                                disabled={page === 0} // Desactiva el botón cuando page es 0
+                                disabled={page === 0}
                             >
                                 <FontAwesomeIcon icon={faArrowLeft} /> ATRÁS
                             </button>
@@ -298,8 +290,29 @@ const CrearPedido = () => {
                                 </button>
                             )}
                         </div>
-
                     </Form>
+
+                    {/* Modal de Confirmación */}
+                    <Modal show={showConfirmation} onHide={() => setShowConfirmation(false)} centered>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Confirmación</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>¿Estás seguro de que deseas crear el pedido?</Modal.Body>
+                        <Modal.Footer>
+                            <button
+                                className="button-previous"
+                                onClick={() => setShowConfirmation(false)}
+                            >
+                                CANCELAR
+                            </button>
+                            <button
+                                className="button-next"
+                                onClick={handleSubmit(confirmSubmit)}
+                            >
+                                GUARDAR <FontAwesomeIcon icon={faPaperPlane} />
+                            </button>
+                        </Modal.Footer>
+                    </Modal>
                 </Col>
             </Row>
         </Container>

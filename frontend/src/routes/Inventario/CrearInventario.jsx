@@ -1,5 +1,5 @@
-import React from 'react';
-import { Form, Container, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Form, Container, Row, Col, OverlayTrigger, Tooltip, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faWarehouse } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
@@ -8,14 +8,17 @@ import '../../css/Form.css';
 
 const CrearInventario = () => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const onSubmit = async (data) => {
+    const confirmSubmit = async (data) => {
         try {
             await inventarioService.createInventario(data);
             alert('Inventario creado exitosamente');
             reset();
+            setShowConfirmation(false);
         } catch (err) {
             alert('Error al crear el inventario: ' + err.response.data.message);
+            setShowConfirmation(false);
         }
     };
 
@@ -27,7 +30,7 @@ const CrearInventario = () => {
         <Container>
             <div className="form-container">
                 <h2 className="text-center mb-4"><FontAwesomeIcon icon={faWarehouse} /> CREAR INVENTARIO</h2>
-                <Form onSubmit={handleSubmit(onSubmit)}>
+                <Form onSubmit={handleSubmit(() => setShowConfirmation(true))}>
                     <Row>
                         <Col md={6}>
                             <Form.Group controlId="nombre">
@@ -85,6 +88,28 @@ const CrearInventario = () => {
                         </button>
                     </div>
                 </Form>
+
+                {/* Modal de Confirmación */}
+                <Modal show={showConfirmation} onHide={() => setShowConfirmation(false)} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirmación</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>¿Estás seguro de que deseas crear el inventario?</Modal.Body>
+                    <Modal.Footer>
+                        <button
+                            className="button-previous"
+                            onClick={() => setShowConfirmation(false)}
+                        >
+                            CANCELAR
+                        </button>
+                        <button
+                            className="button-next"
+                            onClick={handleSubmit(confirmSubmit)}
+                        >
+                            GUARDAR <FontAwesomeIcon icon={faPaperPlane} />
+                        </button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         </Container>
     );

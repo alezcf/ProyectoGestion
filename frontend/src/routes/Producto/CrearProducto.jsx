@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Container, Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Form, Container, Row, Col, OverlayTrigger, Tooltip, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faArrowLeft, faArrowRight, faBottleDroplet } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
@@ -25,6 +25,7 @@ const CrearProducto = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const [page, setPage] = useState(0);
     const [constants, setConstants] = useState({ categorias: [], medidas: [], tipos: [] });
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const totalPages = 2;
 
     useEffect(() => {
@@ -39,7 +40,7 @@ const CrearProducto = () => {
         fetchConstants();
     }, []);
 
-    const onSubmit = async (data) => {
+    const confirmSubmit = async (data) => {
         try {
             const formData = new FormData();
             Object.keys(data).forEach(key => {
@@ -55,8 +56,10 @@ const CrearProducto = () => {
             reset();
             setImagePreview(null);
             setPage(0);
+            setShowConfirmation(false);
         } catch (err) {
             alert('Error al crear el producto: ' + err.response);
+            setShowConfirmation(false);
         }
     };
 
@@ -105,12 +108,7 @@ const CrearProducto = () => {
                                         overlay={renderTooltip("Introduce el nombre del producto. Requerido y debe tener entre 3 y 255 caracteres.")}
                                         popperConfig={{
                                             modifiers: [
-                                                {
-                                                    name: 'flip',
-                                                    options: {
-                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
-                                                    }
-                                                }
+                                                { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
@@ -121,14 +119,8 @@ const CrearProducto = () => {
                                         placeholder="Ingresa el nombre del producto"
                                         {...register('nombre', {
                                             required: "El nombre es obligatorio.",
-                                            minLength: {
-                                                value: 3,
-                                                message: "El nombre debe tener como mínimo 3 caracteres."
-                                            },
-                                            maxLength: {
-                                                value: 255,
-                                                message: "El nombre debe tener como máximo 255 caracteres."
-                                            }
+                                            minLength: { value: 3, message: "Debe tener como mínimo 3 caracteres." },
+                                            maxLength: { value: 255, message: "Debe tener como máximo 255 caracteres." }
                                         })}
                                         className={`form-input ${errors.nombre ? 'is-invalid' : ''}`}
                                     />
@@ -142,12 +134,7 @@ const CrearProducto = () => {
                                         overlay={renderTooltip("Introduce una breve descripción del producto. Requerido y hasta 1000 caracteres.")}
                                         popperConfig={{
                                             modifiers: [
-                                                {
-                                                    name: 'flip',
-                                                    options: {
-                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
-                                                    }
-                                                }
+                                                { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
@@ -158,10 +145,7 @@ const CrearProducto = () => {
                                         placeholder="Ingresa la descripción"
                                         {...register('descripcion', {
                                             required: "La descripción es obligatoria.",
-                                            maxLength: {
-                                                value: 1000,
-                                                message: "La descripción debe tener como máximo 1000 caracteres."
-                                            }
+                                            maxLength: { value: 1000, message: "Debe tener como máximo 1000 caracteres." }
                                         })}
                                         className={`form-input ${errors.descripcion ? 'is-invalid' : ''}`}
                                     />
@@ -174,15 +158,10 @@ const CrearProducto = () => {
                                 <Form.Group controlId="marca">
                                     <OverlayTrigger
                                         placement="auto"
-                                        overlay={renderTooltip("Opcional. Introduce la marca del producto, hasta 255 caracteres.")}
+                                        overlay={renderTooltip("Introduce la marca del producto, hasta 255 caracteres.")}
                                         popperConfig={{
                                             modifiers: [
-                                                {
-                                                    name: 'flip',
-                                                    options: {
-                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
-                                                    }
-                                                }
+                                                { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
@@ -192,10 +171,7 @@ const CrearProducto = () => {
                                         type="text"
                                         placeholder="Ingresa la marca"
                                         {...register('marca', {
-                                            maxLength: {
-                                                value: 255,
-                                                message: "La marca debe tener como máximo 255 caracteres."
-                                            }
+                                            maxLength: { value: 255, message: "Debe tener como máximo 255 caracteres." }
                                         })}
                                         className={`form-input ${errors.marca ? 'is-invalid' : ''}`}
                                     />
@@ -209,12 +185,7 @@ const CrearProducto = () => {
                                         overlay={renderTooltip("Introduce el contenido en unidades, debe ser un número positivo.")}
                                         popperConfig={{
                                             modifiers: [
-                                                {
-                                                    name: 'flip',
-                                                    options: {
-                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
-                                                    }
-                                                }
+                                                { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
@@ -224,10 +195,7 @@ const CrearProducto = () => {
                                         type="number"
                                         placeholder="Ingresa el contenido"
                                         {...register('contenido', {
-                                            min: {
-                                                value: 0,
-                                                message: "El contenido debe ser un número positivo."
-                                            }
+                                            min: { value: 0, message: "Debe ser un número positivo." }
                                         })}
                                         className={`form-input ${errors.contenido ? 'is-invalid' : ''}`}
                                     />
@@ -243,12 +211,7 @@ const CrearProducto = () => {
                                         overlay={renderTooltip("Selecciona la unidad de medida para el contenido del producto.")}
                                         popperConfig={{
                                             modifiers: [
-                                                {
-                                                    name: 'flip',
-                                                    options: {
-                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
-                                                    }
-                                                }
+                                                { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
@@ -274,12 +237,7 @@ const CrearProducto = () => {
                                         overlay={renderTooltip("Introduce el precio del producto, debe ser un número positivo.")}
                                         popperConfig={{
                                             modifiers: [
-                                                {
-                                                    name: 'flip',
-                                                    options: {
-                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
-                                                    }
-                                                }
+                                                { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
@@ -289,10 +247,7 @@ const CrearProducto = () => {
                                         type="number"
                                         placeholder="Ingresa el precio"
                                         {...register('precio', {
-                                            min: {
-                                                value: 0,
-                                                message: "El precio debe ser un número positivo."
-                                            }
+                                            min: { value: 0, message: "Debe ser un número positivo." }
                                         })}
                                         className={`form-input ${errors.precio ? 'is-invalid' : ''}`}
                                     />
@@ -313,12 +268,7 @@ const CrearProducto = () => {
                                         overlay={renderTooltip("Selecciona la categoría del producto. Campo obligatorio.")}
                                         popperConfig={{
                                             modifiers: [
-                                                {
-                                                    name: 'flip',
-                                                    options: {
-                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
-                                                    }
-                                                }
+                                                { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
@@ -326,9 +276,7 @@ const CrearProducto = () => {
                                     </OverlayTrigger>
                                     <Form.Control
                                         as="select"
-                                        {...register('categoria', {
-                                            required: "La categoría es obligatoria."
-                                        })}
+                                        {...register('categoria', { required: "La categoría es obligatoria." })}
                                         className={`form-input ${errors.categoria ? 'is-invalid' : ''}`}
                                     >
                                         <option value="">Seleccione una categoría</option>
@@ -346,12 +294,7 @@ const CrearProducto = () => {
                                         overlay={renderTooltip("Selecciona el tipo del producto. Campo obligatorio.")}
                                         popperConfig={{
                                             modifiers: [
-                                                {
-                                                    name: 'flip',
-                                                    options: {
-                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
-                                                    }
-                                                }
+                                                { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
@@ -359,9 +302,7 @@ const CrearProducto = () => {
                                     </OverlayTrigger>
                                     <Form.Control
                                         as="select"
-                                        {...register('tipo', {
-                                            required: "El tipo es obligatorio.",
-                                        })}
+                                        {...register('tipo', { required: "El tipo es obligatorio." })}
                                         className={`form-input ${errors.tipo ? 'is-invalid' : ''}`}
                                     >
                                         <option value="">Seleccione un tipo</option>
@@ -381,12 +322,7 @@ const CrearProducto = () => {
                                         overlay={renderTooltip("Sube una imagen del producto en formato PNG.")}
                                         popperConfig={{
                                             modifiers: [
-                                                {
-                                                    name: 'flip',
-                                                    options: {
-                                                        fallbackPlacements: ['top', 'bottom', 'left', 'right']
-                                                    }
-                                                }
+                                                { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
@@ -418,14 +354,10 @@ const CrearProducto = () => {
     return (
         <Container fluid className="form-container">
             <h2 className="text-center mb-4"><FontAwesomeIcon icon={faBottleDroplet} /> REGISTRAR PRODUCTO</h2>
-            <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form onSubmit={handleSubmit((data) => setShowConfirmation(true))}>
                 {renderPageFields()}
                 <div className="button-container">
-                    <button
-                        className="button-previous"
-                        onClick={previousPage}
-                        disabled={page === 0}
-                    >
+                    <button className="button-previous" onClick={previousPage} disabled={page === 0}>
                         <FontAwesomeIcon icon={faArrowLeft} /> ATRÁS
                     </button>
 
@@ -434,12 +366,29 @@ const CrearProducto = () => {
                             SIGUIENTE <FontAwesomeIcon icon={faArrowRight} />
                         </button>
                     ) : (
-                        <button className="button-submit" type="submit">
+                        <button className="button-submit" type="button" onClick={() => setShowConfirmation(true)}>
                             <FontAwesomeIcon icon={faPaperPlane} /> CREAR
                         </button>
                     )}
                 </div>
             </Form>
+
+            <Modal show={showConfirmation} onHide={() => setShowConfirmation(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmar Creación</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>¿Estás seguro de que deseas crear el producto?</p>
+                </Modal.Body>
+                <Modal.Footer className="button-container">
+                    <button type="button" className="button-previous" onClick={() => setShowConfirmation(false)}>
+                        CANCELAR
+                    </button>
+                    <button type="button" className="button-next" onClick={handleSubmit(confirmSubmit)}>
+                        GUARDAR <FontAwesomeIcon icon={faPaperPlane} />
+                    </button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 };
