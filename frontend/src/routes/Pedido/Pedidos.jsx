@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Card, Alert, Button } from 'react-bootstrap';
 import pedidoService from '../../services/pedido.service';
-import exportService from '../../services/export.service'; // Importar el servicio de exportación
+import exportService from '../../services/export.service';
 import SearchBar from '../../components/Common/SearchBar';
 import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import CustomTable from '../../components/Common/CustomTable';
-import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic'; // Importamos las funciones desde logic
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 
 const Pedidos = () => {
     const [pedidos, setPedidos] = useState([]);
@@ -19,10 +19,13 @@ const Pedidos = () => {
         const fetchPedidos = async () => {
             try {
                 const response = await pedidoService.getAllPedidos();
-                setPedidos(response);
-                console.log(response);
+                console.log("Obtenido del backend" + response);
+                setPedidos(response || []);
             } catch (err) {
-                setError('Error al cargar los pedidos.');
+                console.log("Obtenido del backend" + err.message);
+                const errorMessage = err.message || 'Error de red. No se pudo conectar con el servidor.';
+                setError(errorMessage);
+                setPedidos([]);
             }
         };
 
@@ -35,20 +38,16 @@ const Pedidos = () => {
 
     const handleExport = async () => {
         try {
-            // Preparamos los datos para exportar
             const pedidosData = pedidos.map(pedido => ({
                 NÚMERO: pedido.id,
                 'FECHA DEL PEDIDO': formatDateToDDMMYYYY(pedido.fecha_pedido),
                 ESTADO: pedido.estado,
                 'CANTIDAD DE PRODUCTOS': calcularCantidadTotalProductos(pedido.pedidoProductos),
                 'COSTO TOTAL': `$${calcularCostoTotal(pedido.pedidoProductos)}`,
-                'PROVEEDOR': pedido.proveedor.nombre,
-                'INVENTARIO': pedido.inventarioAsignado.nombre
+                'PROVEEDOR': pedido.proveedor?.nombre,
+                'INVENTARIO': pedido.inventarioAsignado?.nombre
             }));
-
-            // Llamamos al servicio de exportación
             const filePath = await exportService.exportDataToExcel(pedidosData);
-            console.log('Archivo Excel exportado:', filePath);
             alert('Datos exportados con éxito. Archivo disponible en: ' + filePath);
         } catch (error) {
             console.error('Error exportando a Excel:', error);
@@ -67,7 +66,7 @@ const Pedidos = () => {
     };
 
     const filteredPedidos = pedidos.filter((pedido) =>
-        pedido.proveedor.nombre.toLowerCase().includes(searchQuery.toLowerCase())
+        pedido.proveedor?.nombre.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const headers = ['Número', 'Fecha', 'Estado', 'Cantidad de Productos', 'Costo', 'Proveedor', 'Inventario Asignado', 'Acciones'];
@@ -75,17 +74,17 @@ const Pedidos = () => {
     const renderRow = (pedido, index) => (
         <tr key={index}>
             <td>{pedido.id}</td>
-            <td>{formatDateToDDMMYYYY(pedido.fecha_pedido)}</td> {/* Usamos la función de formateo */}
+            <td>{formatDateToDDMMYYYY(pedido.fecha_pedido)}</td>
             <td>{pedido.estado}</td>
             <td>{calcularCantidadTotalProductos(pedido.pedidoProductos)}</td>
             <td>${calcularCostoTotal(pedido.pedidoProductos)}</td>
-            <td>{pedido.proveedor.nombre}</td>
-            <td>{pedido.inventarioAsignado.nombre}</td>
+            <td>{pedido.proveedor?.nombre || 'No disponible'}</td>
+            <td>{pedido.inventarioAsignado?.nombre || 'No disponible'}</td>
             <td>
                 <ButtonsActionsTable
                     itemId={pedido.id}
                     itemName={pedido.id}
-                    onExport={handleExport}  // Asignamos la función de exportación
+                    onExport={handleExport}
                     detailsRoute="/pedido"
                 />
             </td>
@@ -123,12 +122,16 @@ const Pedidos = () => {
                             </Button>
                         </Link>
 
-                        <Button variant="primary" onClick={handleExport} className="button-right">
+                        <Button
+                            variant="primary"
+                            onClick={handleExport}
+                            className="button-right"
+                            disabled={!!error} // Desactiva si hay un error
+                        >
                             Exportar a Excel
                         </Button>
                     </div>
                 </Card>
-
             </Row>
         </Container>
     );

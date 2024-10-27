@@ -15,6 +15,7 @@ export const getAllProductos = async () => {
             return data.data;
         }
     } catch (error) {
+        console.log(error);
         handleError(error);
     }
 };

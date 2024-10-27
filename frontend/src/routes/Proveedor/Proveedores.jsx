@@ -18,10 +18,12 @@ const Proveedores = () => {
         const fetchProveedores = async () => {
             try {
                 const data = await proveedorService.getAllProveedores();
-                setProveedores(data);
-                console.log(data);
+                setProveedores(data || []);
+                setError(null); // Resetea el error si se carga correctamente
             } catch (err) {
-                setError('Error al cargar los proveedores.');
+                // Asigna el mensaje del backend o un mensaje genérico
+                const errorMessage = err.response?.data?.message || 'Error de red. No se pudo conectar con el servidor.';
+                setError(errorMessage);
             }
         };
 
@@ -41,9 +43,7 @@ const Proveedores = () => {
                 TELÉFONO: proveedor.telefono,
                 'CORREO ELECTRÓNICO': proveedor.email
             }));
-            console.log('Datos a exportar:', proveedoresData);
             const filePath = await exportService.exportDataToExcel(proveedoresData);
-            console.log('Archivo Excel exportado:', filePath);
             alert('Datos exportados con éxito. Archivo disponible en: ' + filePath);
         } catch (error) {
             console.error('Error exportando a Excel:', error);
@@ -68,7 +68,7 @@ const Proveedores = () => {
                 <ButtonsActionsTable
                     itemId={proveedor.id}
                     itemName={proveedor.nombre}
-                    onExport={() => handleExport(proveedor.nombre)} // Exportar datos del proveedor
+                    onExport={() => handleExport(proveedor.nombre)}
                     detailsRoute="/proveedor"
                 />
             </td>
@@ -89,22 +89,25 @@ const Proveedores = () => {
                             <>
                                 <SearchBar searchQuery={searchQuery} handleSearchChange={handleSearchChange} />
                                 <CustomTable headers={headers} data={filteredProveedores} renderRow={renderRow} />
-
-                                <div className="button-container mt-3">
-                                    <Link to="/crear-proveedor" className="button-left">
-                                        <Button variant="success">
-                                            <FontAwesomeIcon icon={faPlus} /> Crear Proveedor
-                                        </Button>
-                                    </Link>
-
-                                    <Button variant="primary" onClick={handleExport} className="button-right">
-                                        Exportar a Excel
-                                    </Button>
-                                </div>
-
                             </>
                         )}
                     </Card.Body>
+                    <div className="button-container mt-3">
+                        <Link to="/crear-proveedor" className="button-left">
+                            <Button variant="success">
+                                <FontAwesomeIcon icon={faPlus} /> Crear Proveedor
+                            </Button>
+                        </Link>
+
+                        <Button
+                            variant="primary"
+                            onClick={handleExport}
+                            className="button-right"
+                            disabled={!!error} // Desactiva si hay un error
+                        >
+                            Exportar a Excel
+                        </Button>
+                    </div>
                 </Card>
             </Row>
         </Container>

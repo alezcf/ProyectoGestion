@@ -15,6 +15,7 @@ export const getAllPedidos = async () => {
             return data.data;
         }
     } catch (error) {
+        console.log("en el service obtengo el error" + error.response.data);
         handleError(error);
     }
 };
@@ -63,6 +64,7 @@ const handleError = (error) => {
         console.error('Error status', error.response.status);
         console.error('Error data', error.response.data);
     }
+    throw error.response.data;
 };
 
 export default {
