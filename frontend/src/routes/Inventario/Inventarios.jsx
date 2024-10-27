@@ -6,7 +6,7 @@ import exportService from '../../services/export.service';
 import CustomTable from '../../components/Common/CustomTable';
 import InventarioAcciones from '../../components/Inventario/InventarioAcciones';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faFileExcel } from '@fortawesome/free-solid-svg-icons';
 import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 import '../../css/Inventario.css';
 
@@ -111,23 +111,31 @@ const Inventario = () => {
                         )}
                     </Card.Body>
 
-                    <div className="button-container">
+                    <div className="button-container mt-3">
+                        {/* Botón Crear Inventario con estilos de Bootstrap y texto en negrita */}
                         <Link to="/crear-inventario" className="button-left">
-                            <Button className="me-2" variant="primary">
-                                <FontAwesomeIcon icon={faPlus} /> Crear Inventario
+                            <Button variant="warning" className="btn-create" style={{ fontWeight: 'bold' }}
+                            >
+                                <FontAwesomeIcon icon={faPlus} /> CREAR INVENTARIO
                             </Button>
                         </Link>
 
-                        {/* Botón para exportar a Excel, desactivado si hay error */}
+                        {/* Botón Exportar a Excel para Inventario con texto en negrita y borde simulado */}
                         <Button
                             className="button-right"
-                            variant="primary"
+                            variant="success"
                             onClick={handleExport}
                             disabled={!!error} // Desactivar si hay un error
+                            style={{
+                                fontWeight: 'bold',
+                                color: 'white',
+                                textShadow: '1px 1px 1px black, -1px -1px 1px black', // Borde simulado en negro
+                            }}
                         >
-                            Exportar a Excel
+                            <FontAwesomeIcon icon={faFileExcel} /> EXPORTAR A EXCEL
                         </Button>
                     </div>
+
                 </Card>
             </Row>
         </Container>

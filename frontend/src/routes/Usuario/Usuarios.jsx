@@ -7,7 +7,7 @@ import SearchBar from '../../components/Common/SearchBar';
 import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faFileExcel } from '@fortawesome/free-solid-svg-icons';
 import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 
 const Usuarios = () => {
@@ -94,15 +94,28 @@ const Usuarios = () => {
                         )}
                     </Card.Body>
                     <div className="button-container mt-3">
-                        <Link to="/crear-usuario" className="button-left">
-                            <Button variant="success">
-                                <FontAwesomeIcon icon={faPlus} /> Crear Usuario
+                        {/* Botón Crear Usuario con estilos de Bootstrap y texto en negrita */}
+                        <Link to="/crear-usuario">
+                            <Button variant="warning" className="btn-create" style={{ fontWeight: 'bold' }}>
+                                <FontAwesomeIcon icon={faPlus} /> REGISTRAR USUARIO
                             </Button>
                         </Link>
 
-                        <Button variant="primary" onClick={handleExport} className="button-right">
-                            Exportar a Excel
+                        {/* Botón Exportar a Excel para Usuario con texto en negrita */}
+                        <Button
+                            variant="success"
+                            className="button-right"
+                            onClick={handleExport}
+                            disabled={!!error} // Desactiva si hay un error
+                            style={{
+                                fontWeight: 'bold',
+                                color: 'white',
+                                textShadow: '1px 1px 1px black, -1px -1px 1px black', // Borde simulado en negro
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faFileExcel} /> EXPORTAR
                         </Button>
+
                     </div>
 
                 </Card>

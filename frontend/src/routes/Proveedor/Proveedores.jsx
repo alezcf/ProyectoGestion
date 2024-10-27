@@ -6,7 +6,7 @@ import exportService from '../../services/export.service'; // Importar el servic
 import CustomTable from '../../components/Common/CustomTable';
 import SearchBar from '../../components/Common/SearchBar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faFileExcel } from '@fortawesome/free-solid-svg-icons';
 import ButtonsActionsTable from '../../components/Common/ButtonsActionsTable';
 
 const Proveedores = () => {
@@ -93,21 +93,33 @@ const Proveedores = () => {
                         )}
                     </Card.Body>
                     <div className="button-container mt-3">
-                        <Link to="/crear-proveedor" className="button-left">
-                            <Button variant="success">
-                                <FontAwesomeIcon icon={faPlus} /> Crear Proveedor
+                        {/* Botón Crear Proveedor con estilos de Bootstrap y texto en negrita */}
+                        <Link to="/crear-proveedor">
+                            <Button
+                                variant="warning"
+                                className="btn-create"
+                                style={{ fontWeight: 'bold' }}
+                            >
+                                <FontAwesomeIcon icon={faPlus} /> CREAR PROVEEDOR
                             </Button>
                         </Link>
 
+                        {/* Botón Exportar a Excel para Proveedor con texto en negrita y borde simulado */}
                         <Button
-                            variant="primary"
-                            onClick={handleExport}
+                            variant="success"
                             className="button-right"
+                            onClick={handleExport}
                             disabled={!!error} // Desactiva si hay un error
+                            style={{
+                                fontWeight: 'bold',
+                                color: 'white',
+                                textShadow: '1px 1px 1px black, -1px -1px 1px black', // Borde simulado en negro
+                            }}
                         >
-                            Exportar a Excel
+                            <FontAwesomeIcon icon={faFileExcel} /> EXPORTAR EXCEL
                         </Button>
                     </div>
+
                 </Card>
             </Row>
         </Container>
