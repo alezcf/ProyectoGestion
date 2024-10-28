@@ -62,6 +62,23 @@ export async function getInventarios(req, res) {
 }
 
 /**
+ * Obtiene el nivel de stock actual y máximo para cada inventario
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function getInventarioStock(req, res) {
+    try {
+        const [data, error] = await InventarioService.getInventarioStock();
+
+        if (error) return handleErrorClient(res, 500, "Error al obtener inventario y stock", error);
+
+        handleSuccess(res, 200, "Inventarios y stock obtenidos correctamente", data);
+    } catch (error) {
+        handleErrorServer(res, 500, "Error obteniendo inventarios y stock", error.message);
+    }
+}
+
+/**
  * Actualiza un inventario por su ID
  * @param {Object} req - Objeto de petición
  * @param {Object} res - Objeto de respuesta
@@ -109,6 +126,7 @@ export default {
     createInventario,
     getInventario,
     getInventarios,
+    getInventarioStock,
     updateInventario,
     deleteInventario,
 };

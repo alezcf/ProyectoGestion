@@ -234,10 +234,63 @@ async function deletePedido(query) {
     }
 }
 
+/**
+ * Obtiene el conteo de pedidos agrupados por estado
+ * @returns {Promise} Promesa con el conteo de pedidos por estado
+ */
+async function getPedidosPorEstado() {
+    try {
+        const pedidoRepository = AppDataSource.getRepository(Pedido);
+
+        // Agrupamos y contamos los pedidos por estado
+        const pedidosPorEstado = await pedidoRepository
+            .createQueryBuilder("pedido")
+            .select("pedido.estado")
+            .addSelect("COUNT(pedido.id)", "count")
+            .groupBy("pedido.estado")
+            .getRawMany();
+
+        return [pedidosPorEstado, null];
+    } catch (error) {
+        console.error("Error al obtener el conteo de pedidos por estado:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
+/**
+ * Obtiene la frecuencia de pedidos y volumen de productos adquiridos agrupados por proveedor
+ * @returns {Promise} Promesa con el informe de pedidos por proveedor
+ */
+async function getPedidosPorProveedor() {
+    try {
+        const pedidoRepository = AppDataSource.getRepository(Pedido);
+
+        // Agrupamos pedidos y productos adquiridos por proveedor
+        const pedidosPorProveedor = await pedidoRepository
+            .createQueryBuilder("pedido")
+            .select("proveedor.nombre", "proveedor")
+            .addSelect("COUNT(pedido.id)", "frecuenciaPedidos")
+            .addSelect("SUM(pedidoProducto.cantidad)", "volumenProductos")
+            .innerJoin("pedido.proveedor", "proveedor")
+            .innerJoin("pedido.pedidoProductos", "pedidoProducto")
+            .groupBy("proveedor.id")
+            .orderBy("\"frecuenciaPedidos\"", "DESC")  // Cambio aquí
+            .getRawMany();
+
+        return [pedidosPorProveedor, null];
+    } catch (error) {
+        console.error("Error al obtener pedidos por proveedor:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
+
 export default {
     createPedido,
     getPedido,
     getPedidos,
     updatePedido,
     deletePedido,
+    getPedidosPorEstado,
+    getPedidosPorProveedor,
 };

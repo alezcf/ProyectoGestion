@@ -72,6 +72,57 @@ export async function getPedidos(req, res) {
 }
 
 /**
+ * Obtiene el conteo de pedidos agrupados por estado
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function getPedidosPorEstado(req, res) {
+    try {
+        const [pedidosPorEstado, error] = await PedidoService.getPedidosPorEstado();
+
+        if (error) return handleErrorClient(res, 500, "Error al obtener pedidos por estado", error);
+
+        handleSuccess(
+            res,
+            200,
+            "Pedidos agrupados por estado obtenidos correctamente",
+            pedidosPorEstado
+        );
+    } catch (error) {
+        handleErrorServer(res, 500, "Error obteniendo pedidos por estado", error.message);
+    }
+}
+
+/**
+ * Obtiene la frecuencia de pedidos y volumen de productos adquiridos agrupados por proveedor
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function getPedidosPorProveedor(req, res) {
+    try {
+        const [data, error] = await PedidoService.getPedidosPorProveedor();
+
+        if (error) {
+            return handleErrorClient(
+                res,
+                500,
+                "Error al obtener pedidos por proveedor",
+                error
+            );
+        }
+
+        handleSuccess(res, 200, "Informe de pedidos por proveedor obtenido correctamente", data);
+    } catch (error) {
+        handleErrorServer(
+            res,
+            500,
+            "Error obteniendo informe de pedidos por proveedor",
+            error.message
+        );
+    }
+}
+
+/**
  * Actualiza un pedido por su ID
  * @param {Object} req - Objeto de petición
  * @param {Object} res - Objeto de respuesta
@@ -130,6 +181,8 @@ export default {
     createPedido,
     getPedido,
     getPedidos,
+    getPedidosPorEstado,
+    getPedidosPorProveedor,
     updatePedido,
     deletePedido,
 };

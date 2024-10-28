@@ -6,6 +6,8 @@ import {
     deletePedido,
     getPedido,
     getPedidos,
+    getPedidosPorEstado,
+    getPedidosPorProveedor,
     updatePedido,
 } from "../controllers/pedido.controller.js";
 
@@ -18,6 +20,8 @@ router
     .post("/", createPedido)
     .get("/", getPedidos)
     .get("/detail", getPedido)
+    .get("/detailEstado", getPedidosPorEstado)
+    .get("/detailProveedor", getPedidosPorProveedor)
     .put("/", updatePedido)
     .delete("/", deletePedido);
 

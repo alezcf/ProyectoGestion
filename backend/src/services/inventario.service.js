@@ -42,7 +42,7 @@ async function getInventario(query) {
             where: { id: query.id },
             relations: ["productoInventarios", "productoInventarios.producto"],
         });
-    
+
         if (!inventarioFound) return [null, "Inventario no encontrado"];
 
         return [inventarioFound, null];
@@ -175,10 +175,41 @@ async function deleteInventario(query) {
     }
 }
 
+/**
+ * Obtiene el nivel de stock actual y máximo para cada inventario
+ * @returns {Promise} Promesa con el informe de inventarios y sus niveles de stock
+ */
+async function getInventarioStock() {
+    try {
+        const inventarioRepository = AppDataSource.getRepository(Inventario);
+
+        // Agrupamos el stock actual por inventario y comparamos con el máximo stock
+        const inventarioStock = await inventarioRepository
+            .createQueryBuilder("inventario")
+            .select("inventario.nombre", "nombre")
+            .addSelect("inventario.maximo_stock", "maximoStock")
+            .addSelect("COALESCE(SUM(productoInventario.cantidad), 0)", "stockActual")
+            .leftJoin(
+                ProductoInventario,
+                "productoInventario",
+                "productoInventario.inventario = inventario.id"
+            )
+            .groupBy("inventario.id")
+            .getRawMany();
+
+        return [inventarioStock, null];
+    } catch (error) {
+        console.error("Error al obtener inventarios y stock:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
+
 export default {
     createInventario,
     getInventario,
     getInventarios,
+    getInventarioStock,
     updateInventario,
     deleteInventario,
 };

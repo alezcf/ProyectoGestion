@@ -6,6 +6,7 @@ import {
     deleteInventario,
     getInventario,
     getInventarios,
+    getInventarioStock,
     updateInventario,
 } from "../controllers/inventario.controller.js";
 
@@ -18,6 +19,7 @@ router
     .post("/", createInventario)
     .get("/", getInventarios)
     .get("/detail", getInventario)
+    .get("/detailStock", getInventarioStock)
     .put("/", updateInventario)
     .delete("/", deleteInventario);
 
