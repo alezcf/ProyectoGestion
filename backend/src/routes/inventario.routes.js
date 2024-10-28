@@ -4,6 +4,7 @@ import { authenticateJwt } from "../middlewares/authentication.middleware.js";
 import {
     createInventario,
     deleteInventario,
+    getCantidadProductosPorCategoria,
     getInventario,
     getInventarios,
     getInventarioStock,
@@ -19,6 +20,7 @@ router
     .post("/", createInventario)
     .get("/", getInventarios)
     .get("/detail", getInventario)
+    .get("/detailCategorias", getCantidadProductosPorCategoria)
     .get("/detailStock", getInventarioStock)
     .put("/", updateInventario)
     .delete("/", deleteInventario);

@@ -1,9 +1,12 @@
-import Dashboard from '../components/Common/Dashboard';
+import Dashboard from '../components/Estadistica/EstadisticasDashboard';
+import '../css/dashboard.css';
 
 function App() {
   return (
-    <div className="content-container">
-      <Dashboard />
+    <div className="dashboard-container">
+      <div className="dashboard-content">
+        <Dashboard />
+      </div>
     </div>
   );
 }

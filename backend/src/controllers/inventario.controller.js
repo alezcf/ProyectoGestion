@@ -79,6 +79,30 @@ export async function getInventarioStock(req, res) {
 }
 
 /**
+ * Obtiene la cantidad de productos por categoría
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function getCantidadProductosPorCategoria(req, res) {
+    try {
+        const [data, error] = await InventarioService.getCantidadProductosPorCategoria();
+
+        if (error) {
+            return handleErrorClient(
+                res,
+                500,
+                "Error al obtener productos por categoría",
+                error
+            );
+        }
+
+        handleSuccess(res, 200, "Cantidad de productos por categoría obtenida correctamente", data);
+    } catch (error) {
+        handleErrorServer(res, 500, "Error obteniendo productos por categoría", error.message);
+    }
+}
+
+/**
  * Actualiza un inventario por su ID
  * @param {Object} req - Objeto de petición
  * @param {Object} res - Objeto de respuesta

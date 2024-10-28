@@ -204,12 +204,37 @@ async function getInventarioStock() {
     }
 }
 
+/**
+ * Obtiene la cantidad de productos agrupados por categoría
+ * @returns {Promise} Promesa con el número de productos por categoría o un error
+ */
+async function getCantidadProductosPorCategoria() {
+    try {
+        const productoInventarioRepository = AppDataSource.getRepository(ProductoInventario);
+
+        // Realizamos la consulta para obtener la suma de cantidad por cada categoría de producto
+        const cantidadProductosPorCategoria = await productoInventarioRepository
+            .createQueryBuilder("productoInventario")
+            .select("producto.categoria", "categoria")
+            .addSelect("SUM(productoInventario.cantidad)", "totalCantidad") // Suma las cantidades
+            .innerJoin("productoInventario.producto", "producto")
+            .groupBy("producto.categoria")
+            .getRawMany();
+
+        return [cantidadProductosPorCategoria, null];
+    } catch (error) {
+        console.error("Error al obtener la cantidad de productos por categoría:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
 
 export default {
     createInventario,
     getInventario,
     getInventarios,
     getInventarioStock,
+    getCantidadProductosPorCategoria,
     updateInventario,
     deleteInventario,
 };

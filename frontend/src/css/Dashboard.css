@@ -1,55 +1,25 @@
+/* dashboard.css */
+
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    margin: 0 auto;
+    background-color: #f8f9fa; /* Fondo claro */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 .dashboard-title {
-    font-size: 3rem;
-    margin-bottom: 30px;
+    font-size: 2.5rem;
     color: #343a40;
-}
-
-.dashboard-card .dashboard-card-title {
-    font-size: 1.75rem; /* Incrementa el tamaño de fuente */
-    margin-bottom: 15px;
-    color: #000000; /* Cambia esto al color exacto del morado de tu logo */
-}
-
-
-.card-text {
-    font-size: 1rem;
     margin-bottom: 20px;
 }
 
-.dashboard-card {
-    min-height: 250px;
-    border: none;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
+.dashboard-content {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    background-color: #fff;
-}
-
-.dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
-}
-
-.signup-button {
-    background-color: #DAA520; /* Cambia esto al color exacto del dorado de tu logo */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-decoration: none; /* Quitar subrayado */
-    display: inline-block; /* Para comportarse como enlace */
-}
-
-.signup-button:hover {
-    background-color: #b8860b;
-}
-
-.mt-auto {
-    margin-top: auto;
+    gap: 20px;
 }
