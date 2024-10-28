@@ -1,5 +1,5 @@
 import Dashboard from '../components/Estadistica/EstadisticasDashboard';
-import '../css/dashboard.css';
+import '../css/Dashboard.css';
 
 function App() {
   return (
