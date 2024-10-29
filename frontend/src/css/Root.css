@@ -1,8 +1,25 @@
+/* Asegura que `html` y `body` ocupen toda la pantalla y permitan scroll */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+/* Asegura que `#root` se expanda para cubrir el contenido */
+#root {
+  min-height: 100vh; /* Ocupa al menos la altura de la pantalla */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Contenedor principal de la aplicación React */
 .root-container {
   font-family: 'Arial', sans-serif;
   background: linear-gradient(135deg, #e6e6fa 100%, #e6e6fa 100%);
   color: #333;
-  margin: 0;
-  min-height: 89.5vh;
+  min-height: 100vh; /* Mantiene el fondo hasta el final de la pantalla */
   padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
