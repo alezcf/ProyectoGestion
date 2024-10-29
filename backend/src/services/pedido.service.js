@@ -284,6 +284,27 @@ async function getPedidosPorProveedor() {
     }
 }
 
+async function getTendenciaReposicionPorCategoria() {
+    try {
+        const tendenciaReposicion = await AppDataSource
+            .getRepository(PedidoProducto)
+            .createQueryBuilder("pedidoProducto")
+            .select("producto.categoria", "categoria")
+            .addSelect("DATE_TRUNC('month', pedido.fecha_pedido)", "mes")
+            .addSelect("SUM(pedidoProducto.cantidad)", "volumen")
+            .innerJoin("pedidoProducto.pedido", "pedido")
+            .innerJoin("pedidoProducto.producto", "producto")
+            .groupBy("categoria, mes")
+            .orderBy("mes", "ASC")
+            .getRawMany();
+
+        return [tendenciaReposicion, null];
+    } catch (error) {
+        console.error("Error al obtener la tendencia de reposición por categoría:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
 
 export default {
     createPedido,
@@ -292,5 +313,6 @@ export default {
     updatePedido,
     deletePedido,
     getPedidosPorEstado,
+    getTendenciaReposicionPorCategoria,
     getPedidosPorProveedor,
 };

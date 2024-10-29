@@ -69,7 +69,7 @@ const PedidosPorProveedor = () => {
     };
 
     return (
-        <div style={{ width: '100%', height: '100%', padding: '20px' }}>
+        <div style={{ width: '100%', height: '80%', padding: '20px' }}>
             <Line data={chartData} options={options} />
         </div>
     );

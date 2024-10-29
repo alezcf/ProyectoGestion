@@ -1,7 +1,7 @@
 .estadisticas-dashboard {
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   padding: 10px;
 }
 
@@ -11,12 +11,11 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 10px;
   transition: transform 0.3s, box-shadow 0.3s;
-
+  max-height: 800px;
   /* Flexbox para centrar el contenido */
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centraliza horizontalmente */
-  text-align: center;
+  align-items: center;
 }
 
 .dashboard-card-title {
@@ -28,9 +27,11 @@
 
 }
 
-.dashboard-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+
+.doughnut-container {
+  width: 90%;
+  height: 100%;
+  margin-top: 30px;
 }
 
 /* Responsividad específica para pantallas pequeñas */
@@ -44,4 +45,23 @@
       padding: 15px;
       margin-bottom: 10px;
   }
+
+  .estadisticas-dashboard {
+
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+  }
+
+  .inventario-select {
+    font-size: 1rem;
+    max-width: 100%; /* Usa todo el ancho del contenedor en pantallas pequeñas */
+}
+.inventario-select-label {
+  font-size: 0.9rem;
+}
+  .doughnut-container {
+    width: 'auto';
+    height: 'auto';
+}
+
 }

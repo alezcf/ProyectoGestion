@@ -73,6 +73,24 @@ export const getCantidadProductosPorCategoria = async () => {
     }
 };
 
+// Obtener la cantidad de pedidos agrupados por estado
+export const getTendenciaReposicionPorCategoria = async () => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await axios.get('api/pedido/detailTendencia', { headers });
+        const { status, data } = response;
+        if (status === 200) {
+            return data.data;
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Manejo de errores
 const handleError = (error) => {
     console.error('Error en la llamada a la API:', error);
@@ -88,4 +106,5 @@ export default {
     getInventarioStock,
     getPedidosPorProveedor,
     getCantidadProductosPorCategoria,
+    getTendenciaReposicionPorCategoria,
 };

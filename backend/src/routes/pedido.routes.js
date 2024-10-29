@@ -8,6 +8,7 @@ import {
     getPedidos,
     getPedidosPorEstado,
     getPedidosPorProveedor,
+    getTendenciaReposicionPorCategoria,
     updatePedido,
 } from "../controllers/pedido.controller.js";
 
@@ -22,6 +23,7 @@ router
     .get("/detail", getPedido)
     .get("/detailEstado", getPedidosPorEstado)
     .get("/detailProveedor", getPedidosPorProveedor)
+    .get("/detailTendencia", getTendenciaReposicionPorCategoria)
     .put("/", updatePedido)
     .delete("/", deletePedido);
 

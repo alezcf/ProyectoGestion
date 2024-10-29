@@ -92,7 +92,12 @@ export async function updateProductoInventarios(req, res) {
 
         handleSuccess(res, 200, "Relaciones actualizadas correctamente", relacionesActualizadas);
     } catch (error) {
-        handleErrorServer(res, 500, "Error actualizando relaciones producto-inventarios", error.message);
+        handleErrorServer(
+            res,
+            500,
+            "Error actualizando relaciones producto-inventarios",
+            error.message
+        );
     }
 }
 
@@ -109,14 +114,20 @@ export async function getProductosByInventario(req, res) {
             return handleErrorClient(res, 400, "ID del inventario es requerido");
         }
 
-        const [productos, error] = await ProductoInventarioService.getProductosByInventario(inventarioId);
+        const [productos, error] = await ProductoInventarioService
+            .getProductosByInventario(inventarioId);
 
         if (error) return handleErrorClient(res, 404, error);
 
         handleSuccess(res, 200, "Productos asociados encontrados", productos);
     } catch (error) {
         console.error("Error al obtener productos por inventario:", error);
-        handleErrorServer(res, 500, "Error obteniendo productos asociados a un inventario", error.message);
+        handleErrorServer(
+            res,
+            500,
+            "Error obteniendo productos asociados a un inventario",
+            error.message
+        );
     }
 }
 

@@ -177,12 +177,42 @@ export async function deletePedido(req, res) {
     }
 }
 
+/**
+ * Obtiene la tendencia de reposición de productos por categoría basada en los pedidos
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function getTendenciaReposicionPorCategoria(req, res) {
+    try {
+        const [data, error] = await PedidoService.getTendenciaReposicionPorCategoria();
+
+        if (error) {
+            return handleErrorClient(
+                res,
+                500,
+                "Error al obtener la tendencia de reposición por categoría",
+                error
+            );
+        }
+
+        handleSuccess(res, 200, "Tendencia por categoría obtenida correctamente", data);
+    } catch (error) {
+        handleErrorServer(
+            res,
+            500,
+            "Error obteniendo la tendencia de reposición por categoría",
+            error.message
+        );
+    }
+}
+
 export default {
     createPedido,
     getPedido,
     getPedidos,
     getPedidosPorEstado,
     getPedidosPorProveedor,
+    getTendenciaReposicionPorCategoria,
     updatePedido,
     deletePedido,
 };
