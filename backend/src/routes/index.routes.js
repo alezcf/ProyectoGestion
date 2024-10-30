@@ -12,6 +12,8 @@ import constantsRoutes from "./constants.routes.js";
 import productoProveedorRoutes from "./productoProveedor.routes.js";
 import productoInventarioRoutes from "./productoInventario.routes.js";
 import exportRoutes from "./export.routes.js";
+import reporteRoutes from "./reporte.routes.js";
+
 const router = Router();
 
 router
@@ -26,6 +28,7 @@ router
     .use("/constants", constantsRoutes)
     .use("/producto-proveedores", productoProveedorRoutes)
     .use("/producto-inventarios", productoInventarioRoutes)
-    .use("/export", exportRoutes);
+    .use("/export", exportRoutes)
+    .use("/reporte", reporteRoutes);
 
 export default router;
