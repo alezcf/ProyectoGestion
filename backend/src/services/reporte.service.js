@@ -1,34 +1,55 @@
 "use strict";
 import Reporte from "../entity/reporte.entity.js";
-import Pedido from "../entity/pedido.entity.js";
 import Inventario from "../entity/inventario.entity.js";
-import Proveedor from "../entity/proveedor.entity.js";
+import Producto from "../entity/producto.entity.js";
 import { AppDataSource } from "../config/configDb.js";
 import { In } from "typeorm";
 
+
 /**
- * Crea un nuevo reporte en la base de datos
+ * Crea o actualiza un reporte para evitar duplicados.
  * @param {Object} body - Datos del reporte
- * @returns {Promise} Promesa con el objeto de reporte creado o un error
+ * @returns {Promise} Promesa con el objeto de reporte creado o actualizado, o un error
  */
-async function createReporte(body) {
+async function createOrUpdateReporte(body) {
     try {
         const reporteRepository = AppDataSource.getRepository(Reporte);
+        const productoRepository = AppDataSource.getRepository(Producto);
+        const inventarioRepository = AppDataSource.getRepository(Inventario);
 
-        let newReporte = reporteRepository.create({
+        let producto = null;
+        let inventario = null;
+
+        if (body.datos.productoId) {
+            producto = await productoRepository.findOne({ where: { id: body.productoId } });
+            if (!producto) return [null, "El producto especificado no existe"];
+        }
+
+        if (body.datos.inventarioId) {
+            inventario = await inventarioRepository.findOne({ where: { id: body.inventarioId } });
+            if (!inventario) return [null, "El inventario especificado no existe"];
+        }
+
+        // Crear siempre un nuevo reporte en lugar de actualizar
+        const newReporte = reporteRepository.create({
             titulo: body.titulo,
             descripcion: body.descripcion,
             tipo: body.tipo,
             estado: "pendiente",
             fecha_creacion: new Date(),
-            datos: body.datos || {}
+            datos: {
+                ...body.datos,
+                productoId: producto?.id,
+                inventarioId: inventario?.id
+            },
+            producto,
+            inventario,
         });
 
-        newReporte = await reporteRepository.save(newReporte);
-
-        return [newReporte, null];
+        const savedReporte = await reporteRepository.save(newReporte);
+        return [savedReporte, null];
     } catch (error) {
-        console.error("Error al crear reporte:", error);
+        console.error("Error al crear o actualizar reporte:", error);
         return [null, "Error interno del servidor"];
     }
 }
@@ -44,7 +65,7 @@ async function getReporte(query) {
 
         const reporteFound = await reporteRepository.findOne({
             where: { id: query.id },
-            relations: ["pedido", "inventario", "proveedor"]
+            relations: ["inventario", "producto"]
         });
 
         if (!reporteFound) return [null, "Reporte no encontrado"];
@@ -70,7 +91,7 @@ async function getReportes(filters) {
                 ...(filters.estado && { estado: filters.estado }),
                 ...(filters.tipo && { tipo: filters.tipo })
             },
-            relations: ["pedido", "inventario", "proveedor"]
+            relations: ["inventario", "producto"]
         });
 
         return reportes.length ? [reportes, null] : [null, "No se encontraron reportes"];
@@ -197,13 +218,39 @@ async function getReporteEstados() {
     }
 }
 
+/**
+ * Busca un reporte por datos específicos
+ * @param {Object} datos - Información de búsqueda
+ * @returns {Promise} Retorna el reporte encontrado o null
+ */
+async function getReportePorDatos(datos) {
+    try {
+        const reporteRepository = AppDataSource.getRepository(Reporte);
+        const reporte = await reporteRepository
+            .createQueryBuilder("reporte")
+            .where("CAST(reporte.datos AS TEXT) = :datos", { datos: JSON.stringify(datos) })
+            .getOne();
+        return reporte;
+    } catch (error) {
+        console.error("Error al buscar reporte por datos:", error);
+        return null;
+    }
+}
+
+async function deleteAllPendingReportes() {
+    const reporteRepository = AppDataSource.getRepository(Reporte);
+    await reporteRepository.delete({ estado: "pendiente" });
+}
+
 export default {
-    createReporte,
+    createOrUpdateReporte,
     getReporte,
     getReportes,
     updateReporte,
     updateEstadoReporte,
     deleteReporte,
+    deleteAllPendingReportes,
     getReporteResumenPorTipo,
-    getReporteEstados
+    getReporteEstados,
+    getReportePorDatos,
 };

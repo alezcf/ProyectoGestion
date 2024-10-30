@@ -242,6 +242,31 @@ async function getProductosByInventario(inventarioId) {
     }
 }
 
+/**
+ * Obtiene el stock global actual de cada producto sumando las cantidades en todos los inventarios
+ * @returns {Promise} Promesa con el stock global por producto o un error
+ */
+async function getStockGlobalProductos() {
+    try {
+        const productoInventarioRepository = AppDataSource.getRepository(ProductoInventario);
+
+        // Ajuste en el alias de campo de `producto_id`
+        const stockGlobalProductos = await productoInventarioRepository
+            .createQueryBuilder("pi")
+            .select("pi.producto_id", "productoId")
+            .addSelect("SUM(pi.cantidad)", "stockGlobal")
+            .innerJoin("pi.producto", "producto")
+            .groupBy("pi.producto_id")
+            .getRawMany();
+
+        return [stockGlobalProductos, null];
+    } catch (error) {
+        console.error("Error al calcular el stock global de productos:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
+
 
 
 export default {
@@ -249,5 +274,6 @@ export default {
     getInventariosByProducto,
     deleteInventarioByRelacionId,
     updateProductoInventarios,
-    getProductosByInventario
+    getProductosByInventario,
+    getStockGlobalProductos,
 };

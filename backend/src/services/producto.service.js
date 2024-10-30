@@ -2,6 +2,7 @@
 import Producto from "../entity/producto.entity.js";
 import Proveedor from "../entity/proveedor.entity.js";
 import ProductoProveedor from "../entity/producto_proveedor.entity.js";
+import ProductoInventario from "../entity/producto_inventario.entity.js";
 import fs from "fs";
 import path from "path";
 import { AppDataSource } from "../config/configDb.js";

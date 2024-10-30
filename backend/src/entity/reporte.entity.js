@@ -40,13 +40,6 @@ const ReporteSchema = new EntitySchema({
         },
     },
     relations: {
-        pedido: {
-            target: "Pedido",
-            type: "many-to-one",
-            joinColumn: { name: "pedido_id" },
-            nullable: true,
-            eager: true,
-        },
         inventario: {
             target: "Inventario",
             type: "many-to-one",
@@ -54,10 +47,10 @@ const ReporteSchema = new EntitySchema({
             nullable: true,
             eager: true,
         },
-        proveedor: {
-            target: "Proveedor",
+        producto: {
+            target: "Producto",
             type: "many-to-one",
-            joinColumn: { name: "proveedor_id" },
+            joinColumn: { name: "producto_id" },
             nullable: true,
             eager: true,
         },

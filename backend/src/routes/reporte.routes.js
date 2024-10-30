@@ -8,6 +8,7 @@ import {
     getReporteEstados,
     getReporteResumenPorTipo,
     getReportes,
+    testMonitorInventarios,
     updateEstadoReporte,
     updateReporte
 } from "../controllers/reporte.controller.js";
@@ -25,6 +26,7 @@ router
     .put("/estado", updateEstadoReporte)     // Actualizar solo el estado de un reporte
     .delete("/", deleteReporte)              // Eliminar un reporte específico por ID
     .get("/resumen/tipo", getReporteResumenPorTipo) // Obtener resumen de reportes por tipo
-    .get("/estados", getReporteEstados);     // Obtener conteo de reportes por estado
+    .get("/estados", getReporteEstados)  // Obtener conteo de reportes por estado
+    .get("/test-monitor", testMonitorInventarios);
 
 export default router;

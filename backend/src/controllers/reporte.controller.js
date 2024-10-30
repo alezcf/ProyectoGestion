@@ -1,5 +1,6 @@
 "use strict";
 import ReporteService from "../services/reporte.service.js";
+import monitorInventariosYProductos from "../business/monitorInventario.js";
 import {
     handleErrorClient,
     handleErrorServer,
@@ -14,7 +15,7 @@ import {
 export async function createReporte(req, res) {
     try {
         const { body } = req;
-        const [reporte, errorReporte] = await ReporteService.createReporte(body);
+        const [reporte, errorReporte] = await ReporteService.createOrUpdateReporte(body);
 
         if (errorReporte) return handleErrorClient(res, 400, errorReporte);
 
@@ -147,9 +148,25 @@ export async function getReporteEstados(req, res) {
 
         if (errorEstados) return handleErrorClient(res, 500, errorEstados);
 
-        handleSuccess(res, 200, "Conteo de reportes por estado obtenido correctamente", reporteEstados);
+        handleSuccess(
+            res,
+            200,
+            "Conteo de reportes por estado obtenido correctamente",
+            reporteEstados
+        );
     } catch (error) {
-        handleErrorServer(res, 500, "Error obteniendo conteo de reportes por estado", error.message);
+        handleErrorServer(
+            res, 500, "Error obteniendo conteo de reportes por estado", error.message
+        );
+    }
+}
+
+export async function testMonitorInventarios(req, res) {
+    try {
+        await monitorInventariosYProductos();
+        handleSuccess(res, 200, "Monitoreo de inventarios y productos ejecutado manualmente");
+    } catch (error) {
+        handleErrorServer(res, 500, "Error ejecutando el monitoreo de inventarios", error.message);
     }
 }
 
@@ -161,5 +178,6 @@ export default {
     updateEstadoReporte,
     deleteReporte,
     getReporteResumenPorTipo,
-    getReporteEstados
+    getReporteEstados,
+    testMonitorInventarios,
 };
