@@ -41,8 +41,8 @@ const InventarioStock = () => {
     } : null;
 
     return (
-        <div className="inventario-stock-container" style={{ marginTop: '20px' }}>
-            <div style={{ textAlign: 'center' }}>
+        <div className="inventario-stock-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
+            <div className="inventario-select-container">
                 <label htmlFor="inventario-select" className="inventario-select-label">Selecciona un inventario: </label>
                 <select id="inventario-select" onChange={handleSelectChange} className="inventario-select">
                     {data.map((item, index) => (
@@ -53,13 +53,15 @@ const InventarioStock = () => {
                 </select>
             </div>
 
+
             {selectedInventario && (
-                <div style={{ width: 'auto', height: 'auto', marginTop: '30px' }}>
+                <div className="inventario-stock-chart-container">
                     <Pie data={chartData} options={{ maintainAspectRatio: true }} />
                 </div>
             )}
         </div>
     );
+
 };
 
 export default InventarioStock;

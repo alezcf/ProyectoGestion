@@ -8,10 +8,11 @@ import '../../css/Estadistica/InventarioStock.css';
 const EstadisticasDashboard = () => {
     return (
         <div className="estadisticas-dashboard tendencia-reposicion">
-            {/* Pedidos por Proveedor */}
+
+                        {/* Productos por Categoría */}
             <div className="dashboard-card">
-                <h3 className="dashboard-card-title">Productos por Proveedor</h3>
-                <PedidosPorProveedor />
+                <h3 className="dashboard-card-title">Productos por categoría</h3>
+                <CantidadProductosPorCategoria />
             </div>
 
             {/* Inventario y Stock */}
@@ -20,15 +21,14 @@ const EstadisticasDashboard = () => {
                 <InventarioStock />
             </div>
 
-            {/* Productos por Categoría */}
-            <div className="dashboard-card">
-                <h3 className="dashboard-card-title">Productos totales por categoría</h3>
-                <CantidadProductosPorCategoria />
+                        {/* Pedidos por Proveedor */}
+                        <div className="dashboard-card">
+                <h3 className="dashboard-card-title">Productos por Proveedor</h3>
+                <PedidosPorProveedor />
             </div>
-
             {/* Tendencia de Reposición */}
             <div className="dashboard-card">
-                <h3 className="dashboard-card-title">Productos totales</h3>
+                <h3 className="dashboard-card-title">Productos adquiridos</h3>
                 <TendenciaReposicion />
             </div>
         </div>

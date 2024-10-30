@@ -1,25 +1,58 @@
-/* dashboard.css */
-
-.dashboard-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    margin: 0 auto;
-    background-color: #f8f9fa; /* Fondo claro */
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
-.dashboard-title {
-    font-size: 2.5rem;
-    color: #343a40;
-    margin-bottom: 20px;
+.dashboard-container {
+  display: flex;
+  min-height: 100vh; /* Asegura que el contenedor ocupe al menos toda la pantalla */
+  background: linear-gradient(135deg, #e6e6fa 100%, #e6e6fa 100%);
+  margin-top: -10px;
+}
+
+.notifications-panel {
+  width: 25%;
+  background: #ffffff;
+  margin-top: 10px;
+  padding: 20px;
+  overflow-y: auto;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .dashboard-content {
+  width: 75%; /* Ancho del Dashboard en pantallas grandes */
+  overflow-y: auto;
+}
+
+/* Diseño responsivo específico para iPad (768px a 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .dashboard-container {
+    flex-direction: column; /* Apila las notificaciones encima del contenido */
+    align-items: center;
+  }
+
+  .notifications-panel,
+  .dashboard-content {
+    width: 90%; /* Ocupa la mayor parte del ancho en iPad */
+    margin: 10px 0;
+  }
+}
+
+/* Diseño responsivo para pantallas móviles */
+@media (max-width: 768px) {
+  .dashboard-container {
+    display: block;
+  }
+
+  .notifications-panel {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    position: static;
+    margin-bottom: 20px;
+  }
+
+  .dashboard-content {
+    width: 100%;
+  }
 }
