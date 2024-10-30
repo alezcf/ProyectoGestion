@@ -164,6 +164,23 @@ const handleError = (error) => {
     throw error; // Relanza el error para manejarlo en el frontend
 };
 
+export const getTestMonitor = async () => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await axios.get('api/reporte/test-monitor', { headers });
+        const { status, data } = response;
+        if (status === 200) {
+            return data.data;
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 export default {
     getReportes,
     getReporte,
@@ -173,4 +190,5 @@ export default {
     deleteReporte,
     getReporteResumenPorTipo,
     getReporteEstados,
+    getTestMonitor,
 };

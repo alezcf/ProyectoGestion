@@ -7,6 +7,7 @@ function App() {
     <div className="dashboard-container">
       {/* Panel de notificaciones al lado izquierdo */}
       <div className="notifications-panel">
+        <center><h3>Notificaciones</h3></center>
         <NotificationsPanel />
       </div>
 

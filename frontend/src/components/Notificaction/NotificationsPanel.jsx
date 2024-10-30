@@ -1,35 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import reportesService from '../../services/reporte.service';
+import '../../css/ReportesPanel.css'; // Asegúrate de crear este archivo para los estilos
 
 function ReportesPanel() {
     const [reportes, setReportes] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchReportes = async () => {
+        const fetchData = async () => {
             try {
+                // Llama a test-monitor para actualizar el estado de los reportes
+                await reportesService.getTestMonitor();
+
+                // Luego de actualizar, obtenemos los reportes
                 const data = await reportesService.getReportes();
                 setReportes(data || []);
             } catch (err) {
                 setError("Error al cargar reportes");
             }
         };
-        fetchReportes();
+
+        fetchData();
     }, []);
 
     return (
         <div className="reportes-panel-content">
-            <h2>Reportes</h2>
             {error && <p className="error">{error}</p>}
-            <ul>
+            <div className="reportes-list">
                 {reportes.length > 0 ? (
                     reportes.map((reporte, index) => (
-                        <li key={index}>{reporte.titulo}</li> // Mostramos el título del reporte
+                        <div key={index} className="reporte-card">
+                            <center><h3 className="reporte-titulo">{reporte.titulo}</h3></center>
+                            <p className="reporte-descripcion">{reporte.descripcion}</p>
+                        </div>
                     ))
                 ) : (
-                    <li>No hay reportes</li>
+                    <p>No hay reportes</p>
                 )}
-            </ul>
+            </div>
         </div>
     );
 }
