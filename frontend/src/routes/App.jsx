@@ -1,5 +1,5 @@
 import Dashboard from '../components/Estadistica/EstadisticasDashboard';
-import NotificationsPanel from '../components/Notificaction/NotificationsPanel';
+import ReportesPanel from './Reporte/Reportes.jsx';
 import '../css/Dashboard.css';
 
 function App() {
@@ -7,8 +7,7 @@ function App() {
     <div className="dashboard-container">
       {/* Panel de notificaciones al lado izquierdo */}
       <div className="notifications-panel">
-        <center><h3>Notificaciones</h3></center>
-        <NotificationsPanel />
+        <ReportesPanel />
       </div>
 
       {/* Contenido del Dashboard al lado derecho */}

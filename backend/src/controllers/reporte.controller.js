@@ -33,6 +33,8 @@ export async function createReporte(req, res) {
 export async function getReporte(req, res) {
     try {
         const { id } = req.query;
+        console.log(req);
+
         const [reporte, errorReporte] = await ReporteService.getReporte({ id });
 
         if (errorReporte) return handleErrorClient(res, 404, errorReporte);

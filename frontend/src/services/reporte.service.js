@@ -29,8 +29,9 @@ export const getReporte = async (id) => {
         const headers = {
             Authorization: `Bearer ${token}`,
         };
+        console.log('id', id);
 
-        const response = await axios.get('api/reporte/detail', {
+        const response = await axios.get(`api/reporte/detail`, {
             headers,
             params: { id }
         });

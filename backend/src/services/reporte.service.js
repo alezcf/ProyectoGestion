@@ -62,7 +62,7 @@ async function createOrUpdateReporte(body) {
 async function getReporte(query) {
     try {
         const reporteRepository = AppDataSource.getRepository(Reporte);
-
+        console.log("Peticion de obtener reporte específico con id ", query.id);
         const reporteFound = await reporteRepository.findOne({
             where: { id: query.id },
             relations: ["inventario", "producto"]

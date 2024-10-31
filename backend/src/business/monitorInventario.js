@@ -11,7 +11,6 @@ const PRODUCTO_UMBRAL = 10; // Stock bajo global, por ejemplo 10 unidades
 async function eliminarReportesPendientes() {
     try {
         await ReporteService.deleteAllPendingReportes();
-        console.log("Todos los reportes pendientes han sido eliminados.");
     } catch (error) {
         console.error("Error al eliminar reportes pendientes:", error);
     }
@@ -20,16 +19,13 @@ async function eliminarReportesPendientes() {
 // Función para crear o actualizar un reporte
 async function generarOActualizarReporte(titulo, descripcion, tipo, datos) {
     try {
-        const reporteExistente = await ReporteService.createOrUpdateReporte({
+        await ReporteService.createOrUpdateReporte({
             titulo,
             descripcion,
             tipo,
             datos
         });
 
-        if (reporteExistente) {
-            console.log("Reporte generado o actualizado exitosamente:", titulo);
-        }
     } catch (error) {
         console.error("Error al generar o actualizar el reporte:", error);
     }
@@ -81,12 +77,8 @@ async function monitorInventariosYProductos() {
                         { productoId, stockGlobal }
                     );
                 }
-            } else {
-                console.log("Producto nulo encontrado en stockGlobalProductos");
             }
         }
-
-        console.log("Monitoreo de inventarios y productos finalizado.");
     } catch (error) {
         console.error("Error al monitorear inventarios y productos:", error);
     }

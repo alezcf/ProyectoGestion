@@ -74,7 +74,7 @@ const router = createBrowserRouter([
         element: <Pedido />,
       },
       {
-        path: '/reporte',
+        path: '/reporte/:reporteId',
         element: <Reporte />,
       },
       {
