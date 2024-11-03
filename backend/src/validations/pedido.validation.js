@@ -49,6 +49,10 @@ export const pedidoBodyValidation = Joi.object({
                 "number.positive": "La cantidad debe ser un número positivo.",
                 "any.required": "La cantidad es obligatoria.",
             }),
+            precio: Joi.number().positive().optional().messages({
+                "number.base": "El precio debe ser un número.",
+                "number.positive": "El precio debe ser un número positivo."
+            }),
         })
     ).min(1).required().messages({
         "array.base": "Productos debe ser un arreglo de objetos.",

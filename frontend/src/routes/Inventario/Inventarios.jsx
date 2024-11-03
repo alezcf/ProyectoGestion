@@ -20,8 +20,15 @@ const Inventario = () => {
         const fetchInventarios = async () => {
             try {
                 const data = await inventarioService.getAllInventarios();
-                setInventarioData(data);
-                setFilteredData(data);
+
+                // Agregar la propiedad stock_actual sumando las cantidades de productoInventarios
+                const dataWithStockActual = data.map(inventario => ({
+                    ...inventario,
+                    stock_actual: inventario.productoInventarios.reduce((total, item) => total + item.cantidad, 0)
+                }));
+
+                setInventarioData(dataWithStockActual);
+                setFilteredData(dataWithStockActual);
             } catch (err) {
                 if (err.response && err.response.status === 404) {
                     setError('No se encontraron inventarios registrados.');
@@ -45,6 +52,7 @@ const Inventario = () => {
         try {
             const inventarioDataToExport = filteredData.map(inventario => ({
                 NOMBRE: inventario.nombre,
+                'STOCK ACTUAL': inventario.stock_actual,
                 'MÁXIMO STOCK': inventario.maximo_stock,
                 'ÚLTIMA ACTUALIZACIÓN': formatDateToDDMMYYYY(inventario.ultima_actualizacion),
             }));
@@ -58,14 +66,13 @@ const Inventario = () => {
 
     const handleExportInventarioIndividual = async (inventario) => {
         try {
-            // Datos del inventario para exportar
             const inventarioData = {
                 NOMBRE: inventario.nombre,
+                'STOCK ACTUAL': inventario.stock_actual,
                 'MÁXIMO STOCK': inventario.maximo_stock,
                 'ÚLTIMA ACTUALIZACIÓN': formatDateToDDMMYYYY(inventario.ultima_actualizacion),
             };
 
-            // Productos asociados al inventario
             const productosExport = inventario.productoInventarios.map(productoInventario => ({
                 "NOMBRE DEL PRODUCTO": productoInventario.producto.nombre,
                 MARCA: productoInventario.producto.marca,
@@ -75,13 +82,11 @@ const Inventario = () => {
                 CANTIDAD: productoInventario.cantidad
             }));
 
-            // Nombres personalizados para las hojas de Excel
             const sheetNames = {
-                mainSheet: "Inventario",    // Nombre de la hoja principal
-                arraySheet1: "Productos"    // Nombre de la hoja para los productos
+                mainSheet: "Inventario",
+                arraySheet1: "Productos"
             };
 
-            // Llamada al servicio de exportación para generar el archivo Excel
             await exportService.exportObjectAndArraysToExcel(inventarioData, [productosExport], sheetNames);
             alert('Datos exportados con éxito');
         } catch (error) {
@@ -90,24 +95,23 @@ const Inventario = () => {
         }
     };
 
-
-    const headers = ['Nombre', 'Máximo Stock', 'Última Actualización', 'Acciones'];
+    const headers = ['Nombre', "Stock actual", 'Máximo Stock', 'Última Actualización', 'Acciones'];
 
     const renderRow = (inventario, index) => (
         <tr key={index}>
             <td>{inventario.nombre}</td>
+            <td>{inventario.stock_actual}</td> {/* Mostrar stock actual calculado */}
             <td>{inventario.maximo_stock}</td>
             <td>{formatDateToDDMMYYYY(inventario.ultima_actualizacion)}</td>
             <td>
                 <InventarioAcciones
                     inventarioId={inventario.id}
-                    inventario={inventario}  // Pasa el inventario completo
-                    onExport={() => handleExportInventarioIndividual(inventario)} // Llama a la función específica de exportación
+                    inventario={inventario}
+                    onExport={() => handleExportInventarioIndividual(inventario)}
                 />
             </td>
         </tr>
     );
-
 
     return (
         <Container fluid className="inventario-container mt-2">
@@ -148,30 +152,26 @@ const Inventario = () => {
                     </Card.Body>
 
                     <div className="button-container mt-3">
-                        {/* Botón Crear Inventario con estilos de Bootstrap y texto en negrita */}
                         <Link to="/crear-inventario" className="button-left">
-                            <Button variant="warning" className="btn-create" style={{ fontWeight: 'bold' }}
-                            >
+                            <Button variant="warning" className="btn-create" style={{ fontWeight: 'bold' }}>
                                 <FontAwesomeIcon icon={faPlus} /> CREAR INVENTARIO
                             </Button>
                         </Link>
 
-                        {/* Botón Exportar a Excel para Inventario con texto en negrita y borde simulado */}
                         <Button
                             className="button-right"
                             variant="success"
                             onClick={handleExport}
-                            disabled={!!error} // Desactivar si hay un error
+                            disabled={!!error}
                             style={{
                                 fontWeight: 'bold',
                                 color: 'white',
-                                textShadow: '1px 1px 1px black, -1px -1px 1px black', // Borde simulado en negro
+                                textShadow: '1px 1px 1px black, -1px -1px 1px black',
                             }}
                         >
                             <FontAwesomeIcon icon={faFileExcel} /> EXPORTAR A EXCEL
                         </Button>
                     </div>
-
                 </Card>
             </Row>
         </Container>

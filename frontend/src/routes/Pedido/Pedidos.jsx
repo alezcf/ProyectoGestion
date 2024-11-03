@@ -19,10 +19,8 @@ const Pedidos = () => {
         const fetchPedidos = async () => {
             try {
                 const response = await pedidoService.getAllPedidos();
-                console.log("Obtenido del backend" + response);
                 setPedidos(response || []);
             } catch (err) {
-                console.log("Obtenido del backend" + err.message);
                 const errorMessage = err.message || 'Error de red. No se pudo conectar con el servidor.';
                 setError(errorMessage);
                 setPedidos([]);
@@ -57,7 +55,6 @@ const Pedidos = () => {
 
     const handleExportPedidoIndividual = async (pedido) => {
         try {
-            // Datos del pedido para exportar
             const pedidoData = {
                 "NÚMERO": pedido.id,
                 'FECHA DEL PEDIDO': formatDateToDDMMYYYY(pedido.fecha_pedido),
@@ -66,22 +63,19 @@ const Pedidos = () => {
                 'INVENTARIO ASIGNADO': pedido.inventarioAsignado?.nombre || 'No disponible'
             };
 
-            // Productos asociados al pedido
             const productosExport = pedido.pedidoProductos.map(productoPedido => ({
                 "NOMBRE DEL PRODUCTO": productoPedido.producto.nombre,
                 CANTIDAD: productoPedido.cantidad,
                 "UNIDAD DE MEDIDA": productoPedido.producto.unidad_medida,
-                PRECIO: productoPedido.producto.precio,
-                SUBTOTAL: productoPedido.cantidad * productoPedido.producto.precio
+                PRECIO: productoPedido.precio,
+                SUBTOTAL: productoPedido.cantidad * productoPedido.precio
             }));
 
-            // Nombres personalizados para las hojas de Excel
             const sheetNames = {
                 mainSheet: "Pedido",
                 arraySheet1: "Productos"
             };
 
-            // Llamada al servicio de exportación
             await exportService.exportObjectAndArraysToExcel(pedidoData, [productosExport], sheetNames);
             alert('Datos exportados con éxito');
         } catch (error) {
@@ -90,15 +84,13 @@ const Pedidos = () => {
         }
     };
 
-
-
     const calcularCantidadTotalProductos = (pedidoProductos) => {
         return pedidoProductos.reduce((total, producto) => total + parseInt(producto.cantidad, 10), 0);
     };
 
     const calcularCostoTotal = (pedidoProductos) => {
         return pedidoProductos.reduce((total, producto) =>
-            total + parseInt(producto.cantidad, 10) * parseInt(producto.producto.precio, 10), 0
+            total + parseInt(producto.cantidad, 10) * parseFloat(producto.precio), 0
         );
     };
 
@@ -106,7 +98,7 @@ const Pedidos = () => {
         pedido.proveedor?.nombre.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const headers = ['Número', 'Fecha', 'Estado', 'Cantidad de Productos', 'Costo', 'Proveedor', 'Inventario Asignado', 'Acciones'];
+    const headers = ['Número', 'Fecha', 'Estado', 'Productos', 'Total', 'Proveedor', 'Inventario', 'Acciones'];
 
     const renderRow = (pedido, index) => (
         <tr key={index}>
@@ -120,14 +112,13 @@ const Pedidos = () => {
             <td>
                 <ButtonsActionsTable
                     itemId={pedido.id}
-                    itemData={pedido} // Pasa el pedido completo
-                    onExport={() => handleExportPedidoIndividual(pedido)} // Llama a la función específica de exportación
+                    itemData={pedido}
+                    onExport={() => handleExportPedidoIndividual(pedido)}
                     detailsRoute="/pedido"
                 />
             </td>
         </tr>
     );
-
 
     return (
         <Container fluid className="pedido-container mt-2">
@@ -154,30 +145,26 @@ const Pedidos = () => {
                         )}
                     </Card.Body>
                     <div className="button-container mt-3">
-                        {/* Botón Crear Pedido con estilos de Bootstrap y texto en negrita */}
                         <Link to="/crear-pedido" className="button-left">
-                            <Button variant="warning" className="btn-create" style={{ fontWeight: 'bold' }}
-                            >
+                            <Button variant="warning" className="btn-create" style={{ fontWeight: 'bold' }}>
                                 <FontAwesomeIcon icon={faPlus} /> CREAR PEDIDO
                             </Button>
                         </Link>
 
-                        {/* Botón Exportar a Excel para Pedido con texto en negrita y borde simulado */}
                         <Button
                             variant="success"
                             onClick={handleExport}
                             className="button-right"
-                            disabled={!!error} // Desactiva si hay un error
+                            disabled={!!error}
                             style={{
                                 fontWeight: 'bold',
                                 color: 'white',
-                                textShadow: '1px 1px 1px black, -1px -1px 1px black', // Borde simulado en negro
+                                textShadow: '1px 1px 1px black, -1px -1px 1px black',
                             }}
                         >
                             <FontAwesomeIcon icon={faFileExcel} /> EXPORTAR A EXCEL
                         </Button>
                     </div>
-
                 </Card>
             </Row>
         </Container>

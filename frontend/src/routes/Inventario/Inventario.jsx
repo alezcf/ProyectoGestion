@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import inventarioService from '../../services/inventario.service';
-import exportService from '../../services/export.service'; // Importar el servicio de exportación
+import exportService from '../../services/export.service';
 import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card, Image } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
@@ -30,12 +30,13 @@ const Inventario = () => {
             try {
                 // Obtener detalles del inventario
                 const data = await inventarioService.getInventarioById(inventarioId);
-                setInventario(data);
 
-                // Obtener los productos del inventario usando productoInventarioService
-                const productosData = data.productoInventarios;
-                setProductos(productosData);
+                // Calcular el stock actual sumando las cantidades de productoInventarios
+                const stockActual = data.productoInventarios.reduce((total, item) => total + item.cantidad, 0);
+                setInventario({ ...data, stock_actual: stockActual });
 
+                // Obtener los productos del inventario
+                setProductos(data.productoInventarios);
                 setLoading(false);
             } catch (err) {
                 setError('Error al cargar el inventario o productos.');
@@ -55,28 +56,25 @@ const Inventario = () => {
             // Estructura para exportar los datos del inventario
             const inventarioData = {
                 NOMBRE: inventario.nombre,
+                'STOCK ACTUAL': inventario.stock_actual,
                 'MÁXIMO STOCK': inventario.maximo_stock,
                 'FECHA DE ACTUALIZACIÓN': inventario.ultima_actualizacion,
             };
-            console.log('Datos del producto:', productos);
+
             const productosExport = productos.map(productoInventario => ({
                 "NOMBRE DEL PRODUCTO": productoInventario.producto.nombre,
                 MARCA: productoInventario.producto.marca,
-                DESCRIPCION: productoInventario.producto.descripcion,
-                CATEGORIA: productoInventario.producto.categoria,
+                DESCRIPCIÓN: productoInventario.producto.descripcion,
+                CATEGORÍA: productoInventario.producto.categoria,
                 TIPO: productoInventario.producto.tipo,
                 CANTIDAD: productoInventario.cantidad
             }));
 
-
-            console.log('Datos a exportar:', inventarioData, productosExport);
-            // Nombres personalizados para las hojas de Excel
             const sheetNames = {
-                mainSheet: "Inventario",     // Nombre de la hoja principal (datos del inventario)
-                arraySheet1: "Productos"     // Nombre de la hoja para los productos
+                mainSheet: "Inventario",
+                arraySheet1: "Productos"
             };
 
-            // Llamar al servicio de exportación para generar el archivo Excel con nombres de hoja personalizados
             await exportService.exportObjectAndArraysToExcel(inventarioData, [productosExport], sheetNames);
             alert('Datos exportados con éxito');
         } catch (error) {
@@ -133,7 +131,7 @@ const Inventario = () => {
             <Row className="my-4">
                 <Col md={4}>
                     <Image
-                        src={inventario.fotoPerfil || defaultInventario} // Usa imagen predefinida si no tiene foto
+                        src={inventario.fotoPerfil || defaultInventario}
                         fluid
                         style={{
                             objectFit: 'cover',
@@ -146,7 +144,6 @@ const Inventario = () => {
                     <InventarioBotones onEdit={handleEdit} onExport={handleExport} />
                 </Col>
                 <Col md={8}>
-                    {/* Collapse para la tabla de detalles del inventario */}
                     <Card className={`mb-3 custom-card ${openDetalles ? 'card-active' : ''}`}>
                         <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
                             <h5 className="header-title">Características generales</h5>
@@ -173,7 +170,6 @@ const Inventario = () => {
                         </Collapse>
                     </Card>
 
-                    {/* Collapse para la tabla de productos */}
                     <Card className={`custom-card ${openProductos ? 'card-active' : ''} mt-4`}>
                         <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
                             <h5 className="header-title">Productos en el Inventario</h5>
@@ -202,7 +198,6 @@ const Inventario = () => {
                 </Col>
             </Row>
 
-            {/* Modal para editar el inventario usando DefaultEditModal */}
             <DefaultEditModal
                 show={showEditModal}
                 handleClose={handleCloseModal}

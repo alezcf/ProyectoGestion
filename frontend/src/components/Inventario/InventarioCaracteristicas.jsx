@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic'; // Importamos la función de formateo
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 
 const InventarioCaracteristicas = ({ inventario }) => (
     <div>
@@ -10,6 +10,10 @@ const InventarioCaracteristicas = ({ inventario }) => (
                 <tr>
                     <td style={{ color: 'black', textAlign: 'left', fontWeight: 'bold' }}>Nombre</td>
                     <td style={{ textAlign: 'left' }}>{inventario.nombre || 'No hay registro'}</td>
+                </tr>
+                <tr>
+                    <td style={{ color: 'black', textAlign: 'left', fontWeight: 'bold' }}>Stock Actual</td>
+                    <td style={{ textAlign: 'left' }}>{inventario.stock_actual || 'No hay registro'}</td>
                 </tr>
                 <tr>
                     <td style={{ color: 'black', textAlign: 'left', fontWeight: 'bold' }}>Máximo Stock</td>
@@ -30,6 +34,7 @@ InventarioCaracteristicas.propTypes = {
     inventario: PropTypes.shape({
         nombre: PropTypes.string,
         maximo_stock: PropTypes.number,
+        stock_actual: PropTypes.number,  // Añadir la validación de stock_actual
         ultima_actualizacion: PropTypes.string,
     }).isRequired,
 };

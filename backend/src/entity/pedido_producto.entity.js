@@ -15,6 +15,10 @@ const PedidoProductoSchema = new EntitySchema({
             type: "numeric",
             nullable: false,
         },
+        precio: {
+            type: "numeric",
+            nullable: false,
+        },
     },
     relations: {
         pedido: {

@@ -21,7 +21,7 @@ const CrearPedido = () => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const { register, handleSubmit, control, formState: { errors }, reset } = useForm({
         defaultValues: {
-            productos: [{ productoId: '', cantidad: '' }]
+            productos: [{ productoId: '', cantidad: '', precio: '' }]
         }
     });
 
@@ -191,7 +191,7 @@ const CrearPedido = () => {
                 <>
                     {fields.map((item, index) => (
                         <Row key={item.id}>
-                            <Col md={6}>
+                            <Col md={4}>
                                 <Form.Group controlId={`producto_${index}`}>
                                     <OverlayTrigger
                                         placement="auto"
@@ -218,7 +218,7 @@ const CrearPedido = () => {
                                 </Form.Group>
                             </Col>
 
-                            <Col md={6}>
+                            <Col md={4}>
                                 <Form.Group controlId={`cantidad_${index}`}>
                                     <OverlayTrigger
                                         placement="auto"
@@ -242,6 +242,30 @@ const CrearPedido = () => {
                                 </Form.Group>
                             </Col>
 
+                            <Col md={4}>
+                                <Form.Group controlId={`precio_${index}`}>
+                                    <OverlayTrigger
+                                        placement="auto"
+                                        flip
+                                        overlay={renderTooltip("Especifica el precio de este producto. Debe ser un número positivo.")}
+                                    >
+                                        <Form.Label style={{ fontWeight: 'bold' }} className="form-label">PRECIO UNITARIO (*)</Form.Label>
+                                    </OverlayTrigger>
+                                    <Form.Control
+                                        type="number"
+                                        placeholder="Ingresa el precio"
+                                        {...register(`productos[${index}].precio`, {
+                                            required: 'El precio es obligatorio',
+                                            min: { value: 0.01, message: 'El precio debe ser positivo' },
+                                        })}
+                                        className={`form-input ${errors.productos?.[index]?.precio ? 'is-invalid' : ''}`}
+                                    />
+                                    {errors.productos?.[index]?.precio && (
+                                        <span className="text-danger">{errors.productos[index].precio.message}</span>
+                                    )}
+                                </Form.Group>
+                            </Col>
+
                             <Col md={12} className="text-right">
                                 <Button variant="danger" onClick={() => remove(index)}>
                                     Eliminar Producto
@@ -250,7 +274,7 @@ const CrearPedido = () => {
                         </Row>
                     ))}
 
-                    <Button variant="secondary" onClick={() => append({ productoId: '', cantidad: '' })}>
+                    <Button variant="secondary" onClick={() => append({ productoId: '', cantidad: '', precio: '' })}>
                         Añadir Producto
                     </Button>
                 </>

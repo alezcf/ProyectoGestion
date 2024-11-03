@@ -46,22 +46,24 @@ const Pedido = () => {
 
     const handleExport = async () => {
         try {
-            // Estructura para exportar el pedido
-            const pedidoData = {
-                "NÚMERO": pedido.id,
-                'FECHA DEL PEDIDO': pedido.estado,
-                'ESTADO ACTUAL': pedido.fecha_pedido,
-            };
 
             // Mapea los productos asociados al pedido
             const productosExport = pedido.pedidoProductos.map(productoPedido => ({
                 "NOMBRE DEL PRODUCTO": productoPedido.producto.nombre,
                 CANTIDAD: productoPedido.cantidad,
-                "UNIDAD DE MEDIDA": productoPedido.producto.unidad_medida,
-                PRECIO: productoPedido.producto.precio,
-                SUBTOTAL: productoPedido.cantidad * productoPedido.producto.precio
+                PRECIO: productoPedido.precio,
+                SUBTOTAL: productoPedido.cantidad * productoPedido.precio
             }));
 
+            // Calcula el total de todos los productos
+            const totalCost = productosExport.reduce((acc, producto) => acc + producto.SUBTOTAL, 0);
+
+            const pedidoData = {
+                "NÚMERO": pedido.id,
+                'FECHA DEL PEDIDO': pedido.estado,
+                'ESTADO ACTUAL': pedido.fecha_pedido,
+                'TOTAL DEL PEDIDO': `$${totalCost}`,
+            };
             // Nombres personalizados para las hojas de Excel
             const sheetNames = {
                 mainSheet: "Pedido",        // Nombre de la hoja principal (datos del pedido)
@@ -165,7 +167,6 @@ const Pedido = () => {
                                             <tr>
                                                 <th>Nombre del Producto</th>
                                                 <th>Cantidad</th>
-                                                <th>Unidad de Medida</th>
                                                 <th>Precio</th>
                                                 <th>Subtotal</th>
                                             </tr>
@@ -175,9 +176,8 @@ const Pedido = () => {
                                                 <tr key={index}>
                                                     <td>{productoPedido.producto.nombre}</td>
                                                     <td>{productoPedido.cantidad}</td>
-                                                    <td>{productoPedido.producto.unidad_medida}</td>
-                                                    <td>${productoPedido.producto.precio}</td>
-                                                    <td>${productoPedido.cantidad * productoPedido.producto.precio}</td>
+                                                    <td>${productoPedido.precio}</td>
+                                                    <td>${productoPedido.cantidad * productoPedido.precio}</td>
                                                 </tr>
                                             ))}
                                         </tbody>

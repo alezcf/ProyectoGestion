@@ -68,7 +68,7 @@ async function createPedido(body) {
         const savedPedido = await pedidoRepository.save(newPedido);
 
         // Asociar productos al pedido y actualizar ProductoInventario y stock_actual
-        for (const { productoId, cantidad } of body.productos) {
+        for (const { productoId, cantidad, precio } of body.productos) {
             const producto = await productoRepository.findOne({ where: { id: productoId } });
 
             // Actualizar o crear ProductoInventario
@@ -99,6 +99,7 @@ async function createPedido(body) {
                 pedido: savedPedido,
                 producto: producto,
                 cantidad: cantidad,
+                precio: precio,
             });
 
             await pedidoProductoRepository.save(pedidoProducto);
