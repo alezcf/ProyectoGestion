@@ -56,6 +56,41 @@ const Inventario = () => {
         }
     };
 
+    const handleExportInventarioIndividual = async (inventario) => {
+        try {
+            // Datos del inventario para exportar
+            const inventarioData = {
+                NOMBRE: inventario.nombre,
+                'MÁXIMO STOCK': inventario.maximo_stock,
+                'ÚLTIMA ACTUALIZACIÓN': formatDateToDDMMYYYY(inventario.ultima_actualizacion),
+            };
+
+            // Productos asociados al inventario
+            const productosExport = inventario.productoInventarios.map(productoInventario => ({
+                "NOMBRE DEL PRODUCTO": productoInventario.producto.nombre,
+                MARCA: productoInventario.producto.marca,
+                DESCRIPCIÓN: productoInventario.producto.descripcion,
+                CATEGORÍA: productoInventario.producto.categoria,
+                TIPO: productoInventario.producto.tipo,
+                CANTIDAD: productoInventario.cantidad
+            }));
+
+            // Nombres personalizados para las hojas de Excel
+            const sheetNames = {
+                mainSheet: "Inventario",    // Nombre de la hoja principal
+                arraySheet1: "Productos"    // Nombre de la hoja para los productos
+            };
+
+            // Llamada al servicio de exportación para generar el archivo Excel
+            await exportService.exportObjectAndArraysToExcel(inventarioData, [productosExport], sheetNames);
+            alert('Datos exportados con éxito');
+        } catch (error) {
+            console.error('Error exportando los datos del inventario:', error);
+            alert('Error al exportar los datos.');
+        }
+    };
+
+
     const headers = ['Nombre', 'Máximo Stock', 'Última Actualización', 'Acciones'];
 
     const renderRow = (inventario, index) => (
@@ -66,12 +101,13 @@ const Inventario = () => {
             <td>
                 <InventarioAcciones
                     inventarioId={inventario.id}
-                    inventarioNombre={inventario.nombre}
-                    onExport={handleExport}
+                    inventario={inventario}  // Pasa el inventario completo
+                    onExport={() => handleExportInventarioIndividual(inventario)} // Llama a la función específica de exportación
                 />
             </td>
         </tr>
     );
+
 
     return (
         <Container fluid className="inventario-container mt-2">

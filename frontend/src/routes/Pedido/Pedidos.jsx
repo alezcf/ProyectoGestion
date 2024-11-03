@@ -55,6 +55,43 @@ const Pedidos = () => {
         }
     };
 
+    const handleExportPedidoIndividual = async (pedido) => {
+        try {
+            // Datos del pedido para exportar
+            const pedidoData = {
+                "NÚMERO": pedido.id,
+                'FECHA DEL PEDIDO': formatDateToDDMMYYYY(pedido.fecha_pedido),
+                'ESTADO ACTUAL': pedido.estado,
+                'PROVEEDOR': pedido.proveedor?.nombre || 'No disponible',
+                'INVENTARIO ASIGNADO': pedido.inventarioAsignado?.nombre || 'No disponible'
+            };
+
+            // Productos asociados al pedido
+            const productosExport = pedido.pedidoProductos.map(productoPedido => ({
+                "NOMBRE DEL PRODUCTO": productoPedido.producto.nombre,
+                CANTIDAD: productoPedido.cantidad,
+                "UNIDAD DE MEDIDA": productoPedido.producto.unidad_medida,
+                PRECIO: productoPedido.producto.precio,
+                SUBTOTAL: productoPedido.cantidad * productoPedido.producto.precio
+            }));
+
+            // Nombres personalizados para las hojas de Excel
+            const sheetNames = {
+                mainSheet: "Pedido",
+                arraySheet1: "Productos"
+            };
+
+            // Llamada al servicio de exportación
+            await exportService.exportObjectAndArraysToExcel(pedidoData, [productosExport], sheetNames);
+            alert('Datos exportados con éxito');
+        } catch (error) {
+            console.error('Error exportando los datos del pedido:', error);
+            alert('Error al exportar los datos.');
+        }
+    };
+
+
+
     const calcularCantidadTotalProductos = (pedidoProductos) => {
         return pedidoProductos.reduce((total, producto) => total + parseInt(producto.cantidad, 10), 0);
     };
@@ -83,13 +120,14 @@ const Pedidos = () => {
             <td>
                 <ButtonsActionsTable
                     itemId={pedido.id}
-                    itemName={pedido.id}
-                    onExport={handleExport}
+                    itemData={pedido} // Pasa el pedido completo
+                    onExport={() => handleExportPedidoIndividual(pedido)} // Llama a la función específica de exportación
                     detailsRoute="/pedido"
                 />
             </td>
         </tr>
     );
+
 
     return (
         <Container fluid className="pedido-container mt-2">

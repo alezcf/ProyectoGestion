@@ -4,7 +4,7 @@ import { FileEarmarkExcel, InfoCircle } from 'react-bootstrap-icons';
 import PropTypes from 'prop-types';
 import '../../css/Buttons.css';
 
-const ButtonsActions = ({ itemId, itemName, onExport, detailsRoute }) => (
+const ButtonsActions = ({ itemId, itemData, onExport, detailsRoute }) => (
     <div className="d-flex justify-content-center">
         <Link to={`${detailsRoute}/${itemId}`} className="button btn-info me-2">
             <InfoCircle />
@@ -12,7 +12,7 @@ const ButtonsActions = ({ itemId, itemName, onExport, detailsRoute }) => (
         <button
             type="button"
             className="button btn-success"
-            onClick={() => onExport(itemName)}
+            onClick={() => onExport(itemData)}  // Pasar el objeto completo (usuario o proveedor)
         >
             <FileEarmarkExcel />
         </button>
@@ -20,10 +20,10 @@ const ButtonsActions = ({ itemId, itemName, onExport, detailsRoute }) => (
 );
 
 ButtonsActions.propTypes = {
-    itemId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,  // ID del item
-    itemName: PropTypes.string.isRequired,  // Nombre del item
-    onExport: PropTypes.func.isRequired,  // Función de exportación
-    detailsRoute: PropTypes.string.isRequired,  // Ruta base para el link de detalles
+    itemId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+    itemData: PropTypes.object.isRequired,  // Cambiado a objeto genérico para usuarios o proveedores
+    onExport: PropTypes.func.isRequired,
+    detailsRoute: PropTypes.string.isRequired,
 };
 
 export default ButtonsActions;

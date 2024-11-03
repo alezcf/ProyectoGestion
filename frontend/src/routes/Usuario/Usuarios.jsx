@@ -52,6 +52,35 @@ const Usuarios = () => {
         }
     };
 
+    const handleExportUsuarioIndividual = async (usuario) => {
+    try {
+        const dataObject = {
+            RUT: usuario.rut,
+            EMAIL: usuario.email,
+            ROL: usuario.rol,
+            "NOMBRE COMPLETO": usuario.nombreCompleto,
+            "FECHA DE REGISTRO": formatDateToDDMMYYYY(usuario.createdAt),
+            "ÚLTIMA ACTUALIZACIÓN": formatDateToDDMMYYYY(usuario.updatedAt),
+        };
+        console.log('Datos del usuario a exportar:', dataObject);
+        const sheetNames = {
+            mainSheet: "Usuario",
+        };
+
+        const arrayData = [
+            [
+            ]
+        ];
+
+        await exportService.exportObjectAndArraysToExcel(dataObject, arrayData, sheetNames);
+        alert('Datos del usuario exportados con éxito.');
+    } catch (error) {
+        console.error('Error al exportar los datos del usuario:', error);
+        alert('Error al exportar los datos del usuario.');
+    }
+};
+
+
     const filteredUsuarios = usuarios.filter((usuario) =>
         usuario.nombreCompleto.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -64,13 +93,13 @@ const Usuarios = () => {
             <td>{usuario.rut}</td>
             <td>{usuario.email}</td>
             <td>{usuario.rol}</td>
-            <td>{formatDateToDDMMYYYY(usuario.createdAt)}</td> {/* Formatear la fecha de registro */}
+            <td>{formatDateToDDMMYYYY(usuario.createdAt)}</td>
             <td>
                 <ButtonsActionsTable
-                    itemId={`${usuario.id}`}  // ID del usuario
-                    itemName={usuario.nombreCompleto}  // Nombre del usuario
-                    onExport={handleExport}  // Función de exportación
-                    detailsRoute={`/usuario`}  // Ruta dinámica con el ID del usuario
+                    itemId={usuario.id}
+                    itemName={usuario.nombreCompleto}
+                    onExport={() => handleExportUsuarioIndividual(usuario)}  // Pasar el usuario completo
+                    detailsRoute={`/usuario`}
                 />
             </td>
         </tr>

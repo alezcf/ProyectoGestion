@@ -51,6 +51,29 @@ const Proveedores = () => {
         }
     };
 
+    const handleExportProveedor = async (proveedor) => {
+        try {
+            const dataObject = {
+                NOMBRE: proveedor.nombre,
+                RUT: proveedor.rut,
+                DIRECCIÓN: proveedor.direccion,
+                TELÉFONO: proveedor.telefono,
+                EMAIL: proveedor.email,
+            };
+
+            const sheetNames = {
+                mainSheet: "Proveedor",
+            };
+
+            await exportService.exportObjectAndArraysToExcel(dataObject, [[]], sheetNames);
+            alert('Datos del proveedor exportados con éxito.');
+        } catch (error) {
+            console.error('Error al exportar los datos del proveedor:', error);
+            alert('Error al exportar los datos.');
+        }
+    };
+
+
     const filteredProveedores = proveedores.filter((proveedor) =>
         proveedor.nombre.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -67,13 +90,14 @@ const Proveedores = () => {
             <td>
                 <ButtonsActionsTable
                     itemId={proveedor.id}
-                    itemName={proveedor.nombre}
-                    onExport={() => handleExport(proveedor.nombre)}
+                    itemData={proveedor}  // Pasar el proveedor completo
+                    onExport={() => handleExportProveedor(proveedor)}
                     detailsRoute="/proveedor"
                 />
             </td>
         </tr>
     );
+
 
     return (
         <Container fluid className="proveedores-container mt-2">
