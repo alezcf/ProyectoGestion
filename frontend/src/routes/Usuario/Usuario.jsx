@@ -70,8 +70,10 @@ const Usuario = () => {
 
     const handleFormSubmit = async (data) => {
         try {
-            await usuarioService.updateUsuario(usuarioId, data);
+            console.log('Usuario actualizado:', data);
+            await usuarioService.updateUsuario(usuario.rut, data); // Cambiamos usuarioId a usuario.rut
             setUsuario({ ...usuario, ...data });
+            console.log('Usuario actualizado:', data);
             setShowEditModal(false);
         } catch (error) {
             console.error('Error al actualizar el usuario:', error);

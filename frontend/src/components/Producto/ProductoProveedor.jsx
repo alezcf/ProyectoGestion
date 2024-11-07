@@ -1,12 +1,14 @@
+// ProductoProveedor.js
 import React, { useState, useEffect } from 'react';
-import { Table, Form } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import productoProveedorService from '../../services/productoProveedor.service';  // Servicio para gestionar proveedores de producto
 import proveedorService from '../../services/proveedor.service';  // Servicio para obtener todos los proveedores
+import SecondaryTable from '../Common/SecondaryTable'; // Importar el SecondaryTable
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faAddressBook } from '@fortawesome/free-solid-svg-icons';
 import { InfoCircle } from 'react-bootstrap-icons';
+import { Form } from 'react-bootstrap';
 import '../../css/Buttons.css';
 
 const ProductoProveedor = ({ producto = { id: null, productoProveedores: [] } }) => {
@@ -58,7 +60,6 @@ const ProductoProveedor = ({ producto = { id: null, productoProveedores: [] } })
     const handleDelete = async (relacionId) => {
         try {
             await productoProveedorService.deleteProductoProveedores(relacionId);
-            // Actualizar la lista de proveedores después de eliminar
             const updatedProveedores = proveedores.filter(p => p.idRelacion !== relacionId);
             setProveedores(updatedProveedores);
             alert('Proveedor eliminado correctamente');
@@ -78,7 +79,6 @@ const ProductoProveedor = ({ producto = { id: null, productoProveedores: [] } })
         if (!nuevoProveedorId) return;
         try {
             await productoProveedorService.createProductoProveedores(productoId, [parseInt(nuevoProveedorId)]);
-            // Volver a obtener los proveedores actualizados automáticamente después de agregar el nuevo proveedor
             const proveedoresActualizados = await productoProveedorService.getProveedoresByProducto(productoId);
             if (proveedoresActualizados) {
                 const proveedoresExtraidos = proveedoresActualizados.map(relacion => ({
@@ -95,41 +95,30 @@ const ProductoProveedor = ({ producto = { id: null, productoProveedores: [] } })
         }
     };
 
+    // Renderizar cada fila para el SecondaryTable
+    const renderRow = ({ idRelacion, proveedor }) => (
+        <tr key={proveedor.id}>
+            <td>{proveedor.nombre}</td>
+            <td>{proveedor.rut}</td>
+            <td>{proveedor.telefono}</td>
+            <td>
+                <button type="button" className="button btn-info" onClick={() => handleInfo(proveedor.id)}>
+                    <InfoCircle />
+                </button>
+                <button type="button" className="button btn-delete" onClick={() => handleDelete(idRelacion)}>
+                    <FontAwesomeIcon icon={faTrash} />
+                </button>
+            </td>
+        </tr>
+    );
+
     return (
         <div className="mt-2">
-            <Table striped bordered hover responsive className="text-center">
-                <thead>
-                    <tr>
-                        <th>NOMBRE</th>
-                        <th>CONTACTO</th>
-                        <th>TELÉFONO</th>
-                        <th>ACCIONES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {proveedores.length > 0 ? (
-                        proveedores.map(({ idRelacion, proveedor }) => (
-                            <tr key={proveedor.id}>
-                                <td>{proveedor.nombre}</td>
-                                <td>{proveedor.rut}</td>
-                                <td>{proveedor.telefono}</td>
-                                <td>
-                                    <button type="button" className="button btn-info" onClick={() => handleInfo(proveedor.id)}>
-                                        <InfoCircle />
-                                    </button>
-                                    <button type="button" className="button btn-delete" onClick={() => handleDelete(idRelacion)}>
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="4" className="text-center">No hay proveedores disponibles</td>
-                        </tr>
-                    )}
-                </tbody>
-            </Table>
+            <SecondaryTable
+                headers={['NOMBRE', 'CONTACTO', 'TELÉFONO', 'ACCIONES']}
+                data={proveedores}
+                renderRow={renderRow}
+            />
 
             {/* Formulario para seleccionar y agregar un nuevo proveedor */}
             <Form className="d-flex align-items-center mt-3">

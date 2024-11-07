@@ -84,6 +84,26 @@ export const createUsuario = async (nuevoUsuario) => {
     }
 };
 
+export const updateUsuario = async (rut, usuarioActualizado) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json', // Aseguramos el tipo de contenido JSON
+        };
+
+        const response = await axios.put(`api/user/?rut=${rut}`, usuarioActualizado, { headers });
+        const { status, data } = response;
+
+        if (status === 200) { // 200 significa que la actualización fue exitosa
+            return data.data; // Devolver los datos del usuario actualizado
+        }
+    } catch (error) {
+        handleError(error); // Manejar cualquier error que ocurra
+    }
+};
+
+
 const handleError = (error) => {
     console.error('API call error:', error);
     throw error;
@@ -94,4 +114,5 @@ export default {
     getUsuario,
     deleteUsuario,
     createUsuario,
+    updateUsuario,
 };

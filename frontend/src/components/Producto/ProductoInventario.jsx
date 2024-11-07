@@ -1,12 +1,14 @@
+// ProductoInventario.js
 import React, { useState, useEffect } from 'react';
-import { Table, Form } from 'react-bootstrap';
-import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import productoInventarioService from '../../services/productoInventario.service'; // Servicio para gestionar inventarios de producto
 import inventarioService from '../../services/inventario.service'; // Servicio para obtener todos los inventarios
+import SecondaryTable from '../Common/SecondaryTable'; // Importar el componente de tabla secundaria
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faWarehouse } from '@fortawesome/free-solid-svg-icons';
 import { InfoCircle } from 'react-bootstrap-icons';
+import { Form } from 'react-bootstrap';
 import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';  // Importa la función de formato
 import '../../css/Buttons.css';
 
@@ -18,7 +20,6 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
     const [cantidad, setCantidad] = useState('');
     const [allInventarios, setAllInventarios] = useState([]);
 
-    // Efecto para obtener los inventarios asociados al producto
     useEffect(() => {
         const fetchInventariosProducto = async () => {
             try {
@@ -104,43 +105,31 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
         }
     };
 
+    // Renderiza cada fila de la tabla en SecondaryTable
+    const renderRow = ({ idRelacion, inventario, cantidad }, index) => (
+        <tr key={index}>
+            <td>{inventario.nombre}</td>
+            <td>{cantidad}</td>
+            <td>{inventario.maximo_stock}</td>
+            <td>{inventario.ultima_actualizacion ? formatDateToDDMMYYYY(inventario.ultima_actualizacion) : 'No hay registro'}</td>
+            <td>
+                <button type="button" className="button btn-info" onClick={() => handleInfo(inventario.id)}>
+                    <InfoCircle />
+                </button>
+                <button type="button" className="button btn-delete" onClick={() => handleDelete(idRelacion)}>
+                    <FontAwesomeIcon icon={faTrash} />
+                </button>
+            </td>
+        </tr>
+    );
+
     return (
         <div className="mt-2">
-            <Table striped bordered hover responsive className="text-center">
-                <thead>
-                    <tr>
-                        <th>NOMBRE</th>
-                        <th>CANTIDAD</th>
-                        <th>MÁXIMO STOCK</th>
-                        <th>ÚLTIMA ACTUALIZACIÓN</th>
-                        <th>ACCIONES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {inventarios.length > 0 ? (
-                        inventarios.map(({ idRelacion, inventario, cantidad }) => (
-                            <tr key={inventario.id}>
-                                <td>{inventario.nombre}</td>
-                                <td>{cantidad}</td>
-                                <td>{inventario.maximo_stock}</td>
-                                <td>{inventario.ultima_actualizacion ? formatDateToDDMMYYYY(inventario.ultima_actualizacion) : 'No hay registro'}</td>
-                                <td>
-                                    <button type="button" className="button btn-info" onClick={() => handleInfo(inventario.id)}>
-                                        <InfoCircle />
-                                    </button>
-                                    <button type="button" className="button btn-delete" onClick={() => handleDelete(idRelacion)}>
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="5" className="text-center">No hay inventarios disponibles</td>
-                        </tr>
-                    )}
-                </tbody>
-            </Table>
+            <SecondaryTable
+                headers={['NOMBRE', 'CANTIDAD', 'MÁXIMO STOCK', 'ÚLTIMA ACTUALIZACIÓN', 'ACCIONES']}
+                data={inventarios}
+                renderRow={renderRow}
+            />
 
             <Form className="d-flex align-items-center mt-3">
                 <Form.Control

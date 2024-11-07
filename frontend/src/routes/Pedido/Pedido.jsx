@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import pedidoService from '../../services/pedido.service';
-import exportService from '../../services/export.service'; // Importar el servicio de exportación
-import { Container, Row, Col, Spinner, Alert, Table, Button, Collapse, Card, Image } from 'react-bootstrap';
+import exportService from '../../services/export.service';
+import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card, Image } from 'react-bootstrap';
 import PedidoDetalles from '../../components/Pedido/PedidoDetalles';
+import PedidoProducto from '../../components/Pedido/PedidoProducto'; // Importamos el nuevo componente
 import ButtonsActions from '../../components/Common/ButtonsActions';
-import DefaultEditModal from '../../components/Common/DefaultEditModal';  // Modal reutilizable
-import pedidoFields from '../../fields/pedido.fields'; // Importa los campos de pedido
+import DefaultEditModal from '../../components/Common/DefaultEditModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import pedidoFields from '../../fields/pedido.fields';
 import '../../css/Form.css';
 import '../../css/Producto.css';
 
 const Pedido = () => {
     const { pedidoId } = useParams();
+    const navigate = useNavigate();
     const [pedido, setPedido] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [openProductos, setOpenProductos] = useState(true);
+    const [openDetalles, setOpenDetalles] = useState(true);
+    const [openProductos, setOpenProductos] = useState(false);
     const defaultInventario = '../images/inventario.png';
 
     useEffect(() => {
@@ -41,13 +44,11 @@ const Pedido = () => {
     }, [pedidoId]);
 
     const handleEdit = () => {
-        setShowEditModal(true); // Muestra el modal de edición
+        setShowEditModal(true);
     };
 
     const handleExport = async () => {
         try {
-
-            // Mapea los productos asociados al pedido
             const productosExport = pedido.pedidoProductos.map(productoPedido => ({
                 "NOMBRE DEL PRODUCTO": productoPedido.producto.nombre,
                 CANTIDAD: productoPedido.cantidad,
@@ -55,7 +56,6 @@ const Pedido = () => {
                 SUBTOTAL: productoPedido.cantidad * productoPedido.precio
             }));
 
-            // Calcula el total de todos los productos
             const totalCost = productosExport.reduce((acc, producto) => acc + producto.SUBTOTAL, 0);
 
             const pedidoData = {
@@ -64,13 +64,12 @@ const Pedido = () => {
                 'ESTADO ACTUAL': pedido.fecha_pedido,
                 'TOTAL DEL PEDIDO': `$${totalCost}`,
             };
-            // Nombres personalizados para las hojas de Excel
+
             const sheetNames = {
-                mainSheet: "Pedido",        // Nombre de la hoja principal (datos del pedido)
-                arraySheet1: "Productos"    // Nombre de la hoja para los productos
+                mainSheet: "Pedido",
+                arraySheet1: "Productos"
             };
 
-            // Llamar al servicio de exportación para generar el archivo Excel con nombres de hoja personalizados
             await exportService.exportObjectAndArraysToExcel(pedidoData, [productosExport], sheetNames);
             alert('Datos exportados con éxito');
         } catch (error) {
@@ -83,7 +82,6 @@ const Pedido = () => {
         const pedidoActualizado = { ...pedido, ...data };
 
         try {
-            console.log('Pedido actualizado:', pedidoActualizado);
             await pedidoService.updatePedido(pedidoId, pedidoActualizado);
             setPedido(pedidoActualizado);
             setShowEditModal(false);
@@ -93,11 +91,33 @@ const Pedido = () => {
     };
 
     const handleCloseModal = () => {
-        setShowEditModal(false); // Cierra el modal sin guardar
+        setShowEditModal(false);
+    };
+
+    const toggleDetalles = () => {
+        setOpenDetalles(true);
+        setOpenProductos(false);
     };
 
     const toggleProductos = () => {
-        setOpenProductos(!openProductos);
+        setOpenProductos(true);
+        setOpenDetalles(false);
+    };
+
+    const handleInfo = (productoId) => {
+        navigate(`/producto/${productoId}`);
+    };
+
+    const handleDelete = async (productoId) => {
+        try {
+            await pedidoService.deleteProductoFromPedido(pedidoId, productoId);
+            const updatedProductos = pedido.pedidoProductos.filter(p => p.producto.id !== productoId);
+            setPedido(prevPedido => ({ ...prevPedido, pedidoProductos: updatedProductos }));
+            alert('Producto eliminado correctamente del pedido');
+        } catch (error) {
+            alert('Error al eliminar el producto del pedido');
+            console.error('Error al eliminar el producto del pedido:', error);
+        }
     };
 
     if (loading) {
@@ -121,7 +141,7 @@ const Pedido = () => {
             <Row className="my-4">
                 <Col md={4}>
                     <Image
-                        src={defaultInventario} // Usa imagen predefinida si no tiene imagen
+                        src={defaultInventario}
                         fluid
                         style={{
                             objectFit: 'cover',
@@ -131,7 +151,6 @@ const Pedido = () => {
                             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                         }}
                     />
-
                     <ButtonsActions
                         itemId={pedido.id}
                         itemName={`Pedido #${pedido.id}`}
@@ -140,11 +159,35 @@ const Pedido = () => {
                     />
                 </Col>
                 <Col md={8}>
-                    <PedidoDetalles pedido={pedido} />
-                    {/* Collapse para productos del pedido */}
-                    <Card className={`custom-card ${openProductos ? 'card-active' : ''}`}>
+                    <Card className={`custom-card ${openDetalles ? 'card-active' : ''}`}>
                         <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
-                            <h5 className="header-title">Productos en el Pedido</h5>
+                            <h5 className="header-title">Características generales</h5>
+                            <Button
+                                onClick={toggleDetalles}
+                                aria-controls="detalles-pedido"
+                                aria-expanded={openDetalles}
+                                variant="link"
+                                className="toggle-btn"
+                            >
+                                {openDetalles ? (
+                                    <FontAwesomeIcon icon={faChevronUp} />
+                                ) : (
+                                    <FontAwesomeIcon icon={faChevronDown} />
+                                )}
+                            </Button>
+                        </Card.Header>
+                        <Collapse in={openDetalles}>
+                            <div id="detalles-pedido">
+                                <Card.Body>
+                                    <PedidoDetalles pedido={pedido} />
+                                </Card.Body>
+                            </div>
+                        </Collapse>
+                    </Card>
+
+                    <Card className={`custom-card ${openProductos ? 'card-active' : ''} mt-4`}>
+                        <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
+                            <h5 className="header-title">Productos</h5>
                             <Button
                                 onClick={toggleProductos}
                                 aria-controls="productos-pedido"
@@ -162,26 +205,11 @@ const Pedido = () => {
                         <Collapse in={openProductos}>
                             <div id="productos-pedido">
                                 <Card.Body>
-                                    <Table striped bordered hover>
-                                        <thead>
-                                            <tr>
-                                                <th>Nombre del Producto</th>
-                                                <th>Cantidad</th>
-                                                <th>Precio</th>
-                                                <th>Subtotal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {pedido.pedidoProductos.map((productoPedido, index) => (
-                                                <tr key={index}>
-                                                    <td>{productoPedido.producto.nombre}</td>
-                                                    <td>{productoPedido.cantidad}</td>
-                                                    <td>${productoPedido.precio}</td>
-                                                    <td>${productoPedido.cantidad * productoPedido.precio}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </Table>
+                                    <PedidoProducto
+                                        productos={pedido.pedidoProductos}
+                                        onInfo={handleInfo}
+                                        onDelete={handleDelete}
+                                    />
                                 </Card.Body>
                             </div>
                         </Collapse>
@@ -189,13 +217,12 @@ const Pedido = () => {
                 </Col>
             </Row>
 
-            {/* Modal para editar el pedido usando DefaultEditModal */}
             <DefaultEditModal
                 show={showEditModal}
                 handleClose={handleCloseModal}
-                fields={pedidoFields}  // Campos para el formulario de pedido
-                defaultValues={pedido}  // Valores predeterminados del pedido actual
-                onSubmit={handleFormSubmit}  // Enviar el formulario
+                fields={pedidoFields}
+                defaultValues={pedido}
+                onSubmit={handleFormSubmit}
                 title="EDITAR PEDIDO"
             />
         </Container>

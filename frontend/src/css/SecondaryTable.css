@@ -1,0 +1,55 @@
+/* SecondaryTable.css */
+
+.table-secondary-responsive {
+  margin-top: 1rem;
+  text-align: center; /* Centra el contenido de la tabla */
+}
+
+.secondary-table {
+  background-color: #f4f4f8;
+  border-color: #b0b3c7;
+  width: 100%; /* Asegura que la tabla ocupe el ancho completo */
+}
+
+.secondary-table thead th {
+  background-color: #31004F;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center; /* Centra el texto en las celdas del encabezado */
+}
+
+.secondary-table tbody td {
+  color: #333;
+  text-align: center; /* Centra el texto en las celdas del cuerpo */
+}
+
+.secondary-table tbody tr:nth-child(odd) {
+  background-color: #e6e8f3;
+}
+
+.pagination-secondary {
+  display: flex;
+  justify-content: center; /* Centra la paginación horizontalmente */
+  margin-top: 15px;
+}
+
+.pagination-secondary .page-link {
+  color: #000000;
+  background-color: #f4f4f8;
+  border: 1px solid #b0b3c7;
+  text-align: center; /* Centra el texto en cada enlace de paginación */
+}
+
+.pagination-secondary .page-item.active .page-link {
+  background-color: #31004F;
+  color: #ffffff;
+  border: none;
+  text-align: center; /* Centra el texto en la página activa */
+}
+
+.pagination-secondary .page-item:hover .page-link {
+  background-color: #31004F;
+  color: #ffffff;
+  text-align: center; /* Centra el texto en el hover */
+}
