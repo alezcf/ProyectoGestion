@@ -25,5 +25,5 @@ export async function getConstantsProducto(req, res) {
 }
 
 export default {
-  getConstantsProducto,
+    getConstantsProducto,
 };

@@ -2,6 +2,7 @@
 import User from "../entity/user.entity.js"; // Modelo de usuario
 import { AppDataSource } from "../config/configDb.js";
 import { comparePassword, encryptPassword } from "../helpers/bcrypt.helper.js";
+import { format, validate } from "rut.js"
 
 /**
  * Crea un nuevo usuario en la base de datos
@@ -13,16 +14,21 @@ async function createUser(body) {
     const userRepository = AppDataSource.getRepository(User);
 
     const existingUser = await userRepository.findOne({
-      where: [{ rut: body.rut }, { email: body.email }],
+      where: [{ rut: format(body.rut) }, { email: body.email }],
     });
 
     if (existingUser) {
       return [null, "Ya existe un usuario con el mismo rut o email"];
     }
 
+    // Digito verificador invalido retorna error.
+    if(!validate(format(body.rut))){
+      return [null, "El rut ingresado es invalido."];
+    }
+
     const newUser = userRepository.create({
       nombreCompleto: body.nombreCompleto,
-      rut: body.rut,
+      rut: format(body.rut),
       email: body.email,
       rol: body.rol,
       password: await encryptPassword(body.password),
@@ -108,6 +114,7 @@ async function updateUser(query, body) {
       return [null, "Usuario no encontrado"];
     }
 
+
     // Verificar si ya existe un usuario con el mismo RUT o email, excluyendo el actual
     const existingUser = await userRepository.findOne({
       where: [{ rut: body.rut }, { email: body.email }],
@@ -117,19 +124,16 @@ async function updateUser(query, body) {
       return [null, "Ya existe un usuario con el mismo rut o email"];
     }
 
-    // Comparar la contraseña proporcionada con la almacenada
-    const matchPassword = await comparePassword(body.password, userFound.password);
-
-    if (!matchPassword) {
-      return [null, "La contraseña no coincide"];
+    if(!validate(format(body.rut))){
+      return [null, "El rut ingresado es invalido."];
     }
-
+    console.log(existingUser.password);
     const updateData = {
       nombreCompleto: body.nombreCompleto,
-      rut: body.rut,
+      rut: format(body.rut),
       email: body.email,
       rol: body.rol,
-      password: await encryptPassword(body.newPassword || body.password),
+      password: await encryptPassword(body.newPassword || existingUser.password),
       updatedAt: new Date(),
     };
 

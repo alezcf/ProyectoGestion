@@ -99,7 +99,9 @@ export const updateUsuario = async (rut, usuarioActualizado) => {
             return data.data; // Devolver los datos del usuario actualizado
         }
     } catch (error) {
-        handleError(error); // Manejar cualquier error que ocurra
+
+        console.log(error.response.data.message);
+        handleError(error.response.data.message); // Manejar cualquier error que ocurra
     }
 };
 

@@ -30,6 +30,7 @@
     "pg": "^8.12.0",
     "plantillaisw2024": "file:",
     "reflect-metadata": "^0.2.2",
+    "rut.js": "^2.1.0",
     "sinon": "^18.0.0",
     "typeorm": "^0.3.20"
   },

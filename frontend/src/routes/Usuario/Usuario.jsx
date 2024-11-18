@@ -76,6 +76,7 @@ const Usuario = () => {
             console.log('Usuario actualizado:', data);
             setShowEditModal(false);
         } catch (error) {
+            alert(error);
             console.error('Error al actualizar el usuario:', error);
         }
     };

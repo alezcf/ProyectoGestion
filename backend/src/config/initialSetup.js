@@ -17,7 +17,7 @@ async function createUsers() {
             rut: "20.630.735-8",
             email: "alexander.carrasco2101@alumnos.ubiobio.cl",
             password: await encryptPassword("admin123"),
-            rol: "administrador",
+            rol: "Administrador",
             }),
         ),
         ]);
