@@ -1,3 +1,4 @@
+
 .login-button {
     background-color: #21a99b; /* Turquesa */
     color: #fff;
@@ -161,4 +162,13 @@
 .button-submit svg {
     color: black;
     margin-right: 8px; /* Ajusta según lo que necesites */
+}
+
+
+@media (max-width: 576px) {
+    .button-text {
+        display: none; /* Oculta el texto en pantallas pequeñas */
+        margin-top: 10px;
+    }
+
 }
