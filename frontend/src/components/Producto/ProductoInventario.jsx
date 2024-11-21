@@ -1,24 +1,27 @@
-// ProductoInventario.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import productoInventarioService from '../../services/productoInventario.service'; // Servicio para gestionar inventarios de producto
-import inventarioService from '../../services/inventario.service'; // Servicio para obtener todos los inventarios
-import SecondaryTable from '../Common/SecondaryTable'; // Importar el componente de tabla secundaria
+import productoInventarioService from '../../services/productoInventario.service';
+import inventarioService from '../../services/inventario.service';
+import SecondaryTable from '../Common/SecondaryTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faWarehouse } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faWarehouse, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { InfoCircle } from 'react-bootstrap-icons';
-import { Form } from 'react-bootstrap';
-import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';  // Importa la función de formato
+import { Form, Modal, Button } from 'react-bootstrap';
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 import '../../css/Buttons.css';
 
 const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }) => {
     const navigate = useNavigate();
     const { id: productoId } = producto;
+
     const [inventarios, setInventarios] = useState([]);
     const [nuevoInventarioId, setNuevoInventarioId] = useState('');
     const [cantidad, setCantidad] = useState('');
     const [allInventarios, setAllInventarios] = useState([]);
+    const [editModal, setEditModal] = useState(false);
+    const [selectedRelacion, setSelectedRelacion] = useState(null);
+    const [newCantidad, setNewCantidad] = useState('');
 
     useEffect(() => {
         const fetchInventariosProducto = async () => {
@@ -105,6 +108,42 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
         }
     };
 
+    const handleEditClick = (relacion) => {
+        setSelectedRelacion(relacion);
+        setNewCantidad(relacion.cantidad);
+        setEditModal(true);
+    };
+
+    const handleUpdateCantidad = async () => {
+        if (!selectedRelacion || newCantidad === '') {
+            alert('Debe ingresar una nueva cantidad.');
+            return;
+        }
+
+        try {
+            const response = await productoInventarioService.updateCantidadProductoInventario(
+                selectedRelacion.idRelacion,
+                parseInt(newCantidad)
+            );
+
+            const inventariosActualizados = await productoInventarioService.getInventariosByProducto(productoId);
+
+            if (inventariosActualizados) {
+                const inventariosExtraidos = inventariosActualizados.map(relacion => ({
+                    idRelacion: relacion.id,
+                    inventario: relacion.inventario,
+                    cantidad: relacion.cantidad
+                }));
+                setInventarios(inventariosExtraidos);
+                setEditModal(false);
+                alert(response.message || 'Cantidad actualizada correctamente');
+            }
+        } catch (error) {
+            alert(error.data.message);
+            console.error('Error al actualizar la cantidad:', error);
+        }
+    };
+
     // Renderiza cada fila de la tabla en SecondaryTable
     const renderRow = ({ idRelacion, inventario, cantidad }, index) => (
         <tr key={index}>
@@ -115,6 +154,9 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
             <td>
                 <button type="button" className="button btn-info" onClick={() => handleInfo(inventario.id)}>
                     <InfoCircle />
+                </button>
+                <button type="button" className="button btn-edit" onClick={() => handleEditClick({ idRelacion, inventario, cantidad })}>
+                    <FontAwesomeIcon icon={faEdit} />
                 </button>
                 <button type="button" className="button btn-delete" onClick={() => handleDelete(idRelacion)}>
                     <FontAwesomeIcon icon={faTrash} />
@@ -155,6 +197,30 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
                     <FontAwesomeIcon icon={faWarehouse} />
                 </button>
             </Form>
+
+            <Modal show={editModal} onHide={() => setEditModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Editar Cantidad</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form.Group>
+                        <Form.Label>Cantidad</Form.Label>
+                        <Form.Control
+                            type="number"
+                            value={newCantidad}
+                            onChange={(e) => setNewCantidad(e.target.value)}
+                        />
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setEditModal(false)}>
+                        Cancelar
+                    </Button>
+                    <Button variant="primary" onClick={handleUpdateCantidad}>
+                        Guardar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };
@@ -168,7 +234,7 @@ ProductoInventario.propTypes = {
                     id: PropTypes.number.isRequired,
                     nombre: PropTypes.string.isRequired,
                     maximo_stock: PropTypes.number.isRequired,
-                    ultima_actualizacion: PropTypes.string.isRequired,
+                    ultima_actualizacion: PropTypes.string,
                 }).isRequired,
                 cantidad: PropTypes.number.isRequired,
             })

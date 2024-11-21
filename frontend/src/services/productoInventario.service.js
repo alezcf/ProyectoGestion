@@ -114,6 +114,31 @@ export const deleteProductoInventarios = async (relacionId) => {
     }
 };
 
+export const updateCantidadProductoInventario = async (relacionId, nuevaCantidad) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        };
+
+        const requestData = {
+            relacionId,
+            nuevaCantidad,
+        };
+
+        const response = await axios.patch('api/producto-inventarios/', requestData, { headers });
+        const { status, data } = response;
+
+        if (status === 200) {
+            return data.data;
+        }
+    } catch (error) {
+        console.log(error.response.data.message);
+        handleError(error.response);
+    }
+};
+
 // Manejo de errores
 const handleError = (error) => {
     console.error('Error en la petición:', error);
@@ -124,6 +149,7 @@ export default {
     createProductoInventarios,
     getInventariosByProducto,
     updateProductoInventarios,
+    updateCantidadProductoInventario,
     deleteProductoInventarios,
     getProductosByInventario
 };

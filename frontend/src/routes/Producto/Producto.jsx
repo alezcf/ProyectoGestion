@@ -191,7 +191,7 @@ const Producto = () => {
                 <Col md={4}>
                     <center><h1><ProductoDetalles producto={producto} /></h1></center>
                     <ProductoImagen productoId={productoId} imagenRuta={producto?.imagen_ruta} />
-                    <ProductoBotones onEdit={handleEdit} onExport={handleExport} />
+                    <h1><ProductoBotones onEdit={handleEdit} onExport={handleExport} /></h1>
                 </Col>
                 <Col md={8}>
                     {/* Collapse para la tabla de detalles del producto */}

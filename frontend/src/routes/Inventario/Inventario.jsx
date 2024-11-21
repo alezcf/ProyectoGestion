@@ -25,25 +25,25 @@ const Inventario = () => {
     const [openProductos, setOpenProductos] = useState(false);
     const defaultInventario = '../images/inventario.png';
 
+    const fetchInventario = async () => {
+        try {
+            // Obtener detalles del inventario
+            const data = await inventarioService.getInventarioById(inventarioId);
+
+            // Calcular el stock actual sumando las cantidades de productoInventarios
+            const stockActual = data.productoInventarios.reduce((total, item) => total + item.cantidad, 0);
+            setInventario({ ...data, stock_actual: stockActual });
+
+            // Obtener los productos del inventario
+            setProductos(data.productoInventarios);
+            setLoading(false);
+        } catch (err) {
+            setError('Error al cargar el inventario o productos.');
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchInventario = async () => {
-            try {
-                // Obtener detalles del inventario
-                const data = await inventarioService.getInventarioById(inventarioId);
-
-                // Calcular el stock actual sumando las cantidades de productoInventarios
-                const stockActual = data.productoInventarios.reduce((total, item) => total + item.cantidad, 0);
-                setInventario({ ...data, stock_actual: stockActual });
-
-                // Obtener los productos del inventario
-                setProductos(data.productoInventarios);
-                setLoading(false);
-            } catch (err) {
-                setError('Error al cargar el inventario o productos.');
-                setLoading(false);
-            }
-        };
-
         fetchInventario();
     }, [inventarioId]);
 
@@ -53,7 +53,6 @@ const Inventario = () => {
 
     const handleExport = async () => {
         try {
-            // Estructura para exportar los datos del inventario
             const inventarioData = {
                 NOMBRE: inventario.nombre,
                 'STOCK ACTUAL': inventario.stock_actual,
@@ -88,12 +87,16 @@ const Inventario = () => {
 
         try {
             await inventarioService.updateInventario(inventarioId, inventarioActualizado);
-            console.log('Inventario actualizado con éxito:', inventarioActualizado);
             setInventario(inventarioActualizado);
             setShowEditModal(false);
+            alert('Inventario actualizado con éxito');
         } catch (error) {
             console.error('Error al actualizar el inventario:', error);
         }
+    };
+
+    const handleProductoChange = () => {
+        fetchInventario(); // Refresca los datos del inventario y los productos
     };
 
     const handleCloseModal = () => {
@@ -190,7 +193,7 @@ const Inventario = () => {
                         <Collapse in={openProductos}>
                             <div id="productos-inventario">
                                 <Card.Body>
-                                    <InventarioProducto inventario={inventario} productos={productos} />
+                                    <InventarioProducto onProductoChange={handleProductoChange} />
                                 </Card.Body>
                             </div>
                         </Collapse>
