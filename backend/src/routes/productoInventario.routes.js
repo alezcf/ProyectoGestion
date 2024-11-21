@@ -6,6 +6,7 @@ import {
     deleteInventarioByRelacionId,
     getInventariosByProducto,
     getProductosByInventario,
+    updateCantidadProductoInventario,
     updateProductoInventarios
 } from "../controllers/productoInventario.controller.js";
 
@@ -17,6 +18,7 @@ router
 router
     .post("/", createProductoInventarios)
     .put("/", updateProductoInventarios)
+    .patch("/", updateCantidadProductoInventario)
     .get("/", getInventariosByProducto)
     .get("/", getProductosByInventario)
     .delete("/", deleteInventarioByRelacionId);

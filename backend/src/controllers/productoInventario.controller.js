@@ -131,10 +131,37 @@ export async function getProductosByInventario(req, res) {
     }
 }
 
+/**
+ * Actualiza la cantidad de un producto en un inventario específico
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function updateCantidadProductoInventario(req, res) {
+    try {
+        const { relacionId, nuevaCantidad } = req.body;
+
+        if (!relacionId || nuevaCantidad === undefined) {
+            return handleErrorClient(res, 400, "ID de la relación y la nueva cantidad son requeridos");
+        }
+
+        const [relacionActualizada, error] = await ProductoInventarioService.updateCantidadProductoInventario(
+            relacionId,
+            nuevaCantidad
+        );
+
+        if (error) return handleErrorClient(res, 400, error);
+
+        handleSuccess(res, 200, "Cantidad actualizada correctamente", relacionActualizada);
+    } catch (error) {
+        handleErrorServer(res, 500, "Error actualizando la cantidad del producto-inventario", error.message);
+    }
+}
+
 export default {
     createProductoInventarios,
     getInventariosByProducto,
     deleteInventarioByRelacionId,
     updateProductoInventarios,
+    updateCantidadProductoInventario,
     getProductosByInventario
 };

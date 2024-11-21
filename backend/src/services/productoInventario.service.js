@@ -3,7 +3,6 @@ import ProductoInventario from "../entity/producto_inventario.entity.js";
 import Inventario from "../entity/inventario.entity.js";
 import Producto from "../entity/producto.entity.js";
 import { AppDataSource } from "../config/configDb.js";
-import { In } from "typeorm";
 
 /**
  * Crea relaciones entre un producto y varios inventarios en la tabla intermedia producto_inventario.
@@ -17,6 +16,7 @@ async function createProductoInventarios(productoId, inventariosIds, cantidades)
         const productoRepository = AppDataSource.getRepository(Producto);
         const inventarioRepository = AppDataSource.getRepository(Inventario);
         const productoInventarioRepository = AppDataSource.getRepository(ProductoInventario);
+
         // Verificar si el producto existe
         const producto = await productoRepository.findOne({ where: { id: productoId } });
         if (!producto) return [null, "Producto no encontrado"];
@@ -45,6 +45,32 @@ async function createProductoInventarios(productoId, inventariosIds, cantidades)
         for (let i = 0; i < inventarios.length; i++) {
             const inventario = inventarios[i];
             const cantidad = cantidades[i];
+
+            // Obtener todas las relaciones producto-inventario para este inventario
+            const relacionesExistentes = await productoInventarioRepository.find({
+                where: { inventario: { id: inventario.id } },
+                relations: ["producto"] // Incluimos las relaciones necesarias
+            });
+
+            // Sumar las cantidades existentes en el inventario
+            const sumaActual = relacionesExistentes.reduce(
+                (total, relacion) => total + relacion.cantidad,
+                0
+            );
+            const nuevaSuma = sumaActual + cantidad;
+
+            const inventarioId = inventario.id;
+            const maximoStock = inventario.maximo_stock;
+            console.log(`Inventario ${inventarioId}: Stock actual total = ${sumaActual}, `
+                        + `Stock máximo = ${maximoStock}, Nuevo stock propuesto = ${nuevaSuma}`);
+
+            // Verificar si supera el stock máximo
+            if (nuevaSuma > inventario.maximo_stock) {
+                const maximoStock = inventario.maximo_stock;
+                const inventarioNombre = inventario.nombre;
+                return [null, `El stock total (${nuevaSuma}) supera el stock máximo (${maximoStock}) `
+                                + `del inventario ${inventarioNombre}`];
+            }
 
             // Verificar si la relación ya existe
             const relacionExistente = await productoInventarioRepository.findOne({
@@ -266,8 +292,67 @@ async function getStockGlobalProductos() {
     }
 }
 
+/**
+ * Actualiza la cantidad de un producto en un inventario específico.
+ * Si la nueva cantidad es 0, elimina la relación y notifica.
+ * Si la nueva cantidad es menor a 0, no permite la acción y envía un error.
+ * Si la nueva cantidad es mayor a 0, valida que la suma de todas las cantidades no exceda el stock máximo del inventario.
+ *
+ * @param {number} relacionId - ID del registro en producto_inventario
+ * @param {number} nuevaCantidad - Nueva cantidad a actualizar
+ * @returns {Promise} Promesa con el resultado de la operación o un error
+ */
+async function updateCantidadProductoInventario(relacionId, nuevaCantidad) {
+    try {
+        const productoInventarioRepository = AppDataSource.getRepository(ProductoInventario);
+        console.log("Relación ID:", relacionId, "Nueva cantidad:", nuevaCantidad);
 
+        // Obtener la relación producto-inventario
+        const relacion = await productoInventarioRepository.findOne({
+            where: { id: relacionId },
+            relations: ["inventario"]
+        });
 
+        if (!relacion) {
+            return [null, "Relación no encontrada"];
+        }
+
+        const { inventario } = relacion;
+
+        // Validación: Si la nueva cantidad es menor a 0, no permitir la acción
+        if (nuevaCantidad <= 0) {
+            return [null, "La nueva cantidad debe ser mayor a 0."];
+        }
+
+        // Obtener todas las relaciones del inventario
+        const relacionesExistentes = await productoInventarioRepository.find({
+            where: { inventario: { id: inventario.id } }
+        });
+
+        // Sumar todas las cantidades, excluyendo la cantidad actual de esta relación
+        const sumaActualSinRelacion = relacionesExistentes.reduce(
+            (total, r) => total + (r.id === relacion.id ? 0 : r.cantidad),
+            0
+        );
+
+        // Calcular la suma total propuesta
+        const sumaPropuesta = sumaActualSinRelacion + nuevaCantidad;
+
+        // Validación: Verificar que la suma total no exceda el stock máximo
+        if (sumaPropuesta > inventario.maximo_stock) {
+            return [null, `La actualización de cantidad supera el stock máximo (${inventario.maximo_stock}) del inventario`];
+        }
+
+        // Actualizar la cantidad
+        relacion.cantidad = nuevaCantidad;
+        const relacionActualizada = await productoInventarioRepository.save(relacion);
+
+        return [relacionActualizada, null];
+    } catch (error) {
+        console.error("Error al actualizar la cantidad del producto-inventario:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
 
 export default {
     createProductoInventarios,
@@ -276,4 +361,5 @@ export default {
     updateProductoInventarios,
     getProductosByInventario,
     getStockGlobalProductos,
+    updateCantidadProductoInventario,
 };
