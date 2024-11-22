@@ -16,12 +16,18 @@ export const productoQueryValidation = Joi.object({
 });
 
 export const productoBodyValidation = Joi.object({
-    nombre: Joi.string().min(3).max(255).required().messages({
+    nombre: Joi.string()
+    .min(3)
+    .max(255)
+    .pattern(/^(?!\d+$).*/, "no solo números")
+    .required()
+    .messages({
         "string.empty": "El nombre no puede estar vacío.",
         "any.required": "El nombre es obligatorio.",
         "string.base": "El nombre debe ser de tipo string.",
         "string.min": "El nombre debe tener como mínimo 3 caracteres.",
-        "string.max": "El nombre debe tener como máximo 255 caracteres."
+        "string.max": "El nombre debe tener como máximo 255 caracteres.",
+        "string.pattern.name": "El nombre no puede ser solo números.",
     }),
     descripcion: Joi.string().max(1000).optional().messages({
         "string.empty": "La descripción no puede estar vacía.",
@@ -39,17 +45,22 @@ export const productoBodyValidation = Joi.object({
         "string.base": "La marca debe ser de tipo string.",
         "string.max": "La marca debe tener como máximo 255 caracteres."
     }),
-    contenido: Joi.number().positive().optional().messages({
+    contenido: Joi.number().positive().min(1).max(1000).required().messages({
         "number.base": "El contenido debe ser un número.",
-        "number.positive": "El contenido debe ser un número positivo."
+        "number.positive": "El contenido debe ser un número positivo.",
+        "number.min": "El contenido no puede ser menor a 1.",
+        "number.max": "El contenido no puede ser mayor a 1000",
     }),
     unidad_medida: Joi.string().valid(...MEDIDAS).optional().messages({
         "string.empty": "La unidad de medida no puede estar vacía.",
         "any.only": "La unidad de medida debe ser una de las siguientes: {#valids}."
     }),
-    precio: Joi.number().positive().optional().messages({
+    precio: Joi.number().positive().min(10).max(1000000).required().messages({
         "number.base": "El precio debe ser un número.",
-        "number.positive": "El precio debe ser un número positivo."
+        "any.required": "El precio es obligatorio.",
+        "number.positive": "El precio debe ser un número positivo.",
+        "number.min": "El precio no puede ser menor a 10.",
+        "number.max": "El precio no puede ser mayor a 1.000.000",
     }),
     tipo: Joi.string().valid(...TIPOS).required().messages({
         "string.empty": "El tipo no puede estar vacío.",

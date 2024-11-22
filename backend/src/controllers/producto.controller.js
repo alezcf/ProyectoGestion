@@ -31,6 +31,9 @@ export async function createProducto(req, res) {
 
         // Crear el producto en la base de datos
         const [producto, errorProducto] = await ProductoService.createProducto(productoData);
+        if(errorProducto === "El proveedor ingresado no existe.") {
+            return handleErrorClient(res, 404, errorProducto);
+        }
 
         if (errorProducto) return handleErrorClient(res, 400, errorProducto);
 
@@ -48,7 +51,6 @@ export async function createProducto(req, res) {
 export async function getProducto(req, res) {
     try {
         const { id } = req.query;
-
         const { error } = productoQueryValidation.validate({ id });
 
         if (error) return handleErrorClient(res, 400, "Error de validación", error.message);
@@ -88,7 +90,14 @@ export async function getProductos(req, res) {
 export async function updateProducto(req, res) {
     try {
         const { id } = req.query;
+
+        if (!id) return handleErrorClient(res, 400, "Error de validación", "El ID es obligatorio.");
+
         const { body } = req;
+
+        const { error } = productoBodyValidation.validate(body);
+
+        if(error) return handleErrorClient(res, 400, "Error de validación", error.message);
 
         const nuevaImagenRuta = req.file ? req.file.path : null;
 
@@ -99,16 +108,17 @@ export async function updateProducto(req, res) {
             delete body.imagen;
         }
 
-        const { error } = productoQueryValidation.validate({ id });
-        if (error) {
-            return handleErrorClient(res, 400, "Error de validación", error.message);
-        }
 
         // Llamar al servicio para actualizar el producto
         const [producto, errorProducto] = await ProductoService.updateProducto({ id }, body);
-        if (errorProducto) {
-            return handleErrorClient(res, 400, errorProducto);
+
+        if(errorProducto === "Producto no encontrado"
+            || errorProducto === "El proveedor ingresado no existe.") {
+            return handleErrorClient(res, 404, errorProducto);
         }
+
+        if (errorProducto) return handleErrorClient(res, 400, errorProducto);
+
 
         handleSuccess(res, 200, "Producto modificado correctamente", producto);
     } catch (error) {

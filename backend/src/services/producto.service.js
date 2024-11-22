@@ -28,7 +28,7 @@ async function createProducto(body) {
             });
 
             if (proveedores.length !== body.proveedores.length) {
-                return [null, "Uno o más proveedores no existen"];
+                return [null, "El proveedor ingresado no existe."];
             }
         }
 
@@ -110,21 +110,56 @@ async function getProductos() {
  */
 async function updateProducto(query, body) {
     try {
+        const productoRepository = AppDataSource.getRepository(Producto);
+        const proveedorRepository = AppDataSource.getRepository(Proveedor);
+        const productoProveedorRepository = AppDataSource.getRepository(ProductoProveedor);
+
         const { id } = query;
 
-        // Separar la responsabilidad de encontrar el producto
-        const productoFound = await findProductoById(id);
+        // Verificar si el producto existe
+        const productoFound = await productoRepository.findOne({ where: { id } });
         if (!productoFound) {
             return [null, "Producto no encontrado"];
         }
 
+        // Validar proveedores si se proporcionan
+        let proveedores = [];
+        if (body.proveedores && body.proveedores.length > 0) {
+            proveedores = await proveedorRepository.findBy({
+                id: In(body.proveedores),
+            });
+
+            if (proveedores.length !== body.proveedores.length) {
+                return [null, "El proveedor ingresado no existe."];
+            }
+        }
+
         // Actualizar la imagen si es necesario
-        const updatedProducto = await handleImageUpdate(productoFound, body.imagen_ruta);
+        if (body.imagen_ruta) {
+            body.imagen_ruta = body.imagen_ruta.replace(/\\/g, "/");
+        }
 
-        // Actualizar los campos restantes del producto
-        const productoActualizado = await updateProductData(updatedProducto, body);
+        // Actualizar los campos del producto
+        Object.assign(productoFound, body);
+        const updatedProducto = await productoRepository.save(productoFound);
 
-        return [productoActualizado, null];
+        // Actualizar las relaciones en la tabla producto_proveedor
+        if (proveedores.length > 0) {
+            // Eliminar relaciones existentes para este producto
+            await productoProveedorRepository.delete({ producto: { id } });
+
+            // Crear nuevas relaciones con los proveedores
+            const productoProveedores = proveedores.map(proveedor => {
+                return {
+                    producto: updatedProducto,
+                    proveedor: proveedor
+                };
+            });
+
+            await productoProveedorRepository.save(productoProveedores);
+        }
+
+        return [updatedProducto, null];
     } catch (error) {
         console.error("Error al modificar un producto:", error);
         return [null, "Error interno del servidor"];
