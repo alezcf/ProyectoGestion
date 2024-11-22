@@ -88,6 +88,7 @@ async function updateInventario(query, body) {
 
         // Verificar si el inventario existe
         const inventarioFound = await inventarioRepository.findOne({ where: { id: query.id } });
+        console.log(inventarioFound);
         if (!inventarioFound) return [null, "Inventario no encontrado"];
 
         if (body.productos?.length) {
@@ -98,10 +99,7 @@ async function updateInventario(query, body) {
             });
 
             if (productosExistentes.length !== productoIds.length) {
-                const productosNoExistentes = productoIds.filter(id =>
-                    !productosExistentes.some(p => p.id === id)
-                );
-                return [null, `Los productos no existen: ${productosNoExistentes.join(", ")}`];
+                return [null, "Los productos solicitados por ingresar no existen."];
             }
 
             // Calcular el stock basado solo en los productos que se están actualizando
@@ -159,13 +157,20 @@ async function deleteInventario(query) {
     try {
         const inventarioRepository = AppDataSource.getRepository(Inventario);
 
+        // Buscar el inventario junto con sus productos asociados
         const inventarioFound = await inventarioRepository.findOne({
             where: { id: query.id },
-            relations: ["productoInventarios"], // Incluir productos asociados
+            relations: ["productoInventarios"], // Incluye relaciones con productos
         });
 
         if (!inventarioFound) return [null, "Inventario no encontrado"];
 
+        // Validar si hay productos asociados
+        if (inventarioFound.productoInventarios.length > 0) {
+            return [null, "No se puede eliminar el inventario porque tiene productos asociados."];
+        }
+
+        // Eliminar el inventario si no tiene productos asociados
         await inventarioRepository.remove(inventarioFound);
 
         return [inventarioFound, null];
@@ -174,6 +179,7 @@ async function deleteInventario(query) {
         return [null, "Error interno del servidor"];
     }
 }
+
 
 /**
  * Obtiene el nivel de stock actual y máximo para cada inventario

@@ -1,6 +1,10 @@
 "use strict";
 import InventarioService from "../services/inventario.service.js";
 import {
+    inventarioBodyValidation,
+    inventarioQueryValidation
+} from "../validations/inventario.validation.js";
+import {
     handleErrorClient,
     handleErrorServer,
     handleSuccess
@@ -14,7 +18,9 @@ import {
 export async function createInventario(req, res) {
     try {
         const { body } = req;
-        console.log(body);
+        const { error } = inventarioBodyValidation.validate(body);
+
+        if(error) return handleErrorClient(res, 400, "Error de validación", error.message);
         const [inventario, errorInventario] = await InventarioService.createInventario(body);
 
         if (errorInventario) return handleErrorClient(res, 400, errorInventario);
@@ -110,12 +116,26 @@ export async function getCantidadProductosPorCategoria(req, res) {
 export async function updateInventario(req, res) {
     try {
         const { id } = req.query;
+
+        if (!id) return handleErrorClient(res, 400, "Error de validación", "El ID es obligatorio.");
+
         const { body } = req;
+        const { error } = inventarioBodyValidation.validate(body);
+
+        if(error) return handleErrorClient(res, 400, "Error de validación", error.message);
 
         const [
             inventario,
             errorInventario
         ] = await InventarioService.updateInventario({ id }, body);
+
+        if (
+            errorInventario === "Inventario no encontrado"
+            || errorInventario === "Los productos solicitados por ingresar no existen."
+        )
+            return handleErrorClient(res, 404, errorInventario);
+
+
 
         if (errorInventario) return handleErrorClient(res, 400, errorInventario);
 
@@ -133,12 +153,17 @@ export async function updateInventario(req, res) {
 export async function deleteInventario(req, res) {
     try {
         const { id } = req.query;
+        if (!id) return handleErrorClient(res, 400, "Error de validación", "El ID es obligatorio.");
 
         const [inventarioDelete, errorInventarioDelete] = await InventarioService.deleteInventario({
             id
         });
 
-        if (errorInventarioDelete) return handleErrorClient(res, 404, errorInventarioDelete);
+        if (errorInventarioDelete === "Inventario no encontrado"){
+                return handleErrorClient(res, 404, errorInventarioDelete);
+        }
+
+        if(errorInventarioDelete) return handleErrorClient(res, 400, errorInventarioDelete);
 
         handleSuccess(res, 200, "Inventario eliminado correctamente", inventarioDelete);
     } catch (error) {
