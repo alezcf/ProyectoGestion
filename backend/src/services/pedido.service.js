@@ -33,7 +33,7 @@ async function createPedido(body) {
         });
         if (!proveedor) {
             await queryRunner.rollbackTransaction();
-            return [null, `Proveedor con id ${body.proveedor_id} no existe`];
+            return [null, "El proveedor ingresado no existe."];
         }
 
         // Verificar si el inventario asignado existe
@@ -42,7 +42,7 @@ async function createPedido(body) {
         });
         if (!inventario) {
             await queryRunner.rollbackTransaction();
-            return [null, `Inventario con id ${body.inventario_asignado_id} no existe`];
+            return [null, "El inventario ingresado no existe."];
         }
 
         // Verificar si los productos existen
@@ -50,11 +50,9 @@ async function createPedido(body) {
         const productosExistentes = await productoRepository.findBy({ id: In(productoIds) });
 
         if (productosExistentes.length !== productoIds.length) {
-            const productosNoExistentes = productoIds.filter(id => {
-                return !productosExistentes.some(p => p.id === id);
-            });
+
             await queryRunner.rollbackTransaction();
-            return [null, `Los productos no existen: ${productosNoExistentes.join(", ")}`];
+            return [null, "Los productos ingresados no existen."];
         }
 
         // Crear el pedido principal asegurándote de pasar los IDs correctamente

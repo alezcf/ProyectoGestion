@@ -118,44 +118,44 @@ async function deleteProveedorByRelacionId(relacionId) {
  * @returns {Promise} Promesa con las relaciones actualizadas o un error
  */
 async function updateProductoProveedores(productoId, proveedoresIds) {
-  try {
-      const productoRepository = AppDataSource.getRepository(Producto);
-      const proveedorRepository = AppDataSource.getRepository(Proveedor);
-      const productoProveedorRepository = AppDataSource.getRepository(ProductoProveedor);
+    try {
+        const productoRepository = AppDataSource.getRepository(Producto);
+        const proveedorRepository = AppDataSource.getRepository(Proveedor);
+        const productoProveedorRepository = AppDataSource.getRepository(ProductoProveedor);
 
-      // Verificar si el producto existe
-      const producto = await productoRepository.findOne({ where: { id: productoId } });
-      if (!producto) return [null, "Producto no encontrado"];
+        // Verificar si el producto existe
+        const producto = await productoRepository.findOne({ where: { id: productoId } });
+        if (!producto) return [null, "Producto no encontrado"];
 
-      // Verificar si los proveedores existen
-      const proveedores = await proveedorRepository.findBy({ id: In(proveedoresIds) });
-      if (proveedores.length !== proveedoresIds.length) {
-          return [null, "Uno o más proveedores no existen"];
-      }
+        // Verificar si los proveedores existen
+        const proveedores = await proveedorRepository.findBy({ id: In(proveedoresIds) });
+        if (proveedores.length !== proveedoresIds.length) {
+            return [null, "El proveedor ingresado no existe."];
+        }
 
-      // Eliminar las relaciones actuales entre el producto y los proveedores
-      await productoProveedorRepository.delete({ producto: { id: productoId } });
+        // Eliminar las relaciones actuales entre el producto y los proveedores
+        await productoProveedorRepository.delete({ producto: { id: productoId } });
 
-      // Crear nuevas relaciones con los proveedores actualizados
-      const productoProveedores = proveedores.map(proveedor => {
-          return productoProveedorRepository.create({
-              producto,
-              proveedor
-          });
-      });
+        // Crear nuevas relaciones con los proveedores actualizados
+        const productoProveedores = proveedores.map(proveedor => {
+            return productoProveedorRepository.create({
+                producto,
+                proveedor
+            });
+        });
 
-      // Guardar las nuevas relaciones
-      const updatedRelaciones = await productoProveedorRepository.save(productoProveedores);
-      return [updatedRelaciones, null];
-  } catch (error) {
-      console.error("Error al actualizar relaciones producto-proveedores:", error);
-      return [null, "Error interno del servidor"];
-  }
+        // Guardar las nuevas relaciones
+        const updatedRelaciones = await productoProveedorRepository.save(productoProveedores);
+        return [updatedRelaciones, null];
+    } catch (error) {
+        console.error("Error al actualizar relaciones producto-proveedores:", error);
+        return [null, "Error interno del servidor"];
+    }
 }
 
 export default {
-  createProductoProveedores,
-  getProveedoresByProducto,
-  deleteProveedorByRelacionId,
-  updateProductoProveedores
+    createProductoProveedores,
+    getProveedoresByProducto,
+    deleteProveedorByRelacionId,
+    updateProductoProveedores
 };

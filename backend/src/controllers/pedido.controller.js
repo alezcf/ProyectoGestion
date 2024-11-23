@@ -24,6 +24,17 @@ export async function createPedido(req, res) {
 
         const [pedido, errorPedido] = await PedidoService.createPedido(body);
 
+        const posiblesErrores = [
+            "Los productos ingresados no existen.",
+            "El proveedor ingresado no existe.",
+            "El inventario ingresado no existe."
+        ];
+
+        if (posiblesErrores.includes(errorPedido)) {
+            return handleErrorClient(res, 404, errorPedido);
+        }
+
+
         if (errorPedido) return handleErrorClient(res, 400, errorPedido);
 
         handleSuccess(res, 201, "Pedido creado correctamente", pedido);
@@ -161,15 +172,15 @@ export async function deletePedido(req, res) {
     try {
         const { id } = req.query;
 
-        const { error: queryError } = pedidoQueryValidation.validate({ id });
+        const error = pedidoQueryValidation.validate({ id });
 
-        if (queryError) {
-            return handleErrorClient(res, 400, "Error de validación", queryError.message);
+        if (error) {
+            return handleErrorClient(res, 400, "Error de validación en la ID.", error.message);
         }
 
         const [pedidoDeleted, errorPedidoDeleted] = await PedidoService.deletePedido({ id });
 
-        if (errorPedidoDeleted) return handleErrorClient(res, 404, errorPedidoDeleted);
+        if ( errorPedidoDeleted ) return handleErrorClient(res, 404, errorPedidoDeleted);
 
         handleSuccess(res, 200, "Pedido eliminado correctamente", pedidoDeleted);
     } catch (error) {

@@ -1,5 +1,6 @@
 "use strict";
 import ProductoProveedorService from "../services/productoProveedor.service.js";
+import { productoProveedoresValidation } from "../validations/productoProveedor.validation.js";
 import {
     handleErrorClient,
     handleErrorServer,
@@ -75,18 +76,28 @@ export async function deleteProveedorByRelacionId(req, res) {
  * @param {Object} res - Objeto de respuesta
  */
 export async function updateProductoProveedores(req, res) {
-  try {
-      const { proveedoresIds } = req.body;
-      const { productoId } = req.query;
+    try {
+        const { proveedoresIds } = req.body;
+        const { productoId } = req.query;
 
-      const [relacionesActualizadas, error] =
-          await ProductoProveedorService.updateProductoProveedores(productoId, proveedoresIds);
-      if (error) return handleErrorClient(res, 400, error);
+        // Validamos toda la data de entrada tanto por el body como por la query.
+        const { error } = productoProveedoresValidation.validate({ ...req.body, ...req.query });
+        if (error) return handleErrorClient(res, 400, error.message);
 
-      handleSuccess(res, 200, "Relaciones actualizadas correctamente", relacionesActualizadas);
-  } catch (error) {
-      handleErrorServer(res, 500, "Error relaciones producto-proveedores", error.message);
-  }
+        const [relacionesActualizadas, errorService] =
+            await ProductoProveedorService.updateProductoProveedores(productoId, proveedoresIds);
+
+        if(errorService === "Producto no encontrado"
+            || errorService === "El proveedor ingresado no existe.") {
+            return handleErrorClient(res, 404, errorService);
+
+        }
+        if (errorService) return handleErrorClient(res, 400, errorService);
+
+        handleSuccess(res, 200, "Relaciones actualizadas correctamente", relacionesActualizadas);
+    } catch (error) {
+        handleErrorServer(res, 500, "Error relaciones producto-proveedores", error.message);
+    }
 }
 
 
