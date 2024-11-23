@@ -1,6 +1,9 @@
 "use strict";
 import ProductoInventarioService from "../services/productoInventario.service.js";
 import {
+    productoInventarioValidation
+} from "../validations/productoInventario.validations.js";
+import {
     handleErrorClient,
     handleErrorServer,
     handleSuccess
@@ -14,14 +17,19 @@ import {
 export async function createProductoInventarios(req, res) {
     try {
         const { productoId, inventariosIds, cantidades } = req.body;
-        console.log("Producto ID:", productoId);
-        console.log("Inventarios IDs:", inventariosIds);
-        console.log("Cantidades:", cantidades);
-        const [relaciones, error] = await ProductoInventarioService
+        const { error } = productoInventarioValidation.validate(req.body);
+
+        if (error) {
+            return handleErrorClient(res, 400, "Error de validación", error.message);
+        }
+        const [relaciones, errorProductoInventario] = await ProductoInventarioService
             .createProductoInventarios(productoId, inventariosIds, cantidades);
-            console.log("dentro del catch" + error);
-        if (error) return handleErrorClient(res, 400, error);
-        console.log("dentro del catch" + error);
+
+        if(errorProductoInventario === "Producto no encontrado" || "Inventario no encontrado") {
+            return handleErrorClient(res, 404, errorProductoInventario);
+        }
+        if (errorProductoInventario) return handleErrorClient(res, 400, errorProductoInventario);
+
         handleSuccess(res, 201, "Relaciones creadas correctamente", relaciones);
     } catch (error) {
         console.log("dentro del catch" + error);
@@ -81,14 +89,24 @@ export async function deleteInventarioByRelacionId(req, res) {
  */
 export async function updateProductoInventarios(req, res) {
     try {
-        console.log("Producto ID:", req.body.productoId);
-        console.log("Inventarios IDs:", req.body.inventariosIds);
-        console.log("Cantidades:", req.body.cantidades);
-        const { productoId, inventariosIds, cantidades } = req.body;
-        const [relacionesActualizadas, error] = await ProductoInventarioService
+        const { inventariosIds, cantidades } = req.body;
+        const { productoId } = req.query;
+        const dataToValidate = { ...req.query, ...req.body };
+        const { error } = productoInventarioValidation.validate(dataToValidate);
+
+        if (error) {
+            return handleErrorClient(res, 400, "Error de validación", error.message);
+        }
+
+        const [relacionesActualizadas, errorProductoInventario] = await ProductoInventarioService
             .updateProductoInventarios(productoId, inventariosIds, cantidades);
-            console.log(error);
-        if (error) return handleErrorClient(res, 400, error);
+
+        if(errorProductoInventario === "Producto no encontrado"
+            || errorProductoInventario === "Inventario no encontrado") {
+            return handleErrorClient(res, 404, errorProductoInventario);
+        }
+
+        if (errorProductoInventario) return handleErrorClient(res, 400, errorProductoInventario);
 
         handleSuccess(res, 200, "Relaciones actualizadas correctamente", relacionesActualizadas);
     } catch (error) {

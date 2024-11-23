@@ -60,7 +60,7 @@ export async function deleteProveedorByRelacionId(req, res) {
         // Llamamos al servicio que elimina la relación por su ID
         const [resultado, error] = await ProductoProveedorService.deleteProveedorByRelacionId(relacionId);
 
-        if (error) return handleErrorClient(res, 404, error);  // Si hay un error, lo devolvemos al cliente
+        if (error) return handleErrorClient(res, 404, error); 
 
         // Enviar respuesta de éxito si la eliminación fue exitosa
         handleSuccess(res, 200, "Relación eliminada correctamente", resultado);

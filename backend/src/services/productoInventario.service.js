@@ -167,8 +167,8 @@ async function updateProductoInventarios(productoId, inventariosIds, cantidades)
 
         // Verificar si el producto existe
         const producto = await productoRepository.findOne({ where: { id: productoId } });
-        if (!producto) return [null, `Producto con ID ${productoId} no encontrado`];
-
+        if (!producto) return [null, "Producto no encontrado"];
+        console.log("Producto encontrado:", producto);
         const inventarios = [];
         const errores = [];
 
@@ -176,7 +176,7 @@ async function updateProductoInventarios(productoId, inventariosIds, cantidades)
         for (const inventarioId of inventariosIds) {
             const inventario = await inventarioRepository.findOne({ where: { id: inventarioId } });
             if (!inventario) {
-                errores.push(`Inventario con ID ${inventarioId} no encontrado`);
+                errores.push("Inventario no encontrado");
             } else {
                 inventarios.push(inventario); // Guardamos solo los inventarios que existen
             }
