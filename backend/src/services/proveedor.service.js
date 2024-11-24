@@ -1,6 +1,7 @@
 "use strict";
 import Proveedor from "../entity/proveedor.entity.js";
 import { AppDataSource } from "../config/configDb.js";
+import { format, validate } from "rut.js"
 
 /**
  * Crea un nuevo proveedor en la base de datos
@@ -19,7 +20,17 @@ async function createProveedor(body) {
         return [null, "Ya existe un proveedor con el mismo rut o email"];
         }
 
-        const newProveedor = proveedorRepository.create(body);
+        if(!validate(format(body.rut))){
+            return [null, "El rut de proveedor ingresado es invalido."];
+        }
+        const newProveedor = proveedorRepository.create({
+            nombre: body.nombre,
+            rut: format(body.rut), // Aplica formato al RUT
+            direccion: body.direccion,
+            telefono: body.telefono,
+            email: body.email,
+        });
+
         const savedProveedor = await proveedorRepository.save(newProveedor);
 
         return [savedProveedor, null];

@@ -39,12 +39,18 @@ export const proveedorQueryValidation = Joi.object({
     });
 
 export const proveedorBodyValidation = Joi.object({
-    nombre: Joi.string().min(3).max(255).required().messages({
+    nombre: Joi.string()
+    .min(3)
+    .max(255)
+    .pattern(/^(?!\d+$).*/, "no solo números")
+    .required()
+    .messages({
         "string.empty": "El nombre no puede estar vacío.",
         "any.required": "El nombre es obligatorio.",
         "string.base": "El nombre debe ser de tipo string.",
         "string.min": "El nombre debe tener como mínimo 3 caracteres.",
         "string.max": "El nombre debe tener como máximo 255 caracteres.",
+        "string.pattern.name": "El nombre no puede ser solo números.",
     }),
     email: Joi.string()
         .email()
@@ -68,7 +74,7 @@ export const proveedorBodyValidation = Joi.object({
         "string.max": "El RUT debe tener como máximo 12 caracteres.",
         "string.pattern.base": "El RUT no tiene un formato válido.",
         }),
-    direccion: Joi.string().max(255).optional().messages({
+    direccion: Joi.string().max(255).required().messages({
         "string.empty": "La dirección no puede estar vacía.",
         "string.base": "La dirección debe ser de tipo string.",
         "string.max": "La dirección debe tener como máximo 255 caracteres.",

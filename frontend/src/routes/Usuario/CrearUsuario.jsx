@@ -52,7 +52,7 @@ const CrearUsuario = () => {
                                         required: 'El RUT es obligatorio',
                                         pattern: {
                                             value: /^\d{1,2}\.?\d{3}\.?\d{3}-[\dkK]$/,
-                                            message: 'El RUT no tiene un formato válido'
+                                            message: 'El RUT no tiene un formato válido (12.345.678-9)'
                                         },
                                         minLength: { value: 9, message: 'El RUT debe tener al menos 9 caracteres' },
                                         maxLength: { value: 12, message: 'El RUT no puede tener más de 12 caracteres' }

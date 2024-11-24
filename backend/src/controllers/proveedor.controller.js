@@ -21,14 +21,15 @@ export async function createProveedor(req, res) {
 
         const { error } = proveedorBodyValidation.validate(body);
 
-        if (error) return handleErrorClient(res, 400, "Error de validación", error.message);
+        if (error) return handleErrorClient(res, 400, error.message);
 
         const [proveedor, errorProveedor] = await ProveedorService.createProveedor(body);
-
+        console.log(errorProveedor);
         if (errorProveedor) return handleErrorClient(res, 400, errorProveedor);
 
         handleSuccess(res, 201, "Proveedor creado correctamente", proveedor);
     } catch (error) {
+        console.log(error);
         handleErrorServer(res, 500, "Error creando un proveedor", error.message);
     }
 }

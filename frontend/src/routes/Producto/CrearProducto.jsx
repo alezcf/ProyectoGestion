@@ -58,7 +58,8 @@ const CrearProducto = () => {
             setPage(0);
             setShowConfirmation(false);
         } catch (err) {
-            alert('Error al crear el producto: ' + err.response);
+            console.log('Error al crear el producto:', err.response.data.details);
+            alert('Error al crear el producto: ' + err.response.data.details);
             setShowConfirmation(false);
         }
     };
@@ -94,7 +95,6 @@ const CrearProducto = () => {
     const renderTooltip = (message) => (
         <Tooltip style={{ maxWidth: '200px', whiteSpace: 'normal' }}>{message}</Tooltip>
     );
-
     const renderPageFields = () => {
         switch (page) {
             case 0:
@@ -182,19 +182,20 @@ const CrearProducto = () => {
                                 <Form.Group controlId="contenido">
                                     <OverlayTrigger
                                         placement="auto"
-                                        overlay={renderTooltip("Introduce el contenido en unidades, debe ser un número positivo.")}
+                                        overlay={renderTooltip("Introduce el contenido en unidades, debe ser un número positivo. Requerido.")}
                                         popperConfig={{
                                             modifiers: [
                                                 { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
-                                        <Form.Label>CONTENIDO</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>CONTENIDO (*)</Form.Label>
                                     </OverlayTrigger>
                                     <Form.Control
                                         type="number"
                                         placeholder="Ingresa el contenido"
                                         {...register('contenido', {
+                                            required: "El contenido es obligatorio en formato numérico.",
                                             min: { value: 0, message: "Debe ser un número positivo." }
                                         })}
                                         className={`form-input ${errors.contenido ? 'is-invalid' : ''}`}
@@ -208,18 +209,18 @@ const CrearProducto = () => {
                                 <Form.Group controlId="unidad_medida">
                                     <OverlayTrigger
                                         placement="auto"
-                                        overlay={renderTooltip("Selecciona la unidad de medida para el contenido del producto.")}
+                                        overlay={renderTooltip("Selecciona la unidad de medida para el contenido del producto. Requerido.")}
                                         popperConfig={{
                                             modifiers: [
                                                 { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
-                                        <Form.Label>UNIDAD DE MEDIDA</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>UNIDAD DE MEDIDA (*)</Form.Label>
                                     </OverlayTrigger>
                                     <Form.Control
                                         as="select"
-                                        {...register('unidad_medida')}
+                                        {...register('unidad_medida', { required: "La unidad de medida es obligatoria." })}
                                         className={`form-input ${errors.unidad_medida ? 'is-invalid' : ''}`}
                                     >
                                         <option value="">Seleccione una unidad de medida</option>
@@ -234,19 +235,20 @@ const CrearProducto = () => {
                                 <Form.Group controlId="precio">
                                     <OverlayTrigger
                                         placement="auto"
-                                        overlay={renderTooltip("Introduce el precio del producto, debe ser un número positivo.")}
+                                        overlay={renderTooltip("Introduce el precio del producto. Requerido y debe ser un número positivo.")}
                                         popperConfig={{
                                             modifiers: [
                                                 { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
-                                        <Form.Label>PRECIO</Form.Label>
+                                        <Form.Label style={{ fontWeight: 'bold' }}>PRECIO (*)</Form.Label>
                                     </OverlayTrigger>
                                     <Form.Control
                                         type="number"
                                         placeholder="Ingresa el precio"
                                         {...register('precio', {
+                                            required: "El precio es obligatorio en formato numérico.",
                                             min: { value: 0, message: "Debe ser un número positivo." }
                                         })}
                                         className={`form-input ${errors.precio ? 'is-invalid' : ''}`}
@@ -265,7 +267,7 @@ const CrearProducto = () => {
                                 <Form.Group controlId="categoria">
                                     <OverlayTrigger
                                         placement="auto"
-                                        overlay={renderTooltip("Selecciona la categoría del producto. Campo obligatorio.")}
+                                        overlay={renderTooltip("Selecciona la categoría del producto. Requerido.")}
                                         popperConfig={{
                                             modifiers: [
                                                 { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
@@ -291,7 +293,7 @@ const CrearProducto = () => {
                                 <Form.Group controlId="tipo">
                                     <OverlayTrigger
                                         placement="auto"
-                                        overlay={renderTooltip("Selecciona el tipo del producto. Campo obligatorio.")}
+                                        overlay={renderTooltip("Selecciona el tipo del producto. Requerido.")}
                                         popperConfig={{
                                             modifiers: [
                                                 { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
@@ -350,6 +352,7 @@ const CrearProducto = () => {
                 return null;
         }
     };
+
 
     return (
         <Container fluid className="form-container">

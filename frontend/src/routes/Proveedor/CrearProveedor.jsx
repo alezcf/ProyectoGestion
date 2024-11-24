@@ -17,7 +17,8 @@ const CrearProveedor = () => {
             reset(); // Resetear el formulario
             setShowConfirmation(false);
         } catch (err) {
-            alert('Error al crear el proveedor: ' + err.response.data.message);
+            console.log(err.response.data.message);
+            alert(err.response.data.message);
             setShowConfirmation(false);
         }
     };

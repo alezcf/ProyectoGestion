@@ -29,7 +29,7 @@ export const productoBodyValidation = Joi.object({
         "string.max": "El nombre debe tener como máximo 255 caracteres.",
         "string.pattern.name": "El nombre no puede ser solo números.",
     }),
-    descripcion: Joi.string().max(1000).optional().messages({
+    descripcion: Joi.string().max(1000).required().messages({
         "string.empty": "La descripción no puede estar vacía.",
         "any.required": "La descripción es obligatoria.",
         "string.base": "La descripción debe ser de tipo string.",
@@ -51,7 +51,7 @@ export const productoBodyValidation = Joi.object({
         "number.min": "El contenido no puede ser menor a 1.",
         "number.max": "El contenido no puede ser mayor a 1000",
     }),
-    unidad_medida: Joi.string().valid(...MEDIDAS).optional().messages({
+    unidad_medida: Joi.string().valid(...MEDIDAS).required().messages({
         "string.empty": "La unidad de medida no puede estar vacía.",
         "any.only": "La unidad de medida debe ser una de las siguientes: {#valids}."
     }),
