@@ -10,6 +10,7 @@ import InventarioBotones from '../../components/Common/ButtonsActions';
 import inventarioFields from '../../fields/inventario.fields';
 import DefaultEditModal from '../../components/Common/DefaultEditModal';
 import InventarioProducto from '../../components/Inventario/InventarioProducto';
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 import '../../css/Form.css';
 import '../../css/Inventario.css';
 import '../../css/Modal.css';
@@ -57,7 +58,7 @@ const Inventario = () => {
                 NOMBRE: inventario.nombre,
                 'STOCK ACTUAL': inventario.stock_actual,
                 'MÁXIMO STOCK': inventario.maximo_stock,
-                'FECHA DE ACTUALIZACIÓN': inventario.ultima_actualizacion,
+                'FECHA DE ACTUALIZACIÓN': formatDateToDDMMYYYY(inventario.ultima_actualizacion),
             };
 
             const productosExport = productos.map(productoInventario => ({
@@ -81,19 +82,31 @@ const Inventario = () => {
             alert('Error al exportar los datos.');
         }
     };
-
     const handleFormSubmit = async (data) => {
-        const inventarioActualizado = { ...inventario, ...data };
+        // Extraer y transformar los datos necesarios
+        const productos = data.productoInventarios.map((item) => (
+            {
+            id: item.producto.id,
+            cantidad: item.cantidad,
+        }));
+
+        const inventarioActualizado = {
+            nombre: data.nombre,
+            maximo_stock: Number(data.maximo_stock), // Convertir a número si es necesario
+            productos,
+        };
 
         try {
-            await inventarioService.updateInventario(inventarioId, inventarioActualizado);
-            setInventario(inventarioActualizado);
+            const response = await inventarioService.updateInventario(inventarioId, inventarioActualizado);
+            setInventario({ ...inventario, ...inventarioActualizado });
             setShowEditModal(false);
-            alert('Inventario actualizado con éxito');
+            alert(response.data.message);
         } catch (error) {
+            alert( error.message);
             console.error('Error al actualizar el inventario:', error);
         }
     };
+
 
     const handleProductoChange = () => {
         fetchInventario(); // Refresca los datos del inventario y los productos

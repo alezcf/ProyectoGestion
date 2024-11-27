@@ -15,6 +15,7 @@ import ProductoInventario from '../../components/Producto/ProductoInventario';
 import DefaultEditModal from '../../components/Common/DefaultEditModal';
 import productoProveedorService from '../../services/productoProveedor.service';
 import productoInventarioService from '../../services/productoInventario.service';
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 import '../../css/Form.css';
 import '../../css/Producto.css';
 import '../../css/Modal.css';
@@ -83,7 +84,7 @@ const Producto = () => {
                 NOMBRE: inventarioRelacion.inventario?.nombre || 'No disponible',
                 CANTIDAD: inventarioRelacion.cantidad || 0,
                 'MÁXIMO STOCK': inventarioRelacion.inventario?.maximo_stock || 'No disponible',
-                'FECHA DE ACTUALIZACIÓN': inventarioRelacion.inventario?.ultima_actualizacion || 'No disponible',
+                'FECHA DE ACTUALIZACIÓN': formatDateToDDMMYYYY(inventarioRelacion.inventario?.ultima_actualizacion) || 'No disponible',
             }));
 
             // Nombres personalizados para las hojas de Excel
@@ -107,16 +108,16 @@ const Producto = () => {
 
     const handleFormSubmit = async (data) => {
         const productoActualizado = { ...producto, ...data };
+        delete productoActualizado.ruta_imagen;
         console.log('Producto actualizado:', productoActualizado);
         try {
-            await productoService.updateProducto(productoActualizado);
-            console.log('Producto actualizado con éxito:', productoActualizado);
+            const response = await productoService.updateProducto(productoActualizado);
+            console.log('Producto actualizado con éxito:', response);
             setShowEditModal(false);
-
-            // Llamar nuevamente a fetchProducto para obtener los datos actualizados
             fetchProducto();
-
+            alert(response.data.message);
         } catch (error) {
+            alert(error.response.data.message + " " + error.response.data.details)
             console.error('Error al actualizar el producto:', error);
         }
     };

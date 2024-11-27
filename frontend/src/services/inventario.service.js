@@ -57,16 +57,16 @@ export const createInventario = async (inventarioData) => {
 export const updateInventario = async (inventarioId, inventarioData) => {
     try {
         const token = cookies.get('jwt-auth');
+        console.log(inventarioData);
         const headers = {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json', // Formato JSON
         };
 
         const response = await axios.put(`api/inventario/?id=${inventarioId}`, inventarioData, { headers });
-        const { status, data } = response;
-        if (status === 200) {  // Estado 200 indica que el recurso fue actualizado correctamente
-            return data.data;
-        }
+
+        console.log(response);
+        return response;
     } catch (error) {
         handleError(error);
     }
@@ -79,7 +79,7 @@ const handleError = (error) => {
         console.error('Código de estado:', error.response.status);
         console.error('Datos del error:', error.response.data);
     }
-    throw error;  // Relanza el error para manejarlo en el frontend
+    throw error.response.data;  // Relanza el error para manejarlo en el frontend
 };
 
 export default {

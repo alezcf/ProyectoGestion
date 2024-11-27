@@ -86,9 +86,7 @@ export const updateProductoImagen = async (productoId, imagenData) => {
 
         const formData = new FormData();
         formData.append('imagen', imagenData);  // Aquí se envía la imagen en sí
-        console.log('Imagen:', imagenData);
-        console.log('FormData:', formData);
-        console.log('id:', productoId);
+
         const response = await axios.post(`api/producto/update-imagen?id=${productoId}`, formData, { headers });
         const { status, data } = response;
         if (status === 200) {

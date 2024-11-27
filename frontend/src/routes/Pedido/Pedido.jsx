@@ -10,6 +10,7 @@ import DefaultEditModal from '../../components/Common/DefaultEditModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import pedidoFields from '../../fields/pedido.fields';
+import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 import '../../css/Form.css';
 import '../../css/Producto.css';
 
@@ -60,8 +61,8 @@ const Pedido = () => {
 
             const pedidoData = {
                 "NÚMERO": pedido.id,
-                'FECHA DEL PEDIDO': pedido.estado,
-                'ESTADO ACTUAL': pedido.fecha_pedido,
+                'ESTADO ACTUAL': pedido.estado,
+                'FECHA DEL PEDIDO': formatDateToDDMMYYYY(pedido.fecha_pedido),
                 'TOTAL DEL PEDIDO': `$${totalCost}`,
             };
 
@@ -80,7 +81,7 @@ const Pedido = () => {
 
     const handleFormSubmit = async (data) => {
         const pedidoActualizado = { ...pedido, ...data };
-
+        console.log('Pedido actualizado:', pedidoActualizado);
         try {
             await pedidoService.updatePedido(pedidoId, pedidoActualizado);
             setPedido(pedidoActualizado);
