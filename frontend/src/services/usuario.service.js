@@ -86,6 +86,7 @@ export const createUsuario = async (nuevoUsuario) => {
 
 export const updateUsuario = async (rut, usuarioActualizado) => {
     try {
+        console.log(usuarioActualizado);
         const token = cookies.get('jwt-auth');
         const headers = {
             Authorization: `Bearer ${token}`,
@@ -96,7 +97,7 @@ export const updateUsuario = async (rut, usuarioActualizado) => {
         const { status, data } = response;
 
         if (status === 200) { // 200 significa que la actualización fue exitosa
-            return data.data; // Devolver los datos del usuario actualizado
+            return data; // Devolver los datos del usuario actualizado
         }
     } catch (error) {
 

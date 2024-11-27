@@ -57,6 +57,26 @@ export const createPedido = async (pedidoData) => {
     }
 };
 
+export const updatePedido = async (pedidoId, pedidoData) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        };
+
+        // Realizar la solicitud PUT para actualizar el pedido
+        const response = await axios.put(`api/pedido/?id=${pedidoId}`, pedidoData, { headers });
+
+        const { status, data } = response;
+        if (status === 200) {
+            return data.data; // Retornar los datos actualizados del pedido
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Manejo de errores
 const handleError = (error) => {
     console.error('Error al realizar la solicitud:', error);
@@ -71,4 +91,5 @@ export default {
     getAllPedidos,
     getPedido,
     createPedido,
+    updatePedido,
 };

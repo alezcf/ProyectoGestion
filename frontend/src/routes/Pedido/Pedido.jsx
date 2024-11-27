@@ -81,15 +81,39 @@ const Pedido = () => {
 
     const handleFormSubmit = async (data) => {
         const pedidoActualizado = { ...pedido, ...data };
+
+        // Eliminar campos innecesarios
+        delete pedidoActualizado.inventarioAsignado;
+        delete pedidoActualizado.proveedor;
+
         console.log('Pedido actualizado:', pedidoActualizado);
+
+        // Formatear los productos para enviar solo los campos necesarios
+        const formattedProductos = pedidoActualizado.pedidoProductos.map(({ producto: { id: productoId }, cantidad, precio }) => ({
+            productoId,
+            cantidad: Number(cantidad), // Asegurar que la cantidad sea un número
+            precio: Number(precio), // Asegurar que el precio sea un número
+        }));
+
+        console.log('formattedProductos:', formattedProductos);
+        const payload = {
+            fecha_pedido: pedidoActualizado.fecha_pedido,
+            estado: pedidoActualizado.estado,
+            productos: formattedProductos,
+        };
+
+        console.log('Pedido actualizado (payload):', payload);
+
         try {
-            await pedidoService.updatePedido(pedidoId, pedidoActualizado);
-            setPedido(pedidoActualizado);
+            console.log("La id del producto es: ", pedidoId);
+            await pedidoService.updatePedido(pedidoId, payload);
+            setPedido({ ...pedido, ...payload }); // Actualizar el estado local con los datos enviados
             setShowEditModal(false);
         } catch (error) {
             console.error('Error al actualizar el pedido:', error);
         }
     };
+
 
     const handleCloseModal = () => {
         setShowEditModal(false);

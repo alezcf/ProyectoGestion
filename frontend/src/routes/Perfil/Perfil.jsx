@@ -41,11 +41,12 @@ const Perfil = () => {
 
     const handleFormSubmit = async (data) => {
         try {
-            await usuarioService.updateUsuario(usuarioId, data);
+            const response = await usuarioService.updateUsuario(perfilData.rut, data);
             setPerfilData({ ...perfilData, ...data });
             setShowEditModal(false);
+            alert(response.message);
         } catch (error) {
-            console.error('Error al actualizar el perfil:', error);
+            alert(error);
         }
     };
 
