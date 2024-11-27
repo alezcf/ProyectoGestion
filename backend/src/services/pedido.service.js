@@ -177,26 +177,29 @@ async function updatePedido(query, body) {
         const pedidoFound = await pedidoRepository.findOne({ where: { id: query.id } });
         if (!pedidoFound) return [null, "Pedido no encontrado"];
 
-        // Actualizar los campos del pedido
-        await pedidoRepository.update({ id: pedidoFound.id }, body);
+        // Actualizar los campos del pedido (excluyendo productos)
+        const { productos, ...pedidoData } = body;
+        await pedidoRepository.update({ id: pedidoFound.id }, pedidoData);
 
         // Si hay productos, actualizar la relación muchos a muchos
-        if (body.productos && body.productos.length > 0) {
+        if (productos && productos.length > 0) {
             // Eliminar relaciones existentes
             await pedidoProductoRepository.delete({ pedido: { id: pedidoFound.id } });
 
             // Crear nuevas relaciones
-            const pedidoProductos = body.productos.map(({ productoId, cantidad }) => {
+            const pedidoProductos = productos.map(({ productoId, cantidad, precio }) => {
                 return pedidoProductoRepository.create({
                     pedido: { id: pedidoFound.id },
                     producto: { id: productoId },
                     cantidad: cantidad,
+                    precio: precio, // Incluye el precio si aplica
                 });
             });
 
             await pedidoProductoRepository.save(pedidoProductos);
         }
 
+        // Obtener el pedido actualizado con relaciones
         const updatedPedido = await pedidoRepository.findOne({
             where: { id: query.id },
             relations: ["pedidoProductos", "pedidoProductos.producto"],
@@ -208,6 +211,7 @@ async function updatePedido(query, body) {
         return [null, "Error interno del servidor"];
     }
 }
+
 
 /**
  * Elimina un pedido por su ID de la base de datos

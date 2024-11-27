@@ -16,6 +16,12 @@ export const productoQueryValidation = Joi.object({
 });
 
 export const productoBodyValidation = Joi.object({
+    id: Joi.number().integer().positive().optional().messages({
+        "number.base": "El id debe ser un número.",
+        "number.integer": "El id debe ser un número entero.",
+        "number.positive": "El id debe ser un número positivo.",
+        "any.required": "El id es obligatorio.",
+    }),
     nombre: Joi.string()
     .min(3)
     .max(255)
@@ -66,9 +72,10 @@ export const productoBodyValidation = Joi.object({
         "string.empty": "El tipo no puede estar vacío.",
         "any.only": "El tipo debe ser uno de los siguientes: {#valids}."
     }),
-    imagen_ruta: Joi.string().max(255).optional().messages({
+    imagen_ruta: Joi.string().max(255).allow(null).optional().messages({
         "string.base": "La ruta de imagen debe ser de tipo string.",
-        "string.max": "La ruta de imagen debe tener como máximo 255 caracteres."
+        "string.max": "La ruta de imagen debe tener como máximo 255 caracteres.",
+        "any.only": "La ruta de imagen debe ser de tipo string o null."
     }),
     proveedores: Joi.array().items(Joi.number().integer().positive().messages({
         "number.base": "El ID del proveedor debe ser un número.",

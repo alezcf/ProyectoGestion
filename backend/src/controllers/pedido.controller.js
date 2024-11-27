@@ -142,17 +142,14 @@ export async function updatePedido(req, res) {
     try {
         const { id } = req.query;
         const { body } = req;
-
+        console.log(body);
+        console.log(id);
         const { error: queryError } = pedidoQueryValidation.validate({ id });
 
         if (queryError) {
             return handleErrorClient(res, 400, "Error de validación", queryError.message);
         }
-
-        const { error: bodyError } = pedidoBodyValidation.validate(body);
-
-        if (bodyError) return handleErrorClient(res, 400, "Error de validación", bodyError.message);
-
+        console.log(body);
         const [pedido, errorPedido] = await PedidoService.updatePedido({ id }, body);
 
         if (errorPedido) return handleErrorClient(res, 400, errorPedido);
