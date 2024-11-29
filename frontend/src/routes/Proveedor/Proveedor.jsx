@@ -6,8 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import ProveedorDetalles from '../../components/Proveedor/ProveedorDetalles';
 import ButtonsActions from '../../components/Common/ButtonsActions';
-import DefaultEditModal from '../../components/Common/DefaultEditModal';  // Modal reutilizable
-import proveedorFields from '../../fields/proveedor.fields'; // Importa los campos de proveedor
+import DefaultEditModal from '../../components/Common/DefaultEditModal';
+import proveedorFields from '../../fields/proveedor.fields';
+import { exportObjectAndArraysToExcel } from '../../services/export.service';
 import '../../css/Form.css';
 import '../../css/Inventario.css';
 import '../../css/Modal.css';
@@ -40,9 +41,39 @@ const Proveedor = () => {
         setShowEditModal(true);
     };
 
-    const handleExport = () => {
-        console.log("Exportar los datos del proveedor");
+    const handleExport = async () => {
+        try {
+            const dataObject = {
+                "NOMBRE": proveedor.nombre,
+                "RUT": proveedor.rut,
+                "EMAIL": proveedor.email,
+                "TELÉFONO": proveedor.telefono,
+                "DIRECCIÓN": proveedor.direccion,
+            };
+
+            const sheetNames = {
+                mainSheet: "Proveedor",
+            };
+
+            const arrayData = [
+                // Si tienes datos relacionados, puedes agregarlos aquí en formato de arrays
+                ["PRODUCTOS RELACIONADOS"],
+                ...(proveedor.productos || []).map(producto => [
+                    producto.id,
+                    producto.nombre,
+                    producto.categoria,
+                    producto.precio
+                ])
+            ];
+
+            await exportObjectAndArraysToExcel(dataObject, arrayData, sheetNames);
+            alert('Datos exportados correctamente.');
+        } catch (error) {
+            console.error('Error al exportar los datos del proveedor:', error);
+            alert('Hubo un error al exportar los datos.');
+        }
     };
+
 
     const handleFormSubmit = async (data) => {
         try {
