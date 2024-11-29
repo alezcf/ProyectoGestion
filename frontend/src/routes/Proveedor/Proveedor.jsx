@@ -46,13 +46,22 @@ const Proveedor = () => {
 
     const handleFormSubmit = async (data) => {
         try {
-            await proveedorService.updateProveedor(proveedor.id, data); // Actualiza el proveedor
-            setProveedor({ ...proveedor, ...data });
-            setShowEditModal(false);
+            // Llamada para actualizar el proveedor
+            await proveedorService.updateProveedor(proveedor.id, data);
+
+            // Vuelve a obtener los datos del proveedor después de la actualización
+            const updatedProveedor = await proveedorService.getProveedor(proveedorId);
+            setProveedor(updatedProveedor);
+
+            setShowEditModal(false); // Cierra el modal
+            console.log('Proveedor actualizado:', updatedProveedor);
+            alert('Proveedor actualizado correctamente.');
         } catch (error) {
             console.error('Error al actualizar el proveedor:', error);
+            alert(error.response.data.message);
         }
     };
+
 
     const handleCloseModal = () => {
         setShowEditModal(false);
