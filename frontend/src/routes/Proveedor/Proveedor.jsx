@@ -20,7 +20,8 @@ const Proveedor = () => {
     const [error, setError] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [openDetalles, setOpenDetalles] = useState(true);
-    const defaultProfileImage = '../images/proveedor.png';  // Imagen predeterminada
+    const [openProductos, setOpenProductos] = useState(false);
+    const defaultProfileImage = '../images/proveedor.png';
 
     useEffect(() => {
         const fetchProveedor = async () => {
@@ -41,6 +42,23 @@ const Proveedor = () => {
         setShowEditModal(true);
     };
 
+    const handleFormSubmit = async (data) => {
+        try {
+            // Actualización del proveedor
+            const response = await proveedorService.updateProveedor(proveedor.id, data);
+
+            // Refrescar los datos del proveedor actualizado
+            const updatedProveedor = await proveedorService.getProveedor(proveedorId);
+            setProveedor(updatedProveedor);
+
+            setShowEditModal(false); // Cerrar el modal
+            alert('Proveedor actualizado correctamente.');
+        } catch (error) {
+            console.error('Error al actualizar el proveedor:', error);
+            alert(error.response?.data?.message || 'Error al actualizar el proveedor.');
+        }
+    };
+
     const handleExport = async () => {
         try {
             const dataObject = {
@@ -56,7 +74,6 @@ const Proveedor = () => {
             };
 
             const arrayData = [
-                // Si tienes datos relacionados, puedes agregarlos aquí en formato de arrays
                 ["PRODUCTOS RELACIONADOS"],
                 ...(proveedor.productos || []).map(producto => [
                     producto.id,
@@ -74,32 +91,18 @@ const Proveedor = () => {
         }
     };
 
-
-    const handleFormSubmit = async (data) => {
-        try {
-            // Llamada para actualizar el proveedor
-            await proveedorService.updateProveedor(proveedor.id, data);
-
-            // Vuelve a obtener los datos del proveedor después de la actualización
-            const updatedProveedor = await proveedorService.getProveedor(proveedorId);
-            setProveedor(updatedProveedor);
-
-            setShowEditModal(false); // Cierra el modal
-            console.log('Proveedor actualizado:', updatedProveedor);
-            alert('Proveedor actualizado correctamente.');
-        } catch (error) {
-            console.error('Error al actualizar el proveedor:', error);
-            alert(error.response.data.message);
-        }
-    };
-
-
     const handleCloseModal = () => {
         setShowEditModal(false);
     };
 
     const toggleDetalles = () => {
         setOpenDetalles(!openDetalles);
+        setOpenProductos(false);
+    };
+
+    const toggleProductos = () => {
+        setOpenProductos(!openProductos);
+        setOpenDetalles(false);
     };
 
     if (loading) {
@@ -141,6 +144,7 @@ const Proveedor = () => {
                     />
                 </Col>
                 <Col md={8}>
+                    {/* Detalles del proveedor */}
                     <Card className={`mb-3 custom-card ${openDetalles ? 'card-active' : ''}`}>
                         <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
                             <h5 className="header-title">Detalles del Proveedor</h5>
@@ -161,7 +165,57 @@ const Proveedor = () => {
                         <Collapse in={openDetalles}>
                             <div id="detalles-proveedor">
                                 <Card.Body>
-                                    <ProveedorDetalles proveedor={proveedor} />
+                                    <div className="table-responsive">
+                                        <ProveedorDetalles proveedor={proveedor} />
+                                    </div>
+                                </Card.Body>
+                            </div>
+                        </Collapse>
+                    </Card>
+
+                    {/* Productos relacionados */}
+                    <Card className={`custom-card ${openProductos ? 'card-active' : ''} mt-4`}>
+                        <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
+                            <h5 className="header-title">Productos Relacionados</h5>
+                            <Button
+                                onClick={toggleProductos}
+                                aria-controls="productos-proveedor"
+                                aria-expanded={openProductos}
+                                variant="link"
+                                className="toggle-btn"
+                            >
+                                {openProductos ? (
+                                    <FontAwesomeIcon icon={faChevronUp} />
+                                ) : (
+                                    <FontAwesomeIcon icon={faChevronDown} />
+                                )}
+                            </Button>
+                        </Card.Header>
+                        <Collapse in={openProductos}>
+                            <div id="productos-proveedor">
+                                <Card.Body>
+                                    <div className="table-responsive">
+                                        <table className="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Nombre</th>
+                                                    <th>Categoría</th>
+                                                    <th>Precio</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {(proveedor.productos || []).map((producto, index) => (
+                                                    <tr key={index}>
+                                                        <td>{producto.id}</td>
+                                                        <td>{producto.nombre}</td>
+                                                        <td>{producto.categoria}</td>
+                                                        <td>{producto.precio}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </Card.Body>
                             </div>
                         </Collapse>
@@ -169,13 +223,13 @@ const Proveedor = () => {
                 </Col>
             </Row>
 
-            {/* Modal para editar el proveedor */}
+            {/* Modal para editar proveedor */}
             <DefaultEditModal
                 show={showEditModal}
                 handleClose={handleCloseModal}
-                fields={proveedorFields}  // Campos para el formulario de proveedor
-                defaultValues={proveedor}  // Valores predeterminados del proveedor actual
-                onSubmit={handleFormSubmit}  // Enviar el formulario
+                fields={proveedorFields}
+                defaultValues={proveedor}
+                onSubmit={handleFormSubmit}
                 title="EDITAR PROVEEDOR"
             />
         </Container>
