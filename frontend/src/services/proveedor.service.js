@@ -56,6 +56,22 @@ export const createProveedor = async (proveedorData) => {
     }
 };
 
+export const updateProveedor = async (id, proveedorData) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json', // Enviar datos como JSON
+        };
+
+        const response = await axios.put(`api/proveedor/?id=${id}`, proveedorData, { headers });
+
+        return response;
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Manejo de errores
 const handleError = (error) => {
     console.error('Error en la llamada a la API:', error);
@@ -66,4 +82,5 @@ export default {
     getAllProveedores,
     getProveedor,
     createProveedor,
+    updateProveedor,
 };

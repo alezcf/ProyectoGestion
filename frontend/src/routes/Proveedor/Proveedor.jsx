@@ -46,7 +46,7 @@ const Proveedor = () => {
 
     const handleFormSubmit = async (data) => {
         try {
-            await proveedorService.updateProveedor(proveedorId, data); // Actualiza el proveedor
+            await proveedorService.updateProveedor(proveedor.id, data); // Actualiza el proveedor
             setProveedor({ ...proveedor, ...data });
             setShowEditModal(false);
         } catch (error) {
