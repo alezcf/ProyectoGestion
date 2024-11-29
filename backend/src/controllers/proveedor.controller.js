@@ -81,10 +81,10 @@ export async function getProveedores(req, res) {
  */
 export async function updateProveedor(req, res) {
     try {
-        const { rut, id, email } = req.query;
+        const { id } = req.query;
         const { body } = req;
 
-        const { error: queryError } = proveedorQueryValidation.validate({ rut, id, email });
+        const { error: queryError } = proveedorQueryValidation.validate({ id });
 
         if (queryError) {
         return handleErrorClient(res, 400, "Error de validación", queryError.message);
@@ -95,7 +95,7 @@ export async function updateProveedor(req, res) {
         if (bodyError) return handleErrorClient(res, 400, "Error de validación", bodyError.message);
 
         const [proveedor, errorProveedor] = await ProveedorService.updateProveedor(
-            { rut, id, email },
+            { id },
             body
         );
 
