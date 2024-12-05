@@ -7,29 +7,40 @@ import {
   handleErrorServer,
   handleSuccess,
 } from "../handlers/responseHandlers.js";
+import crypto from "crypto";
 
 /**
- * Crea un nuevo usuario
+ * Crea un nuevo usuario y envía un correo con el enlace para establecer la contraseña
  * @param {Object} req - Objeto de petición
  * @param {Object} res - Objeto de respuesta
  */
 export async function createUser(req, res) {
   try {
     const { body } = req;
-    const { error } = userBodyValidation.validate(body);
 
+    // Validar los datos del cuerpo de la solicitud
+    const { error } = userBodyValidation.validate(body);
     if (error) return handleErrorClient(res, 400, "Error de validación", error.message);
 
-    const [user, userError] = await UserService.createUser(body);
+    // Generar un token único para la verificación (se almacena en el campo 'password')
+    const token = crypto.randomBytes(32).toString("hex");
+
+    // Crear el usuario, incluyendo el token en el campo 'password'
+    const [user, userError] = await UserService.createUser({
+      ...body,
+      password: token,
+    });
 
     if (userError) return handleErrorClient(res, 400, userError);
 
-
+    // Enviar el correo de confirmación con el enlace para establecer la contraseña
     const resEmail = await sendEmailDefault({
       body: {
         email: body.email,
-        subject: "Registro en Botilleria Santa Elena",
-        message: `Bienvenido a la plataforma ${user.nombreCompleto}!`,
+        subject: "Confirmación de registro en Botillería Santa Elena",
+        message: `¡Bienvenido a la plataforma ${user.nombreCompleto}! Para finalizar tu registro, `
+                  + "por favor accede al siguiente enlace para establecer tu contraseña: \n\n"
+                  + `https://tu-dominio.com/set-password?token=${token}`,
       }
     });
 
@@ -141,10 +152,47 @@ export async function deleteUser(req, res) {
   }
 }
 
+/**
+* Restablecer la contraseña de un usuario
+* @param {Object} req - Objeto de petición
+* @param {Object} res - Objeto de respuesta
+*/
+export const resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    // Verificar que los datos requeridos están presentes
+    if (!token || !newPassword) {
+      return handleErrorClient(res, 400, "El token y la nueva contraseña son obligatorios.");
+    }
+
+    // Buscar al usuario por el token (que está en el campo 'password' del usuario)
+    const [user, userError] = await UserService.findUserByPassword(token);
+    console.log(token);
+    if (userError || !user) {
+      return handleErrorClient(res, 400, "Token inválido o usuario no encontrado.");
+    }
+
+    // Actualizar la contraseña en la base de datos
+    const [updatedUser, updateError] = await UserService.updatePassword(user.id, newPassword);
+
+    if (updateError) {
+      return handleErrorServer(res, 500, "Error al actualizar la contraseña", updateError.message);
+    }
+
+    // Responder con éxito
+    handleSuccess(res, 200, "Contraseña actualizada correctamente", updatedUser);
+  } catch (error) {
+    // Manejar errores no previstos
+    handleErrorServer(res, 500, "Error al restablecer la contraseña", error.message);
+  }
+};
+
 export default {
   getUsers,
   createUser,
   getUser,
   updateUser,
   deleteUser,
+  resetPassword,
 };

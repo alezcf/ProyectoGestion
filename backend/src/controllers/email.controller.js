@@ -26,7 +26,7 @@ export const sendCustomEmail = async (req, res) => {
 export const sendEmailDefault = async (req) => {
     try {
         const { body } = req;
-        
+
         // Validación del esquema del email
         const { error: validationError } = emailValidationSchema.validate(body);
         if (validationError) {
@@ -40,7 +40,7 @@ export const sendEmailDefault = async (req) => {
         if (errorEmail) {
             return {
                 success: false,
-                error: errorEmail 
+                error: errorEmail
             };
         }
 

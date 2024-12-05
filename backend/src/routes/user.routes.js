@@ -7,6 +7,7 @@ import {
   deleteUser,
   getUser,
   getUsers,
+  resetPassword,
   updateUser,
 } from "../controllers/user.controller.js";
 
@@ -21,6 +22,7 @@ router
   .get("/detail/", getUser)
   .put("/", updateUser)
   .delete("/", deleteUser)
-  .post("/", createUser);
+  .post("/", createUser)
+  .post("/reset-password", resetPassword);
 
 export default router;

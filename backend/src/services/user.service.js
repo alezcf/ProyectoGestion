@@ -1,7 +1,7 @@
 "use strict";
 import User from "../entity/user.entity.js"; // Modelo de usuario
 import { AppDataSource } from "../config/configDb.js";
-import { comparePassword, encryptPassword } from "../helpers/bcrypt.helper.js";
+import { encryptPassword } from "../helpers/bcrypt.helper.js";
 import { format, validate } from "rut.js"
 
 /**
@@ -31,7 +31,7 @@ async function createUser(body) {
       rut: format(body.rut),
       email: body.email,
       rol: body.rol,
-      password: await encryptPassword(body.password),
+      password: body.password,
     });
 
     const savedUser = await userRepository.save(newUser);
@@ -192,10 +192,58 @@ async function deleteUser(query) {
   }
 }
 
+/**
+ * Buscar un usuario por el campo password (usado temporalmente como token)
+ * @param {String} token - Token de validación
+ * @returns {Promise} Promesa con el usuario encontrado o un error
+ */
+export const findUserByPassword = async (token) => {
+  try {
+    const userRepository = AppDataSource.getRepository(User);
+
+    // Buscar al usuario por el token encriptado en el campo 'password'
+    const user = await userRepository.findOne({
+      where: { password: token }
+    });
+
+    if (!user) {
+      return [null, "Token inválido o no encontrado"];
+    }
+
+    return [user, null];
+  } catch (error) {
+    return [null, error];
+  }
+};
+
+/**
+ * Actualizar la contraseña de un usuario
+ * @param {Number} userId - ID del usuario
+ * @param {String} newPassword - Nueva contraseña encriptada
+ * @returns {Promise} Promesa con el usuario actualizado o un error
+ */
+export const updatePassword = async (userId, newPassword) => {
+  try {
+    const userRepository = AppDataSource.getRepository(User);
+    console.log("new password", newPassword);
+    // Actualizar la contraseña en la base de datos
+    const user = await userRepository.update(
+      { id: userId },
+      { password: await encryptPassword(newPassword) }
+    );
+
+    return [user, null];
+  } catch (error) {
+    return [null, error];
+  }
+};
+
 export default {
   createUser,
   getUser,
   getUsers,
   updateUser,
   deleteUser,
+  findUserByPassword,
+  updatePassword,
 };
