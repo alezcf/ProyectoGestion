@@ -106,6 +106,26 @@ export const updateUsuario = async (rut, usuarioActualizado) => {
     }
 };
 
+export const resetPassword = async (token, newPassword) => {
+    try {
+        const response = await axios.post('api/user/reset-password',
+            {
+                token,        // El token recibido por el usuario
+                newPassword,  // La nueva contraseña proporcionada por el usuario
+            },
+            { headers: { 'Content-Type': 'application/json' } } // Asegurarse de que estamos enviando JSON
+        );
+
+        const { status, data } = response;
+
+        if (status === 200) {
+            return data.message || "Contraseña restablecida exitosamente";  // Mensaje de éxito
+        }
+    } catch (error) {
+        handleError(error);  // Manejar el error si ocurre
+    }
+};
+
 
 const handleError = (error) => {
     console.error('API call error:', error);
@@ -117,5 +137,6 @@ export default {
     getUsuario,
     deleteUsuario,
     createUsuario,
+    resetPassword,
     updateUsuario,
 };

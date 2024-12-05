@@ -22,6 +22,8 @@ import Pedido from './routes/Pedido/Pedido.jsx';
 import Pedidos from './routes/Pedido/Pedidos.jsx';
 import Proveedores from './routes/Proveedor/Proveedores.jsx';
 import Proveedor from './routes/Proveedor/Proveedor.jsx';
+import ResetPassword from './routes/Usuario/ResetPassword.jsx';
+
 
 const router = createBrowserRouter([
   {
@@ -106,6 +108,10 @@ const router = createBrowserRouter([
   {
     path: '/auth',
     element: <Login />,
+  },
+  {
+    path: '/reset-password/:token',
+    element: <ResetPassword />,
   },
 ]);
 
