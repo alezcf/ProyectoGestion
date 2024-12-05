@@ -1,9 +1,7 @@
 "use strict";
 import Proveedor from "../entity/proveedor.entity.js";
 import { AppDataSource } from "../config/configDb.js";
-import { format, validate } from "rut.js"
-import { Not } from "typeorm";
-
+import { format, validate } from "rut.js";
 
 /**
  * Crea un nuevo proveedor en la base de datos
@@ -103,17 +101,26 @@ async function updateProveedor(query, body) {
         return [null, "Proveedor no encontrado"];
         }
 
-        // Verificar si ya existe un proveedor con el mismo RUT o email, excluyendo el actual
-        const existingProveedor = await proveedorRepository.findOne({
-        where: [{ rut: body.rut }, { email: body.email } ],
-        });
-        
-        if (existingProveedor && existingProveedor.id !== Number(id)) {
-        return [null, "Ya existe un proveedor con el mismo rut o email"];
+        if(!validate(format(body.rut))){
+            return [null, "El rut de proveedor ingresado es invalido."];
         }
 
-        await proveedorRepository.update({ id: proveedorFound.id }, body);
+        // Verificar si ya existe un proveedor con el mismo RUT, excluyendo el actual
+        const existingProveedor = await proveedorRepository.findOne({
+        where: [{ rut: format(body.rut) } ],
+        });
 
+        if (existingProveedor && existingProveedor.id !== Number(id)) {
+        return [null, "Ya existe un proveedor con el mismo rut."];
+        }
+
+        await proveedorRepository.update({ id: proveedorFound.id }, {
+            nombre: body.nombre,
+            rut: format(body.rut),
+            direccion: body.direccion,
+            telefono: body.telefono,
+            email: body.email,
+        });
         const proveedorData = await proveedorRepository.findOne({
         where: { id: proveedorFound.id },
         });

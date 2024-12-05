@@ -127,15 +127,19 @@ async function updateUser(query, body) {
     if(!validate(format(body.rut))){
       return [null, "El rut ingresado es invalido."];
     }
-    console.log(existingUser.password);
+
     const updateData = {
       nombreCompleto: body.nombreCompleto,
       rut: format(body.rut),
       email: body.email,
       rol: body.rol,
-      password: await encryptPassword(body.newPassword || existingUser.password),
       updatedAt: new Date(),
     };
+
+    if (body.newPassword) {
+      updateData.password = await encryptPassword(body.newPassword);
+    }
+
 
     await userRepository.update({ id: userFound.id }, updateData);
 
