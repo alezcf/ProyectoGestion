@@ -170,7 +170,7 @@ export const resetPassword = async (req, res) => {
     const [user, userError] = await UserService.findUserByPassword(token);
     console.log(token);
     if (userError || !user) {
-      return handleErrorClient(res, 400, "Token inválido o usuario no encontrado.");
+      return handleErrorClient(res, 400, "La verificación solicitada es inexistente.");
     }
 
     // Actualizar la contraseña en la base de datos

@@ -79,6 +79,18 @@
     font-size: 12px;
 }
 
+.password-image {
+    width: 20vw; /* Unidades de viewport width */
+    height: 30vw; /* Unidades de viewport width para mantener proporciones */
+    max-width: 100px; /* Tamaño máximo */
+    max-height: 100px; /* Tamaño máximo */
+    min-width: 100px; /* Tamaño mínimo */
+    min-height: 100px; /* Tamaño mínimo */
+    background: url('../../public/images/password.png') no-repeat center center; /* Ajustado para la imagen redimensionada */
+    background-size: contain; /* Ajuste de tamaño para mantener la imagen completa */
+    margin: 0 20px 0 0; /* Margen derecho */
+}
+
 @media (max-width: 768px) {
     .login-container {
         flex-direction: column; /* Cambia a columna en pantallas medianas */
