@@ -154,7 +154,7 @@ const Inventario = () => {
                     <div className="button-container mt-3">
                         <Link to="/crear-inventario" className="button-left">
                             <Button variant="warning" className="btn-create" style={{ fontWeight: 'bold' }}>
-                                <FontAwesomeIcon icon={faPlus} /> CREAR INVENTARIO
+                                <FontAwesomeIcon icon={faPlus} /> REGISTRAR
                             </Button>
                         </Link>
 
@@ -169,7 +169,7 @@ const Inventario = () => {
                                 textShadow: '1px 1px 1px black, -1px -1px 1px black',
                             }}
                         >
-                            <FontAwesomeIcon icon={faFileExcel} /> EXPORTAR A EXCEL
+                            <FontAwesomeIcon icon={faFileExcel} /> EXPORTAR
                         </Button>
                     </div>
                 </Card>

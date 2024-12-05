@@ -124,7 +124,7 @@ const Proveedores = () => {
                                 className="btn-create"
                                 style={{ fontWeight: 'bold' }}
                             >
-                                <FontAwesomeIcon icon={faPlus} /> CREAR PROVEEDOR
+                                <FontAwesomeIcon icon={faPlus} /> REGISTRAR
                             </Button>
                         </Link>
 
@@ -140,7 +140,7 @@ const Proveedores = () => {
                                 textShadow: '1px 1px 1px black, -1px -1px 1px black', // Borde simulado en negro
                             }}
                         >
-                            <FontAwesomeIcon icon={faFileExcel} /> EXPORTAR EXCEL
+                            <FontAwesomeIcon icon={faFileExcel} /> EXPORTAR
                         </Button>
                     </div>
 

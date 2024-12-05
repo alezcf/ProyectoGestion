@@ -5,9 +5,9 @@ import productoInventarioService from '../../services/productoInventario.service
 import inventarioService from '../../services/inventario.service';
 import SecondaryTable from '../Common/SecondaryTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faWarehouse, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faWarehouse, faEdit, faAddressBook } from '@fortawesome/free-solid-svg-icons';
 import { InfoCircle } from 'react-bootstrap-icons';
-import { Form, Modal, Button } from 'react-bootstrap';
+import { Form, Modal, Button, Alert } from 'react-bootstrap';
 import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 import '../../css/Buttons.css';
 
@@ -83,7 +83,7 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
         }
 
         try {
-            const response = await productoInventarioService.createProductoInventarios(
+                await productoInventarioService.createProductoInventarios(
                 productoId,
                 [parseInt(nuevoInventarioId)],
                 [parseInt(cantidad)]
@@ -103,8 +103,7 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
                 alert(response.message || 'Inventario agregado correctamente');
             }
         } catch (error) {
-            alert('Error al agregar el inventario');
-            console.error('Error al agregar el inventario:', error);
+            alert(error.response.data.message);
         }
     };
 
@@ -167,12 +166,20 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
 
     return (
         <div className="mt-2">
+            {inventarios.length === 0 ? (
+            <div className="my-3">
+                <Alert variant="warning" className="text-center">
+                    <FontAwesomeIcon icon={faAddressBook} />
+                    <strong> No existen inventarios asociados a este producto.</strong>
+                </Alert>
+            </div>
+        ) : (
             <SecondaryTable
                 headers={['NOMBRE', 'CANTIDAD', 'MÁXIMO STOCK', 'ÚLTIMA ACTUALIZACIÓN', 'ACCIONES']}
                 data={inventarios}
                 renderRow={renderRow}
             />
-
+            )}
             <Form className="d-flex align-items-center mt-3">
                 <Form.Control
                     as="select"

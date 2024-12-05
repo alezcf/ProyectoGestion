@@ -9,7 +9,7 @@ export const createProductoInventarios = async (productoId, inventariosIds, cant
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
         };
-
+        console.log("llegada al createProductoInventarios");
         const requestData = {
             productoId,
             inventariosIds,
@@ -17,15 +17,14 @@ export const createProductoInventarios = async (productoId, inventariosIds, cant
         };
 
         const response = await axios.post('api/producto-inventarios/', requestData, { headers });
-        console.log(response.data);
+
         const { status, data } = response;
-        console.log("status actual: " + status);
+
         if (status === 201) {
             return data.data;
         }
     } catch (error) {
-        console.log(error.response.data);
-        return (error.response.data);
+        handleError(error);
     }
 };
 
@@ -141,7 +140,6 @@ export const updateCantidadProductoInventario = async (relacionId, nuevaCantidad
 
 // Manejo de errores
 const handleError = (error) => {
-    console.error('Error en la petición:', error);
     throw error;
 };
 

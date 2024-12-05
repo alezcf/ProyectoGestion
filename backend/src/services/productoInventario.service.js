@@ -87,7 +87,7 @@ async function createProductoInventarios(productoId, inventariosIds, cantidades)
                     })
                 );
             } else {
-                return [null, "La relación entre el producto y el inventario ya existe."];
+                return [null, "Ya existe la relación entre el inventario y producto."];
             }
         }
 

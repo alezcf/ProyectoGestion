@@ -126,7 +126,7 @@ const Usuarios = () => {
                         {/* Botón Crear Usuario con estilos de Bootstrap y texto en negrita */}
                         <Link to="/crear-usuario">
                             <Button variant="warning" className="btn-create" style={{ fontWeight: 'bold' }}>
-                                <FontAwesomeIcon icon={faPlus} /> REGISTRAR USUARIO
+                                <FontAwesomeIcon icon={faPlus} /> REGISTRAR
                             </Button>
                         </Link>
 

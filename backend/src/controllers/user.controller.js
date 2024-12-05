@@ -40,7 +40,7 @@ export async function createUser(req, res) {
         subject: "Confirmación de registro en Botillería Santa Elena",
         message: `¡Bienvenido a la plataforma ${user.nombreCompleto}! Para finalizar tu registro, `
                   + "por favor accede al siguiente enlace para establecer tu contraseña: \n\n"
-                  + `https://tu-dominio.com/set-password?token=${token}`,
+                  + `http://localhost:5173/reset-password/${token}`,
       }
     });
 
@@ -160,7 +160,7 @@ export async function deleteUser(req, res) {
 export const resetPassword = async (req, res) => {
   try {
     const { token, newPassword } = req.body;
-
+    console.log(token);
     // Verificar que los datos requeridos están presentes
     if (!token || !newPassword) {
       return handleErrorClient(res, 400, "El token y la nueva contraseña son obligatorios.");

@@ -147,35 +147,6 @@ const CrearUsuario = () => {
                         </Col>
                     </Row>
 
-                    <Row>
-                        <Col md={6}>
-                            <Form.Group controlId="password">
-                                <OverlayTrigger
-                                    placement="auto"
-                                    overlay={renderTooltip("Introduce una contraseña de al menos 6 caracteres. Solo letras y números.")}
-                                    popperConfig={{
-                                        modifiers: [
-                                            { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
-                                        ]
-                                    }}
-                                >
-                                    <Form.Label style={{ fontWeight: 'bold' }}>CONTRASEÑA (*)</Form.Label>
-                                </OverlayTrigger>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="Ingresa la contraseña"
-                                    {...register('password', {
-                                        required: 'La contraseña es obligatoria',
-                                        minLength: { value: 6, message: 'La contraseña debe tener al menos 6 caracteres' },
-                                        pattern: { value: /^[a-zA-Z0-9]+$/, message: 'La contraseña solo puede contener letras y números' }
-                                    })}
-                                    className={errors.password ? 'is-invalid' : ''}
-                                />
-                                {errors.password && <span className="text-danger">{errors.password.message}</span>}
-                            </Form.Group>
-                        </Col>
-                    </Row>
-
                     <div className="button-container">
                         <button className="button-submit" type="button" onClick={() => setShowConfirmation(true)}>
                             <FontAwesomeIcon icon={faPaperPlane} /> CREAR

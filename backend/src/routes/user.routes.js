@@ -13,6 +13,8 @@ import {
 
 const router = Router();
 
+router.post("/reset-password", resetPassword);
+
 router
   .use(authenticateJwt)
   .use(isAdmin);
@@ -22,7 +24,8 @@ router
   .get("/detail/", getUser)
   .put("/", updateUser)
   .delete("/", deleteUser)
-  .post("/", createUser)
-  .post("/reset-password", resetPassword);
+  .post("/", createUser);
+
+
 
 export default router;

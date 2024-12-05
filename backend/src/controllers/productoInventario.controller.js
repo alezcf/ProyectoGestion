@@ -25,7 +25,11 @@ export async function createProductoInventarios(req, res) {
         const [relaciones, errorProductoInventario] = await ProductoInventarioService
             .createProductoInventarios(productoId, inventariosIds, cantidades);
 
-        if(errorProductoInventario === "Producto no encontrado" || "Inventario no encontrado") {
+        if (
+            errorProductoInventario === "Producto no encontrado"
+            || errorProductoInventario === "Inventario no encontrado"
+        ) {
+            console.log("errorProductoInventario: " + errorProductoInventario);
             return handleErrorClient(res, 404, errorProductoInventario);
         }
         if (errorProductoInventario) return handleErrorClient(res, 400, errorProductoInventario);

@@ -8,7 +8,7 @@ import SecondaryTable from '../Common/SecondaryTable'; // Importar el SecondaryT
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faAddressBook } from '@fortawesome/free-solid-svg-icons';
 import { InfoCircle } from 'react-bootstrap-icons';
-import { Form } from 'react-bootstrap';
+import { Form, Alert } from 'react-bootstrap';
 import '../../css/Buttons.css';
 
 const ProductoProveedor = ({ producto = { id: null, productoProveedores: [] } }) => {
@@ -114,11 +114,20 @@ const ProductoProveedor = ({ producto = { id: null, productoProveedores: [] } })
 
     return (
         <div className="mt-2">
+            {proveedores.length === 0 ? (
+            <div className="my-3">
+                <Alert variant="warning" className="text-center">
+                    <FontAwesomeIcon icon={faAddressBook} />
+                    <strong> No existen proveedores asociados a este producto.</strong>
+                </Alert>
+            </div>
+        ) : (
             <SecondaryTable
                 headers={['NOMBRE', 'CONTACTO', 'TELÉFONO', 'ACCIONES']}
                 data={proveedores}
                 renderRow={renderRow}
             />
+        )}
 
             {/* Formulario para seleccionar y agregar un nuevo proveedor */}
             <Form className="d-flex align-items-center mt-3">

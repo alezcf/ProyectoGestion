@@ -175,7 +175,7 @@ const Productos = () => {
                             {/* Botón Crear Producto con estilos de Bootstrap y texto en negrita */}
                             <Link to="/crear-producto" className="button-left">
                                 <Button variant="warning" className="btn-create" style={{ fontWeight: 'bold' }}>
-                                    <FontAwesomeIcon icon={faPlus} /> CREAR PRODUCTO
+                                    <FontAwesomeIcon icon={faPlus} /> REGISTRAR
                                 </Button>
                             </Link>
 
@@ -191,7 +191,7 @@ const Productos = () => {
                                     textShadow: '1px 1px 1px black, -1px -1px 1px black',
                                 }}
                             >
-                                <FontAwesomeIcon icon={faFileExcel} /> EXPORTAR A EXCEL
+                                <FontAwesomeIcon icon={faFileExcel} /> EXPORTAR
                             </Button>
                         </div>
                     </Card.Body>
