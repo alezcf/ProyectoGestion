@@ -13,20 +13,21 @@ function LoginForm() {
 
   const onSubmit = async (data) => {
     const result = await login(data);
-    
+
     if (result.status === 200) {
       navigate('/');
     } else if (result.status === 400) {
-      setLoginError(result.message); // Muestra el mensaje de error personalizado
+      console.log(result);
+      setLoginError(result.response.data.message);
     } else {
-      setLoginError('Error al intentar iniciar sesión.'); // Manejo de errores generales
+      setLoginError('Error al intentar iniciar sesión.');
     }
   };
 
   return (
     <div className="login-container d-flex justify-content-center align-items-center">
       <div className="user-image"></div>
-      
+
       <form onSubmit={handleSubmit(onSubmit)}>
         <h2 className="welcome-text text-center text-primary mb-4">Inicio de Sesión</h2>
         {loginError && <div className="alert alert-danger">{loginError}</div>} {/* Mostrar mensaje de error */}

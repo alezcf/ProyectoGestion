@@ -17,12 +17,7 @@ export const login = async ({ email, password }) => {
       return { status, data };
     }
   } catch (error) {
-    if (error.response && error.response.status === 400) {
-      return { status: 400, message: 'Usuario o contraseña incorrectos' };
-    } else {
-      console.log(error.response.status);
-      return { status: error.response.status, message: 'Error inesperado' };
-    }
+    return error;
   }
 };
 

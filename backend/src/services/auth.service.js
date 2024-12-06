@@ -17,11 +17,11 @@ export async function loginService(user) {
       },
     });
 
-    if (!userFound) return [null, "El usuario es incorrecto"];
+    if (!userFound) return [null, "El email ingresado no existe."];
 
     const isMatch = await comparePassword(password, userFound.password);
 
-    if (!isMatch) return [null, "La contraseña es incorrecta"];
+    if (!isMatch) return [null, "La contraseña ingresada es incorrecta"];
 
     const payload = {
       fullname: userFound.nombreCompleto,
