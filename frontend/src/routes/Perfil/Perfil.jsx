@@ -85,7 +85,11 @@ const Perfil = () => {
                                 boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                             }}
                         />
-                    <UsuarioBotones onEdit={handleEdit} onExport={handleExport} />
+                    <UsuarioBotones
+                        onEdit={handleEdit}
+                        onExport={handleExport}
+                        isDeleteDisabled={true}
+                    />
                 </Col>
                 <Col md={8}>
                     {/* Detalles del perfil */}

@@ -16,6 +16,7 @@ function ReportesPanel() {
 
                 // Luego de actualizar, obtenemos los reportes
                 const data = await reportesService.getReportes();
+                console.log('Reportes:', data);
                 setReportes(data || []);
             } catch (err) {
                 setError("Error al cargar reportes");
