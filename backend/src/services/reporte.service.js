@@ -19,29 +19,27 @@ async function createOrUpdateReporte(body) {
 
         let producto = null;
         let inventario = null;
-
+        console.log("Body datos producto id es: ", body.datos.productoId)
         if (body.datos.productoId) {
-            producto = await productoRepository.findOne({ where: { id: body.productoId } });
+            producto = await productoRepository.findOne({ where: { id: body.datos.productoId } });
             if (!producto) return [null, "El producto especificado no existe"];
         }
 
         if (body.datos.inventarioId) {
-            inventario = await inventarioRepository.findOne({ where: { id: body.inventarioId } });
+            inventario = await inventarioRepository.findOne({ where: { id: body.datos.inventarioId } });
             if (!inventario) return [null, "El inventario especificado no existe"];
         }
 
-        // Crear siempre un nuevo reporte en lugar de actualizar
+        console.log("Creando o actualizando reporte con datos:", body);
+        console.log("Producto:", producto);
+        console.log("Inventario:", inventario);
         const newReporte = reporteRepository.create({
             titulo: body.titulo,
             descripcion: body.descripcion,
             tipo: body.tipo,
             estado: "pendiente",
             fecha_creacion: new Date(),
-            datos: {
-                ...body.datos,
-                productoId: producto?.id,
-                inventarioId: inventario?.id
-            },
+            datos: body.datos,
             producto,
             inventario,
         });
