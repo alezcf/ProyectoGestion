@@ -13,19 +13,19 @@ import {
 
 const router = Router();
 
+// Rutas públicas
 router.post("/reset-password", resetPassword);
 
-router
-  .use(authenticateJwt)
-  .use(isAdmin);
+// Rutas protegidas por autenticación
+router.use(authenticateJwt);
 
 router
   .get("/", getUsers)
-  .get("/detail/", getUser)
-  .put("/", updateUser)
-  .delete("/", deleteUser)
-  .post("/", createUser);
+  .get("/detail/", getUser);
 
-
+router
+  .put("/", isAdmin, updateUser)
+  .delete("/", isAdmin, deleteUser)
+  .post("/", isAdmin, createUser);
 
 export default router;

@@ -21,7 +21,7 @@ try {
 
     const rolUser = userFound.rol;
 
-    if (rolUser === "Administrador" || rolUser === "Empleado") {
+    if (rolUser === "Administrador") {
     next();
     return;
     }
