@@ -85,6 +85,25 @@ export const deleteProductoProveedores = async (relacionId) => {
     }
 };
 
+// Obtener todos los proveedores de un producto
+export const getProductosByProveedor = async (proveedorId) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await axios.get(`api/producto-proveedores/proveedor-producto?proveedorId=${proveedorId}`, { headers });
+        const { status, data } = response;
+
+        if (status === 200) {
+            return data.data;
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Manejo de errores
 const handleError = (error) => {
     console.error('Error en la petición:', error);
@@ -96,4 +115,5 @@ export default {
     getProveedoresByProducto,
     updateProductoProveedores,
     deleteProductoProveedores,
+    getProductosByProveedor,
 };

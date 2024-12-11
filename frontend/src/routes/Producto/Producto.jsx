@@ -34,6 +34,7 @@ const Producto = () => {
     const fetchProducto = async () => {
         try {
             const data = await productoService.getProducto(productoId);
+            console.log('Producto:', data);
             setProducto(data);
             setLoading(false);
         } catch (err) {

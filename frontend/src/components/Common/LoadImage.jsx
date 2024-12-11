@@ -29,7 +29,8 @@ const ProductoImagen = ({ productoId, imagenRuta, onImagenUpdated }) => {
         try {
             // Actualizar el producto con la nueva imagen usando el servicio
             const updatedProducto = await productoService.updateProductoImagen(productoId, nuevaImagen);
-
+            console.log(`${BASE_URL}${imagenRuta}`);
+            console.log(updatedProducto);
             // Notificar al componente padre que la imagen ha sido actualizada
             if (onImagenUpdated) {
                 onImagenUpdated(updatedProducto.imagen_ruta);
