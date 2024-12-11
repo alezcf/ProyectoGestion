@@ -153,9 +153,40 @@ async function updateProductoProveedores(productoId, proveedoresIds) {
     }
 }
 
+
+/**
+ * Obtiene todos los productos asociados a un proveedor específico
+ * @param {number} proveedorId - ID del proveedor
+ * @returns {Promise} Promesa con los productos asociados o un error
+ */
+async function getProductosByProveedor(proveedorId) {
+    try {
+        const productoProveedorRepository = AppDataSource.getRepository(ProductoProveedor);
+
+        // Obtener relaciones con productos asociados al proveedor
+        const relaciones = await productoProveedorRepository.find({
+            where: { proveedor: { id: proveedorId } },
+            relations: ["producto", "proveedor"]
+        });
+
+        if (!relaciones || relaciones.length === 0) {
+            return [null, "No se encontraron productos asociados a este proveedor"];
+        }
+
+        // Extraer solo los productos de las relaciones
+        const productos = relaciones.map(relacion => relacion.producto);
+
+        return [productos, null];
+    } catch (error) {
+        console.error("Error al obtener productos por proveedor:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
 export default {
     createProductoProveedores,
     getProveedoresByProducto,
     deleteProveedorByRelacionId,
-    updateProductoProveedores
+    updateProductoProveedores,
+    getProductosByProveedor
 };

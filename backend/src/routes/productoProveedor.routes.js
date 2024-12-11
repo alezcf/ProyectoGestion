@@ -4,8 +4,9 @@ import { authenticateJwt } from "../middlewares/authentication.middleware.js";
 import {
     createProductoProveedores,
     deleteProveedorByRelacionId,
+    getProductosByProveedor,
     getProveedoresByProducto,
-    updateProductoProveedores
+    updateProductoProveedores,
 } from "../controllers/productoProveedor.controller.js";
 
 const router = Router();
@@ -17,6 +18,7 @@ router
     .post("/", createProductoProveedores)
     .put("/", updateProductoProveedores)
     .get("/", getProveedoresByProducto)
+    .get("/proveedor-producto", getProductosByProveedor)
     .delete("/", deleteProveedorByRelacionId);
 
 export default router;

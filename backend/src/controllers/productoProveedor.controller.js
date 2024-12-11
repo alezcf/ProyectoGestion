@@ -60,7 +60,7 @@ export async function deleteProveedorByRelacionId(req, res) {
         // Llamamos al servicio que elimina la relación por su ID
         const [resultado, error] = await ProductoProveedorService.deleteProveedorByRelacionId(relacionId);
 
-        if (error) return handleErrorClient(res, 404, error); 
+        if (error) return handleErrorClient(res, 404, error);
 
         // Enviar respuesta de éxito si la eliminación fue exitosa
         handleSuccess(res, 200, "Relación eliminada correctamente", resultado);
@@ -100,10 +100,35 @@ export async function updateProductoProveedores(req, res) {
     }
 }
 
+/**
+ * Obtiene todos los productos asociados a un proveedor específico
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function getProductosByProveedor(req, res) {
+    try {
+        const { proveedorId } = req.query;
+
+        if (!proveedorId) {
+            return handleErrorClient(res, 400, "El ID del proveedor es requerido");
+        }
+
+        // Llamar al servicio para obtener los productos asociados al proveedor
+        const [productos, error] = await ProductoProveedorService.getProductosByProveedor(proveedorId);
+
+        if (error) return handleErrorClient(res, 404, error);
+
+        handleSuccess(res, 200, "Productos encontrados", productos);
+    } catch (error) {
+        handleErrorServer(res, 500, "Error al obtener productos por proveedor", error.message);
+    }
+}
+
 
 export default {
     createProductoProveedores,
     getProveedoresByProducto,
     deleteProveedorByRelacionId,
-    updateProductoProveedores
+    updateProductoProveedores,
+    getProductosByProveedor,
 };
