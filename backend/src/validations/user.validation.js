@@ -119,6 +119,9 @@ export const userQueryValidation = Joi.object({
       "string.min": "El rol debe tener como mínimo 4 caracteres.",
       "string.max": "El rol debe tener como máximo 15 caracteres.",
     }),
+    isActive: Joi.boolean().optional().messages({
+      "boolean.base": "El campo isActive debe ser un valor booleano.",
+    }),
     createdAt: Joi.date().iso().optional().messages({
       "date.base": "El campo createdAt debe ser una fecha válida.",
       "date.format": "El campo createdAt debe estar en formato ISO 8601.",

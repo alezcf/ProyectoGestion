@@ -101,7 +101,7 @@ export const updateUsuario = async (rut, usuarioActualizado) => {
         }
     } catch (error) {
 
-        console.log(error.response.data.message);
+        console.log(error);
         handleError(error.response.data.message); // Manejar cualquier error que ocurra
     }
 };
@@ -126,6 +126,25 @@ export const resetPassword = async (token, newPassword) => {
     }
 };
 
+export const toggleUsuarioStatus = async (usuarioId) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        };
+
+        const response = await axios.post(`api/user/statusUser?id=${usuarioId}`, {}, { headers });
+        const { status, data } = response;
+
+        if (status === 200) {
+            return data.message || "Estado del usuario actualizado correctamente"; // Mensaje de éxito
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 
 const handleError = (error) => {
     console.error('API call error:', error);
@@ -139,4 +158,5 @@ export default {
     createUsuario,
     resetPassword,
     updateUsuario,
+    toggleUsuarioStatus,
 };

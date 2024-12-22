@@ -40,7 +40,8 @@ const Usuarios = () => {
                 RUT: usuario.rut,
                 'CORREO ELECTRÓNICO': usuario.email,
                 ROL: usuario.rol,
-                REGISTRO: formatDateToDDMMYYYY(usuario.createdAt)
+                REGISTRO: formatDateToDDMMYYYY(usuario.createdAt),
+                "ACTIVO": usuario.isActive ? "Sí" : "No",
             }));
             console.log('Datos a exportar:', usuariosData);
             const filePath = await exportService.exportDataToExcel(usuariosData);
@@ -61,6 +62,7 @@ const Usuarios = () => {
             "NOMBRE COMPLETO": usuario.nombreCompleto,
             "FECHA DE REGISTRO": formatDateToDDMMYYYY(usuario.createdAt),
             "ÚLTIMA ACTUALIZACIÓN": formatDateToDDMMYYYY(usuario.updatedAt),
+            "ACTIVO": usuario.isActive ? "Sí" : "No",
         };
         console.log('Datos del usuario a exportar:', dataObject);
         const sheetNames = {

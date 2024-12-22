@@ -21,6 +21,16 @@ const UsuarioDetalles = ({ usuario }) => {
                     <strong>Rol: </strong>{usuario.rol || "No existe registro"}
                 </ListGroup.Item>
                 <ListGroup.Item className="detalles-info">
+                    <strong>Estado: </strong>
+                    {(() => {
+                        if (usuario.isActive !== undefined) {
+                            return usuario.isActive ? "Activo" : "Inactivo";
+                        } else {
+                            return "No existe registro";
+                        }
+                    })()}
+                </ListGroup.Item>
+                <ListGroup.Item className="detalles-info">
                     <strong>Registro de Cuenta: </strong>{usuario.createdAt ? formatDateToDDMMYYYY(usuario.createdAt) : "No existe registro"}
                 </ListGroup.Item>
                 <ListGroup.Item className="detalles-info">
@@ -37,6 +47,7 @@ UsuarioDetalles.propTypes = {
         rut: PropTypes.string.isRequired,
         email: PropTypes.string.isRequired,
         rol: PropTypes.string.isRequired,
+        isActive: PropTypes.bool.isRequired,
         createdAt: PropTypes.string.isRequired,
         updatedAt: PropTypes.string.isRequired,
     }).isRequired,

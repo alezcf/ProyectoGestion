@@ -19,7 +19,9 @@ const Perfil = () => {
         const fetchUsuario = async () => {
             try {
                 const data = await usuarioService.getUsuario(usuarioId);
+
                 setPerfilData(data);
+                console.log('Perfil:', perfilData);
                 setLoading(false);
             } catch (err) {
                 setError('Error al cargar el perfil.');
@@ -88,7 +90,10 @@ const Perfil = () => {
                     <UsuarioBotones
                         onEdit={handleEdit}
                         onExport={handleExport}
-                        isDeleteDisabled={true}
+                        isDeleteDisabled={true} // Si está inactivo, el botón será "Activar"
+                        isDisabled={true} // Por defecto, el botón está habilitado
+                        isDeleteMode={false} // Siempre alterna entre "Activar" y "Desactivar"
+                        usuario={perfilData}
                     />
                 </Col>
                 <Col md={8}>

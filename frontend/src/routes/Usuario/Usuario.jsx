@@ -21,6 +21,7 @@ const Usuario = () => {
     const [error, setError] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [openDetalles, setOpenDetalles] = useState(true);
+    const [forceUpdate, setForceUpdate] = useState(false);
     const defaultProfileImage = '../images/avatar.png';
 
     useEffect(() => {
@@ -51,16 +52,14 @@ const Usuario = () => {
                 "NOMBRE COMPLETO": usuario.nombreCompleto,
                 "FECHA DE REGISTRO": formatDateToDDMMYYYY(usuario.createdAt),
                 "ÚLTIMA ACTUALIZACIÓN": formatDateToDDMMYYYY(usuario.updatedAt),
+                "ACTIVO": usuario.isActive ? "Sí" : "No",
             };
 
             const sheetNames = {
                 mainSheet: "Usuario",
             };
 
-            const arrayData = [
-                [
-                ]
-            ];
+            const arrayData = [[]];
 
             await exportObjectAndArraysToExcel(dataObject, arrayData, sheetNames);
         } catch (error) {
@@ -70,17 +69,32 @@ const Usuario = () => {
 
     const handleFormSubmit = async (data) => {
         try {
-            console.log('Usuario actualizado:', data);
-            const response = await usuarioService.updateUsuario(usuario.rut, data); // Cambiamos usuarioId a usuario.rut
+            const response = await usuarioService.updateUsuario(usuario.rut, data);
             setUsuario({ ...usuario, ...data });
-            console.log('Usuario actualizado:', data);
             setShowEditModal(false);
-            alert(response.message)
+            alert(response.message);
         } catch (error) {
             alert(error);
             console.error('Error al actualizar el usuario:', error);
         }
     };
+
+    const handleToggleStatus = async () => {
+        try {
+            const message = await usuarioService.toggleUsuarioStatus(usuarioId);
+            setUsuario((prevUsuario) => ({
+                ...prevUsuario,
+                isActive: !prevUsuario.isActive,
+            }));
+            setForceUpdate(!forceUpdate); // Fuerza el rerenderizado
+            alert(message);
+        } catch (error) {
+            alert('Error al cambiar el estado del usuario');
+            console.error('Error al cambiar el estado del usuario:', error);
+        }
+    };
+
+
 
     const handleCloseModal = () => {
         setShowEditModal(false);
@@ -111,17 +125,27 @@ const Usuario = () => {
             <Row className="my-4">
                 <Col md={4}>
                     <Image
-                            src={usuario.fotoPerfil || defaultProfileImage} // Usa imagen predefinida si no tiene foto
-                            fluid
-                            style={{
-                                objectFit: 'cover',
-                                width: '100%',
-                                maxHeight: '500px',
-                                borderRadius: '10px',
-                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                            }}
-                        />
-                    <UsuarioBotones onEdit={handleEdit} onExport={handleExport} />
+                        src={usuario.fotoPerfil || defaultProfileImage} // Usa imagen predefinida si no tiene foto
+                        fluid
+                        style={{
+                            objectFit: 'cover',
+                            width: '100%',
+                            maxHeight: '500px',
+                            borderRadius: '10px',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                        }}
+                    />
+<UsuarioBotones
+    onEdit={handleEdit}
+    onExport={handleExport}
+    onDelete={handleToggleStatus}
+    isDeleteDisabled={!usuario.isActive} // Si está inactivo, el botón será "Activar"
+    isDisabled={false} // Por defecto, el botón está habilitado
+    isDeleteMode={false} // Siempre alterna entre "Activar" y "Desactivar"
+    usuario={usuario}
+/>
+{console.log("Estado actual del usuario:", usuario.isActive)}
+
                 </Col>
                 <Col md={8}>
                     {/* Collapse para los detalles del usuario */}
