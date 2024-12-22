@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import proveedorService from '../../services/proveedor.service';
 import ProductoProveedor from '../../services/productoProveedor.service';
-import productoService from '../../services/producto.service'; // Asegúrate de tener un servicio para obtener todos los productos
 import { Container, Row, Col, Spinner, Alert, Button, Card, Image, Collapse } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
@@ -20,10 +19,9 @@ import '../../css/Buttons.css';
 const Proveedor = () => {
     const { proveedorId } = useParams();
     const [proveedor, setProveedor] = useState(null);
-    const [productos, setProductos] = useState([]); // Productos asociados al proveedor
-    const [allProductos, setAllProductos] = useState([]); // Todos los productos disponibles
+    const [productos, setProductos] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [openDetalles, setOpenDetalles] = useState(true);
     const defaultProfileImage = '../images/proveedor.png';
@@ -34,20 +32,13 @@ const Proveedor = () => {
                 const response = await proveedorService.getProveedor(proveedorId);
                 setProveedor(response);
 
-                // Fetch productos asociados al proveedor
                 const productosResponse = await ProductoProveedor.getProductosByProveedor(proveedorId);
-                setProductos(productosResponse);
-
-                // Fetch todos los productos disponibles
-                const allProductosResponse = await productoService.getAllProductos();
-                setAllProductos(allProductosResponse);
-
-                console.log("Productos response:", productosResponse);
-                console.log("All productos response:", allProductosResponse);
+                console.log('Productos del proveedor:', productosResponse);
+                setProductos(productosResponse.data.data);
 
                 setLoading(false);
             } catch (err) {
-                setError('Error al cargar los datos del proveedor o los productos.');
+                console.error('Error al cargar el proveedor:', err);
                 setLoading(false);
             }
         };
@@ -99,7 +90,7 @@ const Proveedor = () => {
 
     const handleFormSubmit = async (data) => {
         try {
-            const response = await proveedorService.updateProveedor(proveedor.id, data);
+            await proveedorService.updateProveedor(proveedor.id, data);
             const updatedProveedor = await proveedorService.getProveedor(proveedorId);
             setProveedor(updatedProveedor);
             setShowEditModal(false);
@@ -188,10 +179,7 @@ const Proveedor = () => {
 
                     {/* Productos relacionados */}
                     <ProveedorProducto
-                        productos={productos}
-                        allProductos={allProductos}
                         proveedorId={proveedorId}
-                        onProductosChange={setProductos}
                     />
                 </Col>
             </Row>

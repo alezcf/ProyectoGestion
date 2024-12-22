@@ -57,7 +57,7 @@ export const updateProductoProveedores = async (productoId, proveedoresIds) => {
             proveedoresIds,
         };
 
-        const response = await axios.put(`api/producto-proveedores?productoId=${productoId}`, requestData, { headers });
+        const response = await axios.put(`api/producto-proveedores/?productoId=${productoId}`, requestData, { headers });
         const { status, data } = response;
         if (status === 200) {
             return data.data;
@@ -94,11 +94,9 @@ export const getProductosByProveedor = async (proveedorId) => {
         };
 
         const response = await axios.get(`api/producto-proveedores/proveedor-producto?proveedorId=${proveedorId}`, { headers });
-        const { status, data } = response;
 
-        if (status === 200) {
-            return data.data;
-        }
+        return response;
+
     } catch (error) {
         handleError(error);
     }
@@ -108,7 +106,7 @@ export const getProductosByProveedor = async (proveedorId) => {
 const handleError = (error) => {
     console.error('Error en la petición:', error);
     throw error; // Puedes personalizar este manejo si deseas
-    };
+};
 
 export default {
     createProductoProveedores,

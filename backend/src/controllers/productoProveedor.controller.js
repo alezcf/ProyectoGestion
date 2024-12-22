@@ -116,7 +116,7 @@ export async function getProductosByProveedor(req, res) {
         // Llamar al servicio para obtener los productos asociados al proveedor
         const [productos, error] = await ProductoProveedorService.getProductosByProveedor(proveedorId);
 
-        if (error) return handleErrorClient(res, 404, error);
+        if (error) return handleErrorClient(res, 404, "No se encontraron productos asociados", error);
 
         handleSuccess(res, 200, "Productos encontrados", productos);
     } catch (error) {

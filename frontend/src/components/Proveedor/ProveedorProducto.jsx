@@ -1,46 +1,72 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Collapse, Card, Form, Alert } from 'react-bootstrap';
+import { Button, Collapse, Card, Alert, Spinner } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faChevronDown, faChevronUp} from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import { InfoCircle } from 'react-bootstrap-icons';
+import { useNavigate } from 'react-router-dom';
 import SecondaryTable from '../../components/Common/SecondaryTable';
+import ProductoProveedor from '../../services/productoProveedor.service';
 import '../../css/Buttons.css';
 
-const ProveedorProducto = ({ productos, allProductos, onProductosChange }) => {
-    const [nuevoProductoId, setNuevoProductoId] = useState('');
+const ProveedorProducto = ({ proveedorId }) => {
+    const navigate = useNavigate();
+    const [productos, setProductos] = useState([]); // Productos asociados
     const [openProductos, setOpenProductos] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const handleAddProducto = async () => {
-        if (!nuevoProductoId) return;
-        try {
-            const nuevoProducto = allProductos.find(producto => producto.id === parseInt(nuevoProductoId));
-            if (nuevoProducto) {
-                const updatedProductos = [...productos, nuevoProducto];
-                onProductosChange(updatedProductos);
-                setNuevoProductoId('');
-                alert('Producto agregado correctamente.');
+    useEffect(() => {
+        const fetchProductos = async () => {
+            try {
+
+                const productosResponse = await ProductoProveedor.getProductosByProveedor(proveedorId);
+                setProductos(productosResponse?.data?.data || []);
+
+                setLoading(false);
+            } catch (err) {
+                setError('Error al cargar los productos asociados.');
+                setLoading(false);
             }
-        } catch (err) {
-            alert('Error al agregar el producto.');
-            console.error(err);
-        }
-    };
+        };
 
-    const handleDeleteProducto = (productoId) => {
-        try {
-            const updatedProductos = productos.filter(producto => producto.id !== productoId);
-            onProductosChange(updatedProductos);
-            alert('Producto eliminado correctamente.');
-        } catch (err) {
-            alert('Error al eliminar el producto.');
-            console.error(err);
-        }
-    };
+        fetchProductos();
+    }, [proveedorId]);
+
 
     const toggleProductos = () => {
         setOpenProductos(!openProductos);
     };
+
+    if (loading) {
+        return (
+            <Card className="custom-card mt-4">
+                <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
+                    <h5 className="header-title">Productos Relacionados</h5>
+                </Card.Header>
+                <Card.Body className="text-center">
+                    <Spinner animation="border" variant="primary" /> Cargando productos...
+                </Card.Body>
+            </Card>
+        );
+    }
+
+    const handleInfoProducto = (productoId) => {
+        navigate(`/producto/${productoId}`);
+    };
+
+    if (error) {
+        return (
+            <Card className="custom-card mt-4">
+                <Card.Header className="d-flex justify-content-between align-items-center card-header-custom">
+                    <h5 className="header-title">Productos Relacionados</h5>
+                </Card.Header>
+                <Card.Body>
+                    <Alert variant="warning" className="text-center">No hay productos asociados.</Alert>
+                </Card.Body>
+            </Card>
+        );
+    }
 
     return (
         <Card className={`custom-card ${openProductos ? 'card-active' : ''} mt-4`}>
@@ -65,55 +91,24 @@ const ProveedorProducto = ({ productos, allProductos, onProductosChange }) => {
                     <Card.Body>
                         {productos.length > 0 ? (
                             <SecondaryTable
-                                headers={["Nombre", "Descripción", "Categoría", "Precio", "Acciones"]}
+                                headers={["Nombre", "Descripción", "Categoría", "Acciones"]}
                                 data={productos}
                                 renderRow={(producto) => (
                                     <tr key={producto.id}>
                                         <td>{producto.nombre}</td>
                                         <td>{producto.descripcion}</td>
                                         <td>{producto.categoria}</td>
-                                        <td>{producto.precio}</td>
                                         <td>
-                                        <button type="button" className="button btn-info" onClick={() => handleInfo(inventario.id)}>
-                                            <InfoCircle />
-                                        </button>
-                                        <button type="button" className="button btn-edit" onClick={() => handleEditClick({ idRelacion, inventario, cantidad })}>
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </button>
-                                        <button type="button" className="button btn-delete" onClick={() => handleDelete(idRelacion)}>
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </button>
+                                            <button type="button" className="button btn-info" onClick={() => handleInfoProducto(producto.id)}>
+                                                <InfoCircle />
+                                            </button>
                                         </td>
                                     </tr>
                                 )}
                             />
                         ) : (
-                            <Alert variant="warning">No hay productos asociados.</Alert>
+                            <Alert variant="warning" className="text-center">No hay productos asociados.</Alert>
                         )}
-
-                        {/* Formulario para agregar productos */}
-                        <Form className="d-flex align-items-center mt-3">
-                            <Form.Control
-                                as="select"
-                                value={nuevoProductoId}
-                                onChange={(e) => setNuevoProductoId(e.target.value)}
-                            >
-                                <option value="">Seleccione un producto</option>
-                                {allProductos.map((producto) => (
-                                    <option key={producto.id} value={producto.id}>
-                                        {producto.nombre}
-                                    </option>
-                                ))}
-                            </Form.Control>
-                            <Button
-                                variant="success"
-                                size="sm"
-                                onClick={handleAddProducto}
-                                className="ml-2"
-                            >
-                                Agregar Producto
-                            </Button>
-                        </Form>
                     </Card.Body>
                 </div>
             </Collapse>
@@ -122,21 +117,6 @@ const ProveedorProducto = ({ productos, allProductos, onProductosChange }) => {
 };
 
 ProveedorProducto.propTypes = {
-    productos: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.number.isRequired,
-            nombre: PropTypes.string.isRequired,
-            categoria: PropTypes.string,
-            precio: PropTypes.number,
-        })
-    ).isRequired,
-    allProductos: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.number.isRequired,
-            nombre: PropTypes.string.isRequired,
-        })
-    ).isRequired,
-    onProductosChange: PropTypes.func.isRequired,
     proveedorId: PropTypes.number.isRequired,
 };
 
