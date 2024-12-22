@@ -8,6 +8,7 @@ import {
   getUser,
   getUsers,
   resetPassword,
+  toggleUserActiveById,
   updateUser,
 } from "../controllers/user.controller.js";
 
@@ -26,6 +27,7 @@ router
 router
   .put("/", isAdmin, updateUser)
   .delete("/", isAdmin, deleteUser)
-  .post("/", isAdmin, createUser);
+  .post("/", isAdmin, createUser)
+  .post("/statusUser", isAdmin, toggleUserActiveById);
 
 export default router;

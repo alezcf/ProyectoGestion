@@ -238,6 +238,35 @@ export const updatePassword = async (userId, newPassword) => {
   }
 };
 
+/**
+ * Alterna automáticamente el estado de activación de un usuario por su ID
+ * @param {Number} id - ID del usuario
+ * @returns {Promise} Promesa con el usuario actualizado
+ */
+async function toggleUserActiveById(id) {
+  try {
+    const userRepository = AppDataSource.getRepository(User);
+
+    // Buscar el usuario por su ID
+    const userFound = await userRepository.findOne({ where: { id } });
+
+    if (!userFound) return [null, "Usuario no encontrado"];
+
+    // Alternar el estado de activación
+    userFound.isActive = !userFound.isActive;
+    await userRepository.save(userFound);
+
+    // Retornar el usuario actualizado (sin incluir la contraseña)
+    const { password, ...updatedUser } = userFound;
+    return [updatedUser, null];
+  } catch (error) {
+    console.error("Error al alternar el estado del usuario:", error);
+    return [null, "Error interno del servidor"];
+  }
+}
+
+
+
 export default {
   createUser,
   getUser,
@@ -246,4 +275,5 @@ export default {
   deleteUser,
   findUserByPassword,
   updatePassword,
+  toggleUserActiveById,
 };

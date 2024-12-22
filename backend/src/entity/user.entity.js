@@ -36,6 +36,11 @@ const UserSchema = new EntitySchema({
       type: "varchar",
       nullable: false,
     },
+    isActive: {
+      type: "boolean",
+      default: true,
+      nullable: false,
+    },
     createdAt: {
       type: "timestamp with time zone",
       default: () => "CURRENT_TIMESTAMP",

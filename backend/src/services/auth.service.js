@@ -23,6 +23,8 @@ export async function loginService(user) {
 
     if (!isMatch) return [null, "La contraseña ingresada es incorrecta"];
 
+    if(userFound.isActive === false) return [null, "El usuario se encuentra inactivo."];
+
     const payload = {
       fullname: userFound.nombreCompleto,
       email: userFound.email,

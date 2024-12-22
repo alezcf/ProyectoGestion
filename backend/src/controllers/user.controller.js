@@ -188,6 +188,36 @@ export const resetPassword = async (req, res) => {
   }
 };
 
+/**
+ * Alterna automáticamente el estado de activación de un usuario por su ID
+ * @param {Object} req - Objeto de petición
+ * @param {Object} res - Objeto de respuesta
+ */
+export async function toggleUserActiveById(req, res) {
+  try {
+    const { id } = req.query; // Obtener el ID de la URL
+
+    // Validar que se proporcione un ID válido
+    if (!id) return handleErrorClient(res, 400, "El ID del usuario es obligatorio");
+
+    // Llamar al servicio para alternar el estado de activación
+    const [user, error] = await UserService.toggleUserActiveById(Number(id));
+
+    if (error) return handleErrorClient(res, 404, error);
+
+    handleSuccess(
+      res,
+      200,
+      `Usuario ${user.isActive ? "activado" : "desactivado"} correctamente`,
+      user
+    );
+  } catch (error) {
+    handleErrorServer(res, 500, "Error al alternar el estado del usuario", error.message);
+  }
+}
+
+
+
 export default {
   getUsers,
   createUser,
@@ -195,4 +225,5 @@ export default {
   updateUser,
   deleteUser,
   resetPassword,
+  toggleUserActiveById,
 };
