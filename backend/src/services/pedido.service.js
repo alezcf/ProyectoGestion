@@ -76,7 +76,7 @@ async function createPedido(body) {
 
             if (productoInventario) {
                 // Actualizar cantidad en ProductoInventario
-                productoInventario.cantidad += cantidad;
+                productoInventario.cantidad += Number(cantidad);
             } else {
                 // Crear nueva entrada en ProductoInventario
                 productoInventario = productoInventarioRepository.create({
@@ -89,8 +89,10 @@ async function createPedido(body) {
             await productoInventarioRepository.save(productoInventario);
 
             // Actualizar stock_actual en Inventario
-            inventario.stock_actual += cantidad;
+            console.log("Inventario antes de actualizar:", inventario);
+            inventario.stock_actual += Number(cantidad);
             await inventarioRepository.save(inventario);
+            console.log("Inventario después de actualizar:", inventario);
 
             // Asociar el producto al pedido
             const pedidoProducto = pedidoProductoRepository.create({

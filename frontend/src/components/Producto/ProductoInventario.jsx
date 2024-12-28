@@ -34,7 +34,10 @@ const ProductoInventario = ({ producto = { id: null, productoInventarios: [] } }
                         cantidad: relacion.cantidad
                     }));
                     setInventarios(inventariosExtraidos);
+                    console.log("Inventarios extraidos: ", inventariosExtraidos);
                 }
+
+                console.log('Inventarios del producto:', inventariosData);
             } catch (error) {
                 console.error('Error al obtener los inventarios del producto:', error);
             }

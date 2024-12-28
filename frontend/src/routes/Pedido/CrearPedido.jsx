@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Container, Row, Col, OverlayTrigger, Tooltip, Modal } from 'react-bootstrap';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faCartShopping, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faPaperPlane, faCartShopping, faArrowLeft, faArrowRight, faTrash } from '@fortawesome/free-solid-svg-icons';
 import pedidoService from '../../services/pedido.service';
 import productoService from '../../services/producto.service';
 import proveedorService from '../../services/proveedor.service';
@@ -75,7 +75,8 @@ const CrearPedido = () => {
             setPage(0);
             setShowConfirmation(false);
         } catch (err) {
-            alert(err.response.data.message);
+            console.log('Error al crear el pedido:', err);
+            alert(err.details);
             setShowConfirmation(false);
         }
     };
@@ -267,14 +268,15 @@ const CrearPedido = () => {
                             </Col>
 
                             <Col md={12} className="text-right">
-                                <Button variant="danger" onClick={() => remove(index)}>
-                                    Eliminar Producto
+                                <center><Button className="button btn-delete" variant="danger" onClick={() => remove(index)}>
+                                    <FontAwesomeIcon icon={faTrash} /> Eliminar
                                 </Button>
+                                </center>
                             </Col>
                         </Row>
                     ))}
 
-                    <Button variant="secondary" onClick={() => append({ productoId: '', cantidad: '', precio: '' })}>
+                    <Button className="button" variant="secondary" onClick={() => append({ productoId: '', cantidad: '', precio: '' })}>
                         Añadir Producto
                     </Button>
                 </>
