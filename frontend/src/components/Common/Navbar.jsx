@@ -33,8 +33,8 @@ function Navbar() {
             <Nav.Link href="/inventario" className="nav-link">Inventario</Nav.Link>
             <Nav.Link href="/producto" className="nav-link">Productos</Nav.Link>
             <Nav.Link href="/pedidos" className="nav-link">Pedidos</Nav.Link>
-            <Nav.Link href="/perfil" className="nav-link">Perfil</Nav.Link>
             <Nav.Link href="/proveedores" className="nav-link">Proveedores</Nav.Link>
+            <Nav.Link href="/perfil" className="nav-link">Perfil</Nav.Link>
             <div className="user-info">
             <button onClick={handleLogout} className="button logout-button">Cerrar sesión</button>
             </div>

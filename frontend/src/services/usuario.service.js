@@ -28,13 +28,15 @@ export const getUsuario = async (id) => {
 
         let query;
 
-        if (id) {
+        console.log("La id es: ", id);
 
+        if (id) {
             query = `id=${id}`;
         } else {
             const decodedToken = jwtDecode(token);
-            const rut = decodedToken.rut;
-            query = `rut=${rut}`;
+            console.log("El token decodificado es: ", decodedToken);
+            const id = decodedToken.id;
+            query = `id=${id}`;
         }
 
         const response = await axios.get(`api/user/detail?${query}`, { headers });

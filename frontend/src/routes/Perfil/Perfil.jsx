@@ -19,9 +19,9 @@ const Perfil = () => {
         const fetchUsuario = async () => {
             try {
                 const data = await usuarioService.getUsuario(usuarioId);
-
+                console.log("usuario id", usuarioId);
                 setPerfilData(data);
-                console.log('Perfil:', perfilData);
+                console.log('Perfil:', data);
                 setLoading(false);
             } catch (err) {
                 setError('Error al cargar el perfil.');
@@ -44,13 +44,18 @@ const Perfil = () => {
     const handleFormSubmit = async (data) => {
         try {
             const response = await usuarioService.updateUsuario(perfilData.rut, data);
-            setPerfilData({ ...perfilData, ...data });
-            setShowEditModal(false);
             alert(response.message);
+
+            // Volver a obtener los datos del perfil actualizados usando el id del usuario
+            const updatedData = await usuarioService.getUsuario(perfilData.id);
+            setPerfilData(updatedData);
+
+            setShowEditModal(false); // Cierra el modal después de actualizar
         } catch (error) {
             alert(error);
         }
     };
+
 
     const handleCloseModal = () => {
         setShowEditModal(false);
