@@ -17,6 +17,7 @@ import {
  */
 export async function createProveedor(req, res) {
     try {
+        console.log(req.body);
         const { body } = req;
 
         const { error } = proveedorBodyValidation.validate(body);

@@ -24,7 +24,7 @@ export const productoBodyValidation = Joi.object({
     }),
     nombre: Joi.string()
     .min(3)
-    .max(255)
+    .max(50)
     .pattern(/^(?!\d+$).*/, "no solo números")
     .required()
     .messages({
@@ -32,13 +32,14 @@ export const productoBodyValidation = Joi.object({
         "any.required": "El nombre es obligatorio.",
         "string.base": "El nombre debe ser de tipo string.",
         "string.min": "El nombre debe tener como mínimo 3 caracteres.",
-        "string.max": "El nombre debe tener como máximo 255 caracteres.",
+        "string.max": "El nombre debe tener como máximo 50 caracteres.",
         "string.pattern.name": "El nombre no puede ser solo números.",
     }),
-    descripcion: Joi.string().max(1000).required().messages({
+    descripcion: Joi.string().min(5).max(1000).required().messages({
         "string.empty": "La descripción no puede estar vacía.",
         "any.required": "La descripción es obligatoria.",
         "string.base": "La descripción debe ser de tipo string.",
+        "string.min": "La descripción debe tener como minimo 5 caracteres.",
         "string.max": "La descripción debe tener como máximo 1000 caracteres."
     }),
     categoria: Joi.string().valid(...CATEGORIAS).required().messages({
@@ -46,10 +47,14 @@ export const productoBodyValidation = Joi.object({
         "any.required": "La categoría es obligatoria.",
         "any.only": "La categoría debe ser una de las siguientes: {#valids}."
     }),
-    marca: Joi.string().max(255).optional().messages({
+    marca: Joi.string()
+    .max(255)
+    .allow(null, "") // Permite valores `null` o cadena vacía
+    .optional()
+    .messages({
         "string.empty": "La marca no puede estar vacía.",
         "string.base": "La marca debe ser de tipo string.",
-        "string.max": "La marca debe tener como máximo 255 caracteres."
+        "string.max": "La marca debe tener como máximo 255 caracteres.",
     }),
     contenido: Joi.number().positive().min(1).max(1000).required().messages({
         "number.base": "El contenido debe ser un número.",

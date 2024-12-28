@@ -20,12 +20,12 @@ async function createProveedor(body) {
         return [null, "Ya existe un proveedor con el mismo rut o email"];
         }
 
-        if(!validate(format(body.rut))){
+        if(body.rut && !validate(format(body.rut))){
             return [null, "El rut de proveedor ingresado es invalido."];
         }
         const newProveedor = proveedorRepository.create({
             nombre: body.nombre,
-            rut: format(body.rut), // Aplica formato al RUT
+            rut: body.rut ? format(body.rut) : "", // Aplica formato al RUT
             direccion: body.direccion,
             telefono: body.telefono,
             email: body.email,
@@ -101,7 +101,7 @@ async function updateProveedor(query, body) {
         return [null, "Proveedor no encontrado"];
         }
 
-        if(!validate(format(body.rut))){
+        if(body.rut && !validate(format(body.rut))){
             return [null, "El rut de proveedor ingresado es invalido."];
         }
 
@@ -116,7 +116,7 @@ async function updateProveedor(query, body) {
 
         await proveedorRepository.update({ id: proveedorFound.id }, {
             nombre: body.nombre,
-            rut: format(body.rut),
+            rut: body.rut ? format(body.rut) : "",
             direccion: body.direccion,
             telefono: body.telefono,
             email: body.email,

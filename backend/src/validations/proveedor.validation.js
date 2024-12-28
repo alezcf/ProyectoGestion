@@ -47,7 +47,7 @@ export const proveedorBodyValidation = Joi.object({
     }),
     nombre: Joi.string()
     .min(3)
-    .max(255)
+    .max(50)
     .pattern(/^(?!\d+$).*/, "no solo números")
     .required()
     .messages({
@@ -55,23 +55,30 @@ export const proveedorBodyValidation = Joi.object({
         "any.required": "El nombre es obligatorio.",
         "string.base": "El nombre debe ser de tipo string.",
         "string.min": "El nombre debe tener como mínimo 3 caracteres.",
-        "string.max": "El nombre debe tener como máximo 255 caracteres.",
+        "string.max": "El nombre debe tener como máximo 50 caracteres.",
         "string.pattern.name": "El nombre no puede ser solo números.",
     }),
     email: Joi.string()
+        .min(10)
+        .max(50)
         .email()
-        .required()
+        .optional()
+        .allow(null, "")
         .messages({
         "string.empty": "El correo electrónico no puede estar vacío.",
-        "any.required": "El correo electrónico es obligatorio.",
+        "string.min":
+        "El correo electrónico debe tener como mínimo 10 caracteres.",
+        "string.max":
+        "El correo electrónico debe tener como máximo 50 caracteres.",
         "string.base": "El correo electrónico debe ser de tipo string.",
         "string.email": "El correo electrónico debe tener un formato válido.",
         }),
     rut: Joi.string()
         .min(9)
         .max(12)
+        .allow(null, "")
         .pattern(/^\d{1,2}\.?\d{3}\.?\d{3}-[\dkK]$/)
-        .required()
+        .optional()
         .messages({
         "string.empty": "El RUT no puede estar vacío.",
         "any.required": "El RUT es obligatorio.",
@@ -80,12 +87,13 @@ export const proveedorBodyValidation = Joi.object({
         "string.max": "El RUT debe tener como máximo 12 caracteres.",
         "string.pattern.base": "El RUT no tiene un formato válido.",
         }),
-    direccion: Joi.string().max(255).required().messages({
+    direccion: Joi.string().min(5).max(50).optional().allow(null, "").messages({
         "string.empty": "La dirección no puede estar vacía.",
         "string.base": "La dirección debe ser de tipo string.",
-        "string.max": "La dirección debe tener como máximo 255 caracteres.",
+        "string.min": "La dirección debe tener como minimo 5 caracteres.",
+        "string.max": "La dirección debe tener como máximo 50 caracteres.",
     }),
-    telefono: Joi.string().min(8).max(20).optional().messages({
+    telefono: Joi.string().min(8).max(20).optional().allow(null, "").messages({
         "string.empty": "El teléfono no puede estar vacío.",
         "string.base": "El teléfono debe ser de tipo string.",
         "string.min": "El teléfono debe tener como mínimo 8 caracteres.",

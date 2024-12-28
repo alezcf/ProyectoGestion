@@ -90,7 +90,7 @@ export async function getProductos(req, res) {
 export async function updateProducto(req, res) {
     try {
         const { id } = req.query;
-
+        console.log("id dentro del controller:", req.body);
         if (!id) return handleErrorClient(res, 400, "Error de validación", "El ID es obligatorio.");
 
         const { body } = req;
