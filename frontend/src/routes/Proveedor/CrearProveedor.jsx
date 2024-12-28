@@ -35,26 +35,35 @@ const CrearProveedor = () => {
                     <Row>
                         {/* Campo Nombre */}
                         <Col md={6}>
-                            <Form.Group controlId="nombre">
-                                <OverlayTrigger
-                                    placement="auto"
-                                    overlay={renderTooltip("Introduce el nombre del proveedor. Campo obligatorio.")}
-                                    popperConfig={{
-                                        modifiers: [
-                                            { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
-                                        ]
-                                    }}
-                                >
-                                    <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE (*)</Form.Label>
-                                </OverlayTrigger>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Ingresa el nombre del proveedor"
-                                    {...register('nombre', { required: 'El nombre es obligatorio' })}
-                                    className={errors.nombre ? 'is-invalid' : ''}
-                                />
-                                {errors.nombre && <span className="text-danger">{errors.nombre.message}</span>}
-                            </Form.Group>
+                        <Form.Group controlId="nombre">
+                        <OverlayTrigger
+                            placement="auto"
+                            overlay={renderTooltip("Introduce el nombre del proveedor. Campo obligatorio. Debe tener entre 3 y 50 caracteres y no puede ser solo números.")}
+                            popperConfig={{
+                                modifiers: [
+                                    { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
+                                ]
+                            }}
+                        >
+                            <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE (*)</Form.Label>
+                        </OverlayTrigger>
+                        <Form.Control
+                            type="text"
+                            placeholder="Ingresa el nombre del proveedor"
+                            {...register('nombre', {
+                                required: "El nombre es obligatorio.",
+                                minLength: { value: 3, message: "Debe tener como mínimo 3 caracteres." },
+                                maxLength: { value: 50, message: "Debe tener como máximo 50 caracteres." },
+                                validate: {
+                                    notOnlyNumbers: (value) =>
+                                        !/^\d+$/.test(value) || "El nombre no puede contener solo números.",
+                                },
+                            })}
+                            className={errors.nombre ? 'is-invalid' : ''}
+                        />
+                        {errors.nombre && <span className="text-danger">{errors.nombre.message}</span>}
+                    </Form.Group>
+
                         </Col>
 
                         {/* Campo RUT */}
@@ -75,7 +84,6 @@ const CrearProveedor = () => {
                                     type="text"
                                     placeholder="Ingresa el RUT del proveedor"
                                     {...register('rut', {
-                                        required: 'El RUT es obligatorio',
                                         pattern: {
                                             value: /^\d{1,2}\.?\d{3}\.?\d{3}-[\dkK]$/,
                                             message: 'Formato de RUT no válido',
@@ -106,7 +114,7 @@ const CrearProveedor = () => {
                                 <Form.Control
                                     type="text"
                                     placeholder="Ingresa la dirección"
-                                    {...register('direccion', { required: 'La dirección es obligatoria' })}
+                                    {...register('direccion')}
                                     className={errors.direccion ? 'is-invalid' : ''}
                                 />
                                 {errors.direccion && <span className="text-danger">{errors.direccion.message}</span>}
@@ -131,7 +139,6 @@ const CrearProveedor = () => {
                                     type="text"
                                     placeholder="Ingresa el teléfono"
                                     {...register('telefono', {
-                                        required: 'El teléfono es obligatorio',
                                         pattern: {
                                             value: /^[0-9]{9,10}$/,
                                             message: 'Formato de teléfono no válido, debe tener 9 o 10 dígitos',
@@ -163,7 +170,6 @@ const CrearProveedor = () => {
                                     type="email"
                                     placeholder="Ingresa el email"
                                     {...register('email', {
-                                        required: 'El email es obligatorio',
                                         pattern: {
                                             value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
                                             message: 'Formato de correo electrónico no válido',

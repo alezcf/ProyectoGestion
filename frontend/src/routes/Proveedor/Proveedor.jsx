@@ -55,10 +55,10 @@ const Proveedor = () => {
             // Estructura para exportar el proveedor
             const proveedorData = {
                 NOMBRE: proveedor.nombre,
-                RUT: proveedor.rut,
-                EMAIL: proveedor.email,
-                TELÉFONO: proveedor.telefono,
-                DIRECCIÓN: proveedor.direccion,
+                RUT: proveedor.rut || 'No registrada',
+                EMAIL: proveedor.email || 'No registrada',
+                TELÉFONO: proveedor.telefono || 'No registrada',
+                DIRECCIÓN: proveedor.direccion || 'No registrada',
             };
 
             // Exportar productos asociados al proveedor

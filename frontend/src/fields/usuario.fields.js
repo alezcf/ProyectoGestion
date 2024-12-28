@@ -48,12 +48,12 @@ const usuarioFields = [
         validation: {
             required: "El RUT es obligatorio",
             pattern: {
-                value: /^([1-9]|[1-9]\d|[1-9]\d{2})(\.\d{3})*\-(\d|k|K)$/,  // Expresión regular para RUT
+                value: /^\d{1,2}\.?\d{3}\.?\d{3}-[\dkK]$/,  // Expresión regular para RUT
                 message: "Formato de RUT inválido. Ejemplo: xx.xxx.xxx-x o x.xxx.xxx-x"
             },
             minLength: {
-                value: 11,
-                message: "Debe tener al menos 11 caracteres"
+                value: 9,
+                message: "Debe tener al menos 9 caracteres"
             },
             maxLength: {
                 value: 12,

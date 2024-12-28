@@ -33,52 +33,83 @@ const CrearInventario = () => {
                 <Form onSubmit={handleSubmit(() => setShowConfirmation(true))}>
                     <Row>
                         <Col md={6}>
-                            <Form.Group controlId="nombre">
-                                <OverlayTrigger
-                                    placement="auto"
-                                    overlay={renderTooltip("Introduce el nombre del inventario. Campo obligatorio.")}
-                                    popperConfig={{
-                                        modifiers: [
-                                            { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
-                                        ]
-                                    }}
-                                >
-                                    <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE (*)</Form.Label>
-                                </OverlayTrigger>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Ingresa el nombre del inventario"
-                                    {...register('nombre', { required: 'El nombre es obligatorio' })}
-                                    className={errors.nombre ? 'is-invalid' : ''}
-                                />
-                                {errors.nombre && <span className="text-danger">{errors.nombre.message}</span>}
-                            </Form.Group>
+                        <Form.Group controlId="nombre">
+                            <OverlayTrigger
+                                placement="auto"
+                                overlay={renderTooltip("Introduce el nombre del inventario. Debe tener entre 3 y 100 caracteres, no puede estar vacío ni ser solo números.")}
+                                popperConfig={{
+                                    modifiers: [
+                                        { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
+                                    ]
+                                }}
+                            >
+                                <Form.Label style={{ fontWeight: 'bold' }}>NOMBRE (*)</Form.Label>
+                            </OverlayTrigger>
+                            <Form.Control
+                                type="text"
+                                placeholder="Ingresa el nombre del inventario"
+                                {...register('nombre', {
+                                    required: 'El nombre es obligatorio',
+                                    minLength: {
+                                        value: 3,
+                                        message: 'El nombre debe tener al menos 3 caracteres',
+                                    },
+                                    maxLength: {
+                                        value: 100,
+                                        message: 'El nombre debe tener como máximo 100 caracteres',
+                                    },
+                                    validate: (value) => {
+                                        if (/^\d+$/.test(value)) {
+                                            return 'El nombre no puede contener solo números';
+                                        }
+                                        return true;
+                                    }
+                                })}
+                                className={errors.nombre ? 'is-invalid' : ''}
+                            />
+                            {errors.nombre && <span className="text-danger">{errors.nombre.message}</span>}
+                        </Form.Group>
+
                         </Col>
 
                         <Col md={6}>
-                            <Form.Group controlId="maximo_stock">
-                                <OverlayTrigger
-                                    placement="auto"
-                                    overlay={renderTooltip("Introduce el máximo stock permitido para el inventario. Debe ser mayor a 0.")}
-                                    popperConfig={{
-                                        modifiers: [
-                                            { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
-                                        ]
-                                    }}
-                                >
-                                    <Form.Label style={{ fontWeight: 'bold' }}>MÁXIMO STOCK (*)</Form.Label>
-                                </OverlayTrigger>
-                                <Form.Control
-                                    type="number"
-                                    placeholder="Ingresa el máximo stock del inventario"
-                                    {...register('maximo_stock', {
-                                        required: 'El máximo stock es obligatorio',
-                                        min: { value: 1, message: 'El máximo stock debe ser mayor que 0' }
-                                    })}
-                                    className={errors.maximo_stock ? 'is-invalid' : ''}
-                                />
-                                {errors.maximo_stock && <span className="text-danger">{errors.maximo_stock.message}</span>}
-                            </Form.Group>
+                        <Form.Group controlId="maximo_stock">
+                            <OverlayTrigger
+                                placement="auto"
+                                overlay={renderTooltip("Introduce el máximo stock permitido para el inventario. Debe ser un número entero entre 2 y 1500.")}
+                                popperConfig={{
+                                    modifiers: [
+                                        { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
+                                    ]
+                                }}
+                            >
+                                <Form.Label style={{ fontWeight: 'bold' }}>MÁXIMO STOCK (*)</Form.Label>
+                            </OverlayTrigger>
+                            <Form.Control
+                                type="number"
+                                placeholder="Ingresa el máximo stock del inventario"
+                                {...register('maximo_stock', {
+                                    required: 'El máximo stock es obligatorio',
+                                    min: {
+                                        value: 2,
+                                        message: 'El máximo stock debe ser mayor o igual a 2',
+                                    },
+                                    max: {
+                                        value: 1500,
+                                        message: 'El máximo stock debe ser menor o igual a 1500',
+                                    },
+                                    validate: (value) => {
+                                        if (!Number.isInteger(Number(value))) {
+                                            return 'El máximo stock debe ser un número entero';
+                                        }
+                                        return true;
+                                    },
+                                })}
+                                className={errors.maximo_stock ? 'is-invalid' : ''}
+                            />
+                            {errors.maximo_stock && <span className="text-danger">{errors.maximo_stock.message}</span>}
+                        </Form.Group>
+
                         </Col>
                     </Row>
 

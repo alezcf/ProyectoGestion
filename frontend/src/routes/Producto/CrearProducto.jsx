@@ -120,7 +120,11 @@ const CrearProducto = () => {
                                         {...register('nombre', {
                                             required: "El nombre es obligatorio.",
                                             minLength: { value: 3, message: "Debe tener como mínimo 3 caracteres." },
-                                            maxLength: { value: 255, message: "Debe tener como máximo 255 caracteres." }
+                                            maxLength: { value: 50, message: "Debe tener como máximo 50 caracteres." },
+                                            validate: {
+                                                notOnlyNumbers: (value) =>
+                                                    !/^\d+$/.test(value) || "El nombre no puede contener solo números.",
+                                            },
                                         })}
                                         className={`form-input ${errors.nombre ? 'is-invalid' : ''}`}
                                     />
@@ -131,7 +135,7 @@ const CrearProducto = () => {
                                 <Form.Group controlId="descripcion">
                                     <OverlayTrigger
                                         placement="auto"
-                                        overlay={renderTooltip("Introduce una breve descripción del producto. Requerido y hasta 1000 caracteres.")}
+                                        overlay={renderTooltip("Introduce una breve descripción del producto. Requerido, debe tener entre 5 y 1000 caracteres.")}
                                         popperConfig={{
                                             modifiers: [
                                                 { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
@@ -145,12 +149,18 @@ const CrearProducto = () => {
                                         placeholder="Ingresa la descripción"
                                         {...register('descripcion', {
                                             required: "La descripción es obligatoria.",
-                                            maxLength: { value: 1000, message: "Debe tener como máximo 1000 caracteres." }
+                                            minLength: { value: 5, message: "Debe tener como mínimo 5 caracteres." },
+                                            maxLength: { value: 1000, message: "Debe tener como máximo 1000 caracteres." },
+                                            validate: {
+                                                notOnlyNumbers: (value) =>
+                                                    !/^\d+$/.test(value) || "La descripción no puede contener solo números.",
+                                            },
                                         })}
                                         className={`form-input ${errors.descripcion ? 'is-invalid' : ''}`}
                                     />
                                     {errors.descripcion && <span className="text-danger">{errors.descripcion.message}</span>}
                                 </Form.Group>
+
                             </Col>
                         </Row>
                         <Row>
@@ -179,29 +189,35 @@ const CrearProducto = () => {
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
-                                <Form.Group controlId="contenido">
-                                    <OverlayTrigger
-                                        placement="auto"
-                                        overlay={renderTooltip("Introduce el contenido en unidades, debe ser un número positivo. Requerido.")}
-                                        popperConfig={{
-                                            modifiers: [
-                                                { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
-                                            ]
-                                        }}
-                                    >
-                                        <Form.Label style={{ fontWeight: 'bold' }}>CONTENIDO (*)</Form.Label>
-                                    </OverlayTrigger>
-                                    <Form.Control
-                                        type="number"
-                                        placeholder="Ingresa el contenido"
-                                        {...register('contenido', {
-                                            required: "El contenido es obligatorio en formato numérico.",
-                                            min: { value: 0, message: "Debe ser un número positivo." }
-                                        })}
-                                        className={`form-input ${errors.contenido ? 'is-invalid' : ''}`}
-                                    />
-                                    {errors.contenido && <span className="text-danger">{errors.contenido.message}</span>}
-                                </Form.Group>
+                            <Form.Group controlId="contenido">
+                                <OverlayTrigger
+                                    placement="auto"
+                                    overlay={renderTooltip("Introduce el contenido en unidades, debe ser un número positivo entre 1 y 1000. Requerido.")}
+                                    popperConfig={{
+                                        modifiers: [
+                                            { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
+                                        ]
+                                    }}
+                                >
+                                    <Form.Label style={{ fontWeight: 'bold' }}>CONTENIDO (*)</Form.Label>
+                                </OverlayTrigger>
+                                <Form.Control
+                                    type="number"
+                                    placeholder="Ingresa el contenido"
+                                    {...register('contenido', {
+                                        required: "El contenido es obligatorio en formato numérico.",
+                                        min: { value: 1, message: "Debe ser un número mayor o igual a 1." },
+                                        max: { value: 1000, message: "Debe ser un número menor o igual a 1000." },
+                                        validate: {
+                                            isPositive: (value) =>
+                                                /^\d+$/.test(value) || "El contenido debe ser un número válido y positivo."
+                                        }
+                                    })}
+                                    className={`form-input ${errors.contenido ? 'is-invalid' : ''}`}
+                                />
+                                {errors.contenido && <span className="text-danger">{errors.contenido.message}</span>}
+                            </Form.Group>
+
                             </Col>
                         </Row>
                         <Row>
@@ -249,7 +265,12 @@ const CrearProducto = () => {
                                         placeholder="Ingresa el precio"
                                         {...register('precio', {
                                             required: "El precio es obligatorio en formato numérico.",
-                                            min: { value: 0, message: "Debe ser un número positivo." }
+                                            min: { value: 10, message: "El precio debe ser mínimo 10." },
+                                            max: { value: 1000000, message: "El precio debe ser máximo 1.000.000." },
+                                            validate: {
+                                                isPositive: (value) =>
+                                                    /^\d+$/.test(value) || "El contenido debe ser un número válido y positivo."
+                                            },
                                         })}
                                         className={`form-input ${errors.precio ? 'is-invalid' : ''}`}
                                     />
@@ -321,18 +342,18 @@ const CrearProducto = () => {
                                 <Form.Group controlId="imagen">
                                     <OverlayTrigger
                                         placement="auto"
-                                        overlay={renderTooltip("Sube una imagen del producto en formato PNG.")}
+                                        overlay={renderTooltip("Sube una imagen del producto en formato PNG o JPG.")}
                                         popperConfig={{
                                             modifiers: [
                                                 { name: 'flip', options: { fallbackPlacements: ['top', 'bottom', 'left', 'right'] } }
                                             ]
                                         }}
                                     >
-                                        <Form.Label>IMAGEN (solo PNG)</Form.Label>
+                                        <Form.Label>IMAGEN (PNG O JPG)</Form.Label>
                                     </OverlayTrigger>
                                     <Form.Control
                                         type="file"
-                                        accept=".png"
+                                        accept=".png, .jpg"
                                         {...register('imagen')}
                                         onChange={handleImageChange}
                                         className={`form-input ${errors.imagen ? 'is-invalid' : ''}`}

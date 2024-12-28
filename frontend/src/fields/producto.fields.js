@@ -1,3 +1,5 @@
+import { max } from "date-fns";
+
 const productoFields = [
   {
     name: "nombre",
@@ -42,17 +44,18 @@ const productoFields = [
     placeholder: "Ingresa la marca del producto",
     tooltip: "Especifica la marca del producto. Debe tener entre 2 y 50 caracteres.",
     validation: {
-      required: "La marca es obligatoria",
-      minLength: {
-        value: 2,
-        message: "Debe tener al menos 2 caracteres"
-      },
       maxLength: {
         value: 50,
-        message: "No puede tener más de 50 caracteres"
+        message: "No puede tener más de 50 caracteres",
+      },
+    },
+    onBlur: (e, setValue) => {
+      if (e.target.value.trim() === "") {
+        setValue("marca", null);
       }
-    }
+    },
   },
+
   {
     name: "contenido",
     label: "CONTENIDO",
@@ -95,8 +98,12 @@ const productoFields = [
     validation: {
       required: "El precio es obligatorio",
       min: {
-        value: 0.01,
-        message: "El precio debe ser mayor que 0"
+        value: 10,
+        message: "El precio mínimo es 10."
+      },
+      max : {
+        value: 1000000,
+        message: "El precio máximo es 1.000.000"
       }
     }
   },
