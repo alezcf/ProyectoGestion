@@ -26,6 +26,7 @@ export async function loginService(user) {
     if(userFound.isActive === false) return [null, "El usuario se encuentra inactivo."];
 
     const payload = {
+      id: userFound.id,
       fullname: userFound.nombreCompleto,
       email: userFound.email,
       rut: userFound.rut,
