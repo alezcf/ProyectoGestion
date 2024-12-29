@@ -19,7 +19,7 @@ export async function createPedido(req, res) {
     try {
         const { body } = req;
         const { error } = pedidoBodyValidation.validate(body);
-
+        console.log(error);
         if (error) return handleErrorClient(res, 400, "Error de validación", error.message);
 
         const [pedido, errorPedido] = await PedidoService.createPedido(body);

@@ -6,6 +6,7 @@ import Proveedor from "../entity/proveedor.entity.js";
 import Inventario from "../entity/inventario.entity.js";
 import Producto from "../entity/producto.entity.js";
 import ProductoInventario from "../entity/producto_inventario.entity.js";
+import InventarioService from "./inventario.service.js";
 import { AppDataSource } from "../config/configDb.js";
 
 /**
@@ -55,12 +56,58 @@ async function createPedido(body) {
             await queryRunner.rollbackTransaction();
             return [null, "El inventario ingresado no existe."];
         }
+        console.log("El inventario id es: ", inventario.id);
+        const [productosInventario, error] = await InventarioService
+            .getInventario(inventario);
 
+            console.log("Informacion del productoInventario: ", productosInventario);
+        if (error) {
+            await queryRunner.rollbackTransaction();
+            return [null, error];
+        }
+
+
+    // Asegúrate de que productoInventarios es un arreglo
+    if (!Array.isArray(productosInventario.productoInventarios)) {
+        await queryRunner.rollbackTransaction();
+        return [null, "Error al obtener productos del inventario"];
+    }
+
+    // Calcular el stock actual
+    const stockActual = productosInventario.productoInventarios.reduce(
+        (total, productoInventario) => {
+        const cantidad = parseFloat(productoInventario.cantidad);
+        if (isNaN(cantidad)) {
+            console.warn("Cantidad inválida en productoInventario:", productoInventario);
+            return total; // Ignorar cantidades inválidas
+        }
+        return total + cantidad;
+    }, 0);
+
+    const nuevaCantidad = body.productos.reduce((total, producto) => {
+        const cantidad = parseFloat(producto.cantidad);
+        if (isNaN(cantidad)) {
+            console.warn("Cantidad inválida en productos del pedido:", producto);
+            return total; // Ignorar cantidades inválidas
+        }
+        return total + cantidad;
+    }, 0);
+
+    const stockTotalPropuesto = stockActual + nuevaCantidad;
+
+    // Validar si el stock total propuesto supera el máximo permitido
+    if (stockTotalPropuesto > inventario.maximo_stock) {
+        await queryRunner.rollbackTransaction();
+        return [
+            null,
+            `El stock total propuesto (${stockTotalPropuesto}) `
+            + `supera el máximo permitido por el inventario (${Number(inventario.maximo_stock)}).`
+        ];
+    }
         // Verificar si los productos existen
         const productoIds = body.productos.map(p => p.productoId);
         const productosExistentes = await productoRepository.findBy({ id: In(productoIds) });
-        console.log("Productos ingresados:", productoIds);
-        console.log("Productos existentes:", productosExistentes);
+
         if (productosExistentes.length !== productoIds.length) {
 
             await queryRunner.rollbackTransaction();
@@ -100,8 +147,6 @@ async function createPedido(body) {
 
             await productoInventarioRepository.save(productoInventario);
 
-            // Actualizar stock_actual en Inventario
-            inventario.stock_actual += Number(cantidad);
             await inventarioRepository.save(inventario);
 
             // Asociar el producto al pedido
@@ -127,9 +172,6 @@ async function createPedido(body) {
         await queryRunner.release();
     }
 }
-
-
-
 
 /**
  * Obtiene un pedido por su ID de la base de datos

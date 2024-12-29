@@ -17,9 +17,9 @@ const CrearPedido = () => {
     const [proveedoresDisponibles, setProveedoresDisponibles] = useState([]);
     const [inventariosDisponibles, setInventariosDisponibles] = useState([]);
     const [page, setPage] = useState(0);
-    const [fechaPedido, setFechaPedido] = useState(null);
+    const [fechaPedido, setFechaPedido] = useState(new Date());
     const [showConfirmation, setShowConfirmation] = useState(false);
-    const { register, handleSubmit, control, formState: { errors }, reset } = useForm({
+    const { register, handleSubmit, control, trigger, formState: { errors }, reset } = useForm({
         defaultValues: {
             productos: [{ productoId: '', cantidad: '', precio: '' }]
         }
@@ -76,8 +76,20 @@ const CrearPedido = () => {
             setShowConfirmation(false);
         } catch (err) {
             console.log('Error al crear el pedido:', err);
-            alert(err.details);
+            alert(err.details || 'Error al crear el pedido.');
             setShowConfirmation(false);
+        }
+    };
+
+    const handleNext = async () => {
+        // Validar campos específicos
+        const isValid = await trigger(['proveedor_id', 'inventario_asignado_id', 'estado']);
+        if (!fechaPedido) {
+            alert("La fecha del pedido es obligatoria.");
+            return;
+        }
+        if (isValid) {
+            setPage(page + 1); // Avanzar si todos los campos son válidos
         }
     };
 
@@ -143,23 +155,24 @@ const CrearPedido = () => {
 
                     <Row>
                         <Col md={6}>
-                            <Form.Group controlId="fecha_pedido">
-                                <OverlayTrigger
-                                    placement="auto"
-                                    flip
-                                    overlay={renderTooltip("Selecciona la fecha para este pedido. Campo obligatorio.")}
-                                >
-                                    <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>FECHA DEL PEDIDO (*)</Form.Label>
-                                </OverlayTrigger>
-                                <DatePicker
-                                    selected={fechaPedido}
-                                    onChange={(date) => setFechaPedido(date)}
-                                    dateFormat="dd/MM/yyyy"
-                                    placeholderText="Selecciona la fecha"
-                                    className={`form-input ${errors.fecha_pedido ? 'is-invalid' : ''}`}
-                                />
-                                {errors.fecha_pedido && <span className="text-danger">{errors.fecha_pedido.message}</span>}
-                            </Form.Group>
+                        <Form.Group controlId="fecha_pedido">
+                            <OverlayTrigger
+                                placement="auto"
+                                flip
+                                overlay={renderTooltip("Selecciona la fecha para este pedido. Campo obligatorio.")}
+                            >
+                                <Form.Label className="form-label" style={{ fontWeight: 'bold' }}>FECHA DEL PEDIDO (*)</Form.Label>
+                            </OverlayTrigger>
+                            <DatePicker
+                                selected={fechaPedido}
+                                onChange={(date) => setFechaPedido(date)}
+                                dateFormat="dd/MM/yyyy"
+                                placeholderText="Selecciona la fecha"
+                                className={`form-input ${!fechaPedido ? 'is-invalid' : ''}`}
+                            />
+                            {!fechaPedido && <span className="text-danger">La fecha del pedido es obligatoria</span>}
+                        </Form.Group>
+
                         </Col>
 
                         <Col md={6}>
@@ -257,7 +270,8 @@ const CrearPedido = () => {
                                         placeholder="Ingresa el precio"
                                         {...register(`productos[${index}].precio`, {
                                             required: 'El precio es obligatorio',
-                                            min: { value: 0.01, message: 'El precio debe ser positivo' },
+                                            min: { value: 1, message: 'El precio debe ser positivo' },
+                                            max: { value: 1000000, message: 'El precio no debe exceder los $1.000.000' },
                                         })}
                                         className={`form-input ${errors.productos?.[index]?.precio ? 'is-invalid' : ''}`}
                                     />
@@ -306,7 +320,7 @@ const CrearPedido = () => {
                                 <button
                                     className="button-next"
                                     type="button"
-                                    onClick={() => setPage(page + 1)}
+                                    onClick={handleNext}
                                 >
                                     SIGUIENTE <FontAwesomeIcon icon={faArrowRight} />
                                 </button>
