@@ -27,6 +27,17 @@ async function createPedido(body) {
         const pedidoProductoRepository = queryRunner.manager.getRepository(PedidoProducto);
         const productoInventarioRepository = queryRunner.manager.getRepository(ProductoInventario);
 
+        const productosId = body.productos.map(p => p.productoId);
+        const productoIdCount = productosId.reduce((acc, id) => {
+            acc[id] = (acc[id] || 0) + 1;
+            return acc;
+        }, {});
+        const duplicados = Object.keys(productoIdCount).filter(id => productoIdCount[id] > 1);
+
+        if (duplicados.length > 0) {
+            return [null, "Hay dos o más productos que están duplicados en el pedido."];
+        }
+
         // Verificar si el proveedor existe
         const proveedor = await proveedorRepository.findOne({
             where: { id: body.proveedor_id },
@@ -48,7 +59,8 @@ async function createPedido(body) {
         // Verificar si los productos existen
         const productoIds = body.productos.map(p => p.productoId);
         const productosExistentes = await productoRepository.findBy({ id: In(productoIds) });
-
+        console.log("Productos ingresados:", productoIds);
+        console.log("Productos existentes:", productosExistentes);
         if (productosExistentes.length !== productoIds.length) {
 
             await queryRunner.rollbackTransaction();
@@ -89,10 +101,8 @@ async function createPedido(body) {
             await productoInventarioRepository.save(productoInventario);
 
             // Actualizar stock_actual en Inventario
-            console.log("Inventario antes de actualizar:", inventario);
             inventario.stock_actual += Number(cantidad);
             await inventarioRepository.save(inventario);
-            console.log("Inventario después de actualizar:", inventario);
 
             // Asociar el producto al pedido
             const pedidoProducto = pedidoProductoRepository.create({

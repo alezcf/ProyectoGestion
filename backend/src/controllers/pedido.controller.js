@@ -27,15 +27,15 @@ export async function createPedido(req, res) {
         const posiblesErrores = [
             "Los productos ingresados no existen.",
             "El proveedor ingresado no existe.",
-            "El inventario ingresado no existe."
+            "El inventario ingresado no existe.",
         ];
 
         if (posiblesErrores.includes(errorPedido)) {
-            return handleErrorClient(res, 404, errorPedido);
+            return handleErrorClient(res, 404, "Error de validación", errorPedido);
         }
 
 
-        if (errorPedido) return handleErrorClient(res, 400, errorPedido);
+        if (errorPedido) return handleErrorClient(res, 400, "Error de validación", errorPedido);
 
         handleSuccess(res, 201, "Pedido creado correctamente", pedido);
     } catch (error) {
