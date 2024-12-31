@@ -94,15 +94,10 @@ export const updateUsuario = async (rut, usuarioActualizado) => {
         };
 
         const response = await axios.put(`api/user/?rut=${rut}`, usuarioActualizado, { headers });
-        const { status, data } = response;
 
-        if (status === 200) { // 200 significa que la actualización fue exitosa
-            return data; // Devolver los datos del usuario actualizado
-        }
+        return response;
     } catch (error) {
-
-        console.log(error);
-        handleError(error.response.data.message); // Manejar cualquier error que ocurra
+        handleError(error); // Manejar cualquier error que ocurra
     }
 };
 

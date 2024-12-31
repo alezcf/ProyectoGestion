@@ -166,8 +166,7 @@ const InventarioProducto = ({ onProductoChange }) => {
                 onProductoChange(); // Notifica al componente padre
             }
         } catch (error) {
-            alert('Error al actualizar la cantidad');
-            console.error('Error al actualizar la cantidad:', error);
+            alert('Error al actualizar la cantidad: ' + error.data.message);
         } finally {
             setLoadingAction(false);
         }

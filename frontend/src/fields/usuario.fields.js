@@ -69,9 +69,9 @@ const usuarioFields = [
             { value: "Administrador", label: "Administrador" },
             { value: "Empleado", label: "Empleado" }
         ],
-        tooltip: "Selecciona el rol del usuario: Administrador o Empleado.",
+        tooltip: "Selecciona el cargo del usuario: Administrador o Empleado.",
         validation: {
-            required: "El rol es obligatorio"
+            required: "El cargo es obligatorio"
         }
     }
 ];

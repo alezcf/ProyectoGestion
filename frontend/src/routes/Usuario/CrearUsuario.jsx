@@ -7,7 +7,7 @@ import usuarioService from '../../services/usuario.service';
 import '../../css/Form.css';
 
 const CrearUsuario = () => {
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+    const { register, handleSubmit, formState: { errors, isValid }, reset } = useForm({ mode: 'onChange' });
     const [showConfirmation, setShowConfirmation] = useState(false);
 
     const confirmSubmit = async (data) => {
@@ -132,11 +132,11 @@ const CrearUsuario = () => {
                                         ]
                                     }}
                                 >
-                                    <Form.Label>CARGO LABORAL</Form.Label>
+                                    <Form.Label style={{ fontWeight: 'bold' }}>CARGO LABORAL (*)</Form.Label>
                                 </OverlayTrigger>
                                 <Form.Control
                                     as="select"
-                                    {...register('rol', { required: 'El rol es obligatorio' })}
+                                    {...register('rol', { required: 'El cargo es obligatorio.' })}
                                     className={errors.rol ? 'is-invalid' : ''}
                                 >
                                     <option value="">Selecciona el rol</option>
@@ -149,7 +149,12 @@ const CrearUsuario = () => {
                     </Row>
 
                     <div className="button-container">
-                        <button className="button-submit" type="button" onClick={() => setShowConfirmation(true)}>
+                        <button
+                            className="button-submit"
+                            type="button"
+                            onClick={() => setShowConfirmation(true)}
+                            disabled={!isValid}
+                        >
                             <FontAwesomeIcon icon={faPaperPlane} /> CREAR
                         </button>
                     </div>

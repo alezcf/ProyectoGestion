@@ -20,6 +20,7 @@ export async function createUser(req, res) {
 
     // Validar los datos del cuerpo de la solicitud
     const { error } = userBodyValidation.validate(body);
+    console.log("Error en el backend", error);
     if (error) return handleErrorClient(res, 400, "Error de validación", error.message);
 
     // Generar un token único para la verificación (se almacena en el campo 'password')
@@ -30,7 +31,7 @@ export async function createUser(req, res) {
       ...body,
       password: token,
     });
-
+    console.log("Error en el userErrror", userError);
     if (userError) return handleErrorClient(res, 400, "Error de validación", userError);
 
     // Enviar el correo de confirmación con el enlace para establecer la contraseña
@@ -119,7 +120,7 @@ export async function updateUser(req, res) {
 
     const [user, userError] = await UserService.updateUser({ rut, id, email }, body);
 
-    if (userError) return handleErrorClient(res, 400, userError);
+    if (userError) return handleErrorClient(res, 400, "Error de validación", userError);
 
     handleSuccess(res, 200, "Usuario modificado correctamente", user);
   } catch (error) {
