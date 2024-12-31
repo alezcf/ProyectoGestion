@@ -77,10 +77,8 @@ export const createUsuario = async (nuevoUsuario) => {
         };
 
         const response = await axios.post('api/user/', nuevoUsuario, { headers });
-        const { status, data } = response;
-        if (status === 201) { // Código 201 significa que el recurso fue creado exitosamente
-            return data.data; // Devolver los datos del nuevo usuario creado
-        }
+
+        return response;
     } catch (error) {
         handleError(error);
     }

@@ -31,7 +31,7 @@ export async function createUser(req, res) {
       password: token,
     });
 
-    if (userError) return handleErrorClient(res, 400, userError);
+    if (userError) return handleErrorClient(res, 400, "Error de validación", userError);
 
     // Enviar el correo de confirmación con el enlace para establecer la contraseña
     const resEmail = await sendEmailDefault({

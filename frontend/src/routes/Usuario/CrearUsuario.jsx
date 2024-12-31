@@ -17,7 +17,8 @@ const CrearUsuario = () => {
             reset();
             setShowConfirmation(false);
         } catch (err) {
-            alert(err.response.data.message);
+            console.log(err);
+            alert(err.response.data.details);
             setShowConfirmation(false);
         }
     };

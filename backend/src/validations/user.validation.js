@@ -51,12 +51,18 @@ export const userQueryValidation = Joi.object({
       "number.positive": "El id debe ser un número positivo.",
       "any.required": "El id es obligatorio.",
     }),
-    nombreCompleto: Joi.string().min(3).max(50).required().messages({
+    nombreCompleto: Joi.string()
+    .min(3)
+    .max(50)
+    .pattern(/^(?!\d+$).*/, "no solo números")
+    .required()
+    .messages({
       "string.empty": "El nombre completo no puede estar vacío.",
       "any.required": "El nombre completo es obligatorio.",
       "string.base": "El nombre completo debe ser de tipo string.",
       "string.min": "El nombre completo debe tener como mínimo 3 caracteres.",
       "string.max": "El nombre completo debe tener como máximo 50 caracteres.",
+      "string.pattern.name": "El nombre no puede ser solo números.",
     }),
     email: Joi.string()
       .min(10)
