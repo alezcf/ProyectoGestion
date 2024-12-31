@@ -12,11 +12,14 @@ async function createProveedor(body) {
     try {
         const proveedorRepository = AppDataSource.getRepository(Proveedor);
 
+        console.log(body);
         const existingProveedor = await proveedorRepository.findOne({
         where: [{ rut: body.rut }, { email: body.email }],
         });
 
-        if (existingProveedor) {
+        console.log(existingProveedor);
+
+        if (existingProveedor && (existingProveedor.rut !== null || existingProveedor.email !== null)) {
         return [null, "Ya existe un proveedor con el mismo rut o email"];
         }
 
@@ -25,10 +28,10 @@ async function createProveedor(body) {
         }
         const newProveedor = proveedorRepository.create({
             nombre: body.nombre,
-            rut: body.rut ? format(body.rut) : "", // Aplica formato al RUT
+            rut: body.rut ? format(body.rut) : null, // Aplica formato al RUT
             direccion: body.direccion,
             telefono: body.telefono,
-            email: body.email,
+            email: body.email || null,
         });
 
         const savedProveedor = await proveedorRepository.save(newProveedor);

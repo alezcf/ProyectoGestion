@@ -17,7 +17,7 @@ const ProveedorSchema = new EntitySchema({
         rut: {
         type: "varchar",
         length: 12,
-        nullable: false,
+        nullable: true,
         unique: true,
         },
         direccion: {
@@ -33,7 +33,7 @@ const ProveedorSchema = new EntitySchema({
         email: {
         type: "varchar",
         length: 255,
-        nullable: false,
+        nullable: true,
         unique: true,
         },
     },
