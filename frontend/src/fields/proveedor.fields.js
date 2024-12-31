@@ -14,6 +14,10 @@ const proveedorFields = [
       maxLength: {
         value: 50,
         message: "No puede tener más de 50 caracteres"
+      },
+      validate: {
+        notOnlyNumbers: (value) =>
+          !/^\d+$/.test(value) || "El nombre no pueden ser sólo números."
       }
     }
   },
@@ -65,6 +69,10 @@ const proveedorFields = [
       maxLength: {
         value: 50,
         message: "No puede tener más de 50 caracteres"
+      },
+      validate: {
+        notOnlyNumbers: (value) =>
+          !/^\d+$/.test(value) || "La dirección no puede ser sólo números."
       }
     }
   },

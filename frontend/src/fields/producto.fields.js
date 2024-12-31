@@ -1,12 +1,10 @@
-import { max } from "date-fns";
-
 const productoFields = [
   {
     name: "nombre",
     label: "NOMBRE (*)",
     type: "text",
     placeholder: "Ingresa el nombre del producto",
-    tooltip: "Introduce el nombre del producto. Debe tener entre 3 y 50 caracteres.",
+    tooltip: "Introduce el nombre del producto. Debe tener entre 3 y 50 caracteres y no puede contener solo números.",
     validation: {
       required: "El nombre es obligatorio",
       minLength: {
@@ -16,6 +14,10 @@ const productoFields = [
       maxLength: {
         value: 50,
         message: "No puede tener más de 50 caracteres"
+      },
+      validate: {
+        notOnlyNumbers: (value) =>
+          !/^\d+$/.test(value) || "El nombre no puede contener solo números"
       }
     }
   },
@@ -34,6 +36,10 @@ const productoFields = [
       maxLength: {
         value: 200,
         message: "No puede tener más de 200 caracteres"
+      },
+      validate: {
+        notOnlyNumbers: (value) =>
+          !/^\d+$/.test(value) || "La descripción no puede contener solo números."
       }
     }
   },
@@ -48,6 +54,10 @@ const productoFields = [
         value: 50,
         message: "No puede tener más de 50 caracteres",
       },
+      validate: {
+        notOnlyNumbers: (value) =>
+          !/^\d+$/.test(value) || "La marca no pueden ser solo números."
+      }
     },
     onBlur: (e, setValue) => {
       if (e.target.value.trim() === "") {
