@@ -44,7 +44,7 @@ async function monitorInventariosYProductos() {
 
             if (stockActual < inventario.maximo_stock * INVENTARIO_UMBRAL) {
                 await generarOActualizarReporte(
-                    `Inventario bajo en ${inventario.nombre}`,
+                    `Stock bajo en Inventario ${inventario.nombre}`,
                     `El inventario ${inventario.nombre} está bajo (actual: ${stockActual} de ${inventario.maximo_stock})`,
                     "inventario",
                     { inventarioId: inventario.id, stockActual, maximoStock: inventario.maximo_stock }
