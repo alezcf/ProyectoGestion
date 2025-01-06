@@ -72,6 +72,21 @@ export const updateProveedor = async (id, proveedorData) => {
     }
 };
 
+export const deleteProveedor = async (proveedorId) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await axios.delete(`api/proveedor/?id=${proveedorId}`, { headers });
+
+        return response;
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Manejo de errores
 const handleError = (error) => {
     console.error('Error en la llamada a la API:', error);
@@ -82,5 +97,6 @@ export default {
     getAllProveedores,
     getProveedor,
     createProveedor,
+    deleteProveedor,
     updateProveedor,
 };

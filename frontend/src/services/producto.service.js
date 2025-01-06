@@ -97,6 +97,23 @@ export const updateProductoImagen = async (productoId, imagenData) => {
     }
 };
 
+export const deleteProducto = async (productoId) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await axios.delete(`api/producto/?id=${productoId}`, { headers });
+        const { status, data } = response;
+        if (status === 200) {
+            return data.message;
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Manejo de errores
 const handleError = (error) => {
     throw error;
@@ -108,4 +125,5 @@ export default {
     createProducto,
     updateProducto,
     updateProductoImagen,
+    deleteProducto,
 };

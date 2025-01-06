@@ -72,6 +72,23 @@ export const updateInventario = async (inventarioId, inventarioData) => {
     }
 };
 
+export const deleteInventario = async (inventarioId) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await axios.delete(`api/inventario/?id=${inventarioId}`, { headers });
+        const { status, data } = response;
+        if (status === 200) {
+            return data.message; // Asume que el backend devuelve un mensaje
+        }
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Manejo de errores
 const handleError = (error) => {
     console.error('Error en la llamada a la API:', error);
@@ -82,9 +99,12 @@ const handleError = (error) => {
     throw error.response.data;  // Relanza el error para manejarlo en el frontend
 };
 
+
+
 export default {
     getAllInventarios,
     getInventarioById,
     createInventario,
+    deleteInventario,
     updateInventario,
 };

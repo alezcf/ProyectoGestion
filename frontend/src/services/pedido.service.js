@@ -77,6 +77,21 @@ export const updatePedido = async (pedidoId, pedidoData) => {
     }
 };
 
+export const deletePedido = async (pedidoId) => {
+    try {
+        const token = cookies.get('jwt-auth');
+        const headers = {
+            Authorization: `Bearer ${token}`,
+        };
+
+        const response = await axios.delete(`api/pedido/?id=${pedidoId}`, { headers });
+
+        return response;
+    } catch (error) {
+        handleError(error);
+    }
+};
+
 // Manejo de errores
 const handleError = (error) => {
     console.error('Error al realizar la solicitud:', error);
@@ -91,5 +106,6 @@ export default {
     getAllPedidos,
     getPedido,
     createPedido,
+    deletePedido,
     updatePedido,
 };
