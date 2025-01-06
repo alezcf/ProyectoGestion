@@ -46,6 +46,7 @@ const ReporteSchema = new EntitySchema({
             joinColumn: { name: "inventario_id" },
             nullable: true,
             eager: true,
+            onDelete: "CASCADE",
         },
         producto: {
             target: "Producto",
@@ -53,6 +54,7 @@ const ReporteSchema = new EntitySchema({
             joinColumn: { name: "producto_id" },
             nullable: true,
             eager: true,
+            onDelete: "CASCADE",
         },
     },
 });
