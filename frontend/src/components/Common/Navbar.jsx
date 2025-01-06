@@ -30,8 +30,8 @@ function Navbar() {
           <Nav className="ml-auto nav-links">
             <Nav.Link href="/" className="nav-link">Inicio</Nav.Link>
             <Nav.Link href="/usuarios" className="nav-link">Usuarios</Nav.Link>
-            <Nav.Link href="/inventario" className="nav-link">Inventario</Nav.Link>
-            <Nav.Link href="/producto" className="nav-link">Productos</Nav.Link>
+            <Nav.Link href="/inventarios" className="nav-link">Inventario</Nav.Link>
+            <Nav.Link href="/productos" className="nav-link">Productos</Nav.Link>
             <Nav.Link href="/pedidos" className="nav-link">Pedidos</Nav.Link>
             <Nav.Link href="/proveedores" className="nav-link">Proveedores</Nav.Link>
             <Nav.Link href="/perfil" className="nav-link">Perfil</Nav.Link>
