@@ -279,6 +279,8 @@ async function deleteProducto(query) {
 
         if (!productoFound) return [null, "Producto no encontrado"];
 
+
+        const productoDeleted = await productoRepository.remove(productoFound);
         const imagenRuta = productoFound.imagen_ruta;
 
         if (imagenRuta) {
@@ -291,9 +293,6 @@ async function deleteProducto(query) {
                 }
             });
         }
-
-        const productoDeleted = await productoRepository.remove(productoFound);
-
         return [productoDeleted, null];
     } catch (error) {
         console.error("Error al eliminar un producto:", error);

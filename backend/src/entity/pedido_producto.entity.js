@@ -27,6 +27,7 @@ const PedidoProductoSchema = new EntitySchema({
             joinColumn: { name: "pedido_id" },
             nullable: false,
             eager: true,
+            onDelete: "CASCADE",
         },
         producto: {
             target: Producto,
@@ -34,6 +35,7 @@ const PedidoProductoSchema = new EntitySchema({
             joinColumn: { name: "producto_id" },
             nullable: false,
             eager: true,
+            onDelete: "CASCADE",
         },
     },
 });

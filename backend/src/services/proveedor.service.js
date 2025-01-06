@@ -146,11 +146,11 @@ async function updateProveedor(query, body) {
  */
 async function deleteProveedor(query) {
     try {
-        const { id, rut, email } = query;
+        const { id } = query;
         const proveedorRepository = AppDataSource.getRepository(Proveedor);
 
         const proveedorFound = await proveedorRepository.findOne({
-        where: [{ id: id }, { rut: rut }, { email: email }],
+        where: [{ id: id } ],
         });
 
         if (!proveedorFound) return [null, "Proveedor no encontrado"];

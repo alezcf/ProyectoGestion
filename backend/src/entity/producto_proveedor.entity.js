@@ -15,12 +15,14 @@ const ProductoProveedorSchema = new EntitySchema({
             target: "Producto",
             type: "many-to-one",
             joinColumn: { name: "producto_id", referencedColumnName: "id" },
+            onDelete: "CASCADE",
         },
         proveedor: {
             target: "Proveedor",
             type: "many-to-one",
             joinColumn: { name: "proveedor_id", referencedColumnName: "id" },
             inverseSide: "productoProveedores",
+            onDelete: "CASCADE",
         }
     },
 

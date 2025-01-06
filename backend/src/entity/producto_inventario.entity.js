@@ -20,12 +20,14 @@ const ProductoInventarioSchema = new EntitySchema({
             type: "many-to-one",
             joinColumn: { name: "inventario_id", referencedColumnName: "id" },
             inverseSide: "productoInventarios",
+            onDelete: "CASCADE",
         },
         producto: {
             target: "Producto",
             type: "many-to-one",
             joinColumn: { name: "producto_id", referencedColumnName: "id" },
             inverseSide: "productoInventarios",
+            onDelete: "CASCADE",
         }
     }
 });
