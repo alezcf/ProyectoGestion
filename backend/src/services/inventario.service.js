@@ -167,7 +167,7 @@ async function deleteInventario(query) {
 
         // Validar si hay productos asociados
         if (inventarioFound.productoInventarios.length > 0) {
-            return [null, "No se puede eliminar el inventario porque tiene productos asociados."];
+            return [null, "Debes eliminar todos los productos del inventario antes de eliminarlo."];
         }
 
         // Eliminar el inventario si no tiene productos asociados

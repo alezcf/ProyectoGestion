@@ -169,10 +169,10 @@ export async function deletePedido(req, res) {
     try {
         const { id } = req.query;
 
-        const error = pedidoQueryValidation.validate({ id });
+        const { error: queryError } = pedidoQueryValidation.validate({ id });
 
-        if (error) {
-            return handleErrorClient(res, 400, "Error de validación en la ID.", error.message);
+        if (queryError) {
+            return handleErrorClient(res, 400, "Error de validación en la ID.", error);
         }
 
         const [pedidoDeleted, errorPedidoDeleted] = await PedidoService.deletePedido({ id });
