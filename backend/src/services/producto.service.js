@@ -93,7 +93,7 @@ async function getProductos() {
         const productoRepository = AppDataSource.getRepository(Producto);
 
         const productos = await productoRepository.find();
-        if (!productos || productos.length === 0) return [null, "No hay productos"];
+        if (!productos || productos.length === 0) return [null, "No hay productos registrados."];
 
         return [productos, null];
     } catch (error) {

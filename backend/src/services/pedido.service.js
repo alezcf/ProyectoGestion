@@ -207,7 +207,7 @@ async function getPedidos() {
             relations: ["pedidoProductos", "pedidoProductos.producto"],
         });
 
-        if (!pedidos || pedidos.length === 0) return [null, "No hay pedidos"];
+        if (!pedidos || pedidos.length === 0) return [null, "No hay pedidos registrados."];
 
         return [pedidos, null];
     } catch (error) {

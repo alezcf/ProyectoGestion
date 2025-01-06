@@ -65,7 +65,7 @@ async function getInventarios() {
             relations: ["productoInventarios", "productoInventarios.producto"],
         });
 
-        if (!inventarios || inventarios.length === 0) return [null, "No hay inventarios"];
+        if (!inventarios || inventarios.length === 0) return [null, "No hay inventarios registrados."];
 
         return [inventarios, null];
     } catch (error) {

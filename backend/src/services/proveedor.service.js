@@ -76,7 +76,7 @@ async function getProveedores() {
 
         const proveedores = await proveedorRepository.find();
 
-        if (!proveedores || proveedores.length === 0) return [null, "No hay proveedores"];
+        if (!proveedores || proveedores.length === 0) return [null, "No hay proveedores registrados."];
 
         return [proveedores, null];
     } catch (error) {
