@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import proveedorService from '../../services/proveedor.service';
 import ProductoProveedor from '../../services/productoProveedor.service';
 import { Container, Row, Col, Spinner, Alert, Button, Card, Image, Collapse } from 'react-bootstrap';
@@ -9,6 +9,7 @@ import ProveedorDetalles from '../../components/Proveedor/ProveedorDetalles';
 import ButtonsActions from '../../components/Common/ButtonsActions';
 import DefaultEditModal from '../../components/Common/DefaultEditModal';
 import ProveedorProducto from '../../components/Proveedor/ProveedorProducto';
+import ConfirmDeleteModal from '../../components/Common/ConfirmDeleteModal';
 import proveedorFields from '../../fields/proveedor.fields';
 import exportService from '../../services/export.service';
 import '../../css/Form.css';
@@ -24,7 +25,9 @@ const Proveedor = () => {
     const [error] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [openDetalles, setOpenDetalles] = useState(true);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const defaultProfileImage = '../images/proveedor.png';
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProveedor = async () => {
@@ -101,6 +104,22 @@ const Proveedor = () => {
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            const response = await proveedorService.deleteProveedor(proveedorId);
+            console.log('Proveedor eliminado:', response);
+            alert('Proveedor eliminado con éxito.');
+            setShowDeleteConfirmation(false);
+            navigate('/proveedores'); // Redirige a la lista de proveedores tras la eliminación
+        } catch (error) {
+            console.error('Error al eliminar el proveedor:', error);
+            alert('Error al eliminar el proveedor.');
+        }
+    };
+
+    const handleShowDeleteConfirmation = () => setShowDeleteConfirmation(true);
+    const handleCloseDeleteConfirmation = () => setShowDeleteConfirmation(false);
+
     const handleCloseModal = () => {
         setShowEditModal(false);
     };
@@ -145,6 +164,7 @@ const Proveedor = () => {
                         itemName={proveedor.nombre}
                         onEdit={handleEdit}
                         onExport={handleExport}
+                        onDelete={handleShowDeleteConfirmation}
                     />
                 </Col>
                 <Col md={8}>
@@ -183,6 +203,14 @@ const Proveedor = () => {
                     />
                 </Col>
             </Row>
+
+            <ConfirmDeleteModal
+                show={showDeleteConfirmation}
+                onClose={handleCloseDeleteConfirmation}
+                onConfirm={handleDelete}
+                title="Confirmar Eliminación"
+                message="¿Estás seguro de que deseas eliminar este proveedor? Esta acción no se puede deshacer."
+            />
 
             {/* Modal para editar proveedor */}
             <DefaultEditModal

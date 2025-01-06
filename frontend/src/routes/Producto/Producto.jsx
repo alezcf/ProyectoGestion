@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate} from 'react-router-dom';
 import productoService from '../../services/producto.service';
 import exportService from '../../services/export.service'; // Importar el servicio de exportación
-import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card } from 'react-bootstrap';
+import { Container,  Row, Col, Spinner, Alert, Button, Collapse, Card } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import ProductoImagen from '../../components/Common/LoadImage';
@@ -15,6 +15,7 @@ import ProductoInventario from '../../components/Producto/ProductoInventario';
 import DefaultEditModal from '../../components/Common/DefaultEditModal';
 import productoProveedorService from '../../services/productoProveedor.service';
 import productoInventarioService from '../../services/productoInventario.service';
+import ConfirmDeleteModal from "../../components/Common/ConfirmDeleteModal";
 import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 import '../../css/Form.css';
 import '../../css/Producto.css';
@@ -29,6 +30,8 @@ const Producto = () => {
     const [openDetalles, setOpenDetalles] = useState(true);
     const [openProveedores, setOpenProveedores] = useState(false);
     const [openInventarios, setOpenInventarios] = useState(false);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const navigate = useNavigate();
 
     // Mover fetchProducto fuera del useEffect para poder reutilizarlo
     const fetchProducto = async () => {
@@ -104,8 +107,26 @@ const Producto = () => {
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            const response = await productoService.deleteProducto(productoId);
+            console.log('Producto eliminado:', response);
+            alert('Producto eliminado con éxito.');
+            setShowDeleteConfirmation(false); // Cierra el modal
+            navigate('/productos'); // Redirige al listado de productos
+        } catch (err) {
+            console.error('Error eliminando el producto:', err);
+            alert('Error al eliminar el producto. Por favor, inténtalo nuevamente.');
+        }
+    };
 
+    const handleShowDeleteConfirmation = () => {
+        setShowDeleteConfirmation(true);
+    };
 
+    const handleCloseDeleteConfirmation = () => {
+        setShowDeleteConfirmation(false);
+    };
 
     const handleFormSubmit = async (data) => {
         const productoActualizado = { ...producto, ...data };
@@ -193,7 +214,7 @@ const Producto = () => {
                 <Col md={4}>
                     <center><h1><ProductoDetalles producto={producto} /></h1></center>
                     <ProductoImagen productoId={productoId} imagenRuta={producto?.imagen_ruta} />
-                    <h1><ProductoBotones onEdit={handleEdit} onExport={handleExport} /></h1>
+                    <h1><ProductoBotones onEdit={handleEdit} onExport={handleExport} onDelete={handleShowDeleteConfirmation} /></h1>
                 </Col>
                 <Col md={8}>
                     {/* Collapse para la tabla de detalles del producto */}
@@ -278,6 +299,14 @@ const Producto = () => {
                     </Card>
                 </Col>
             </Row>
+
+            <ConfirmDeleteModal
+                show={showDeleteConfirmation}
+                onClose={handleCloseDeleteConfirmation}
+                onConfirm={handleDelete}
+                title="Eliminar producto"
+                message="Al eliminar el producto, se borrará toda la información relacionada. ¿Estás seguro de que deseas eliminar este producto?"
+            />
 
             {/* Modal para editar el producto usando DefaultEditModal */}
             <DefaultEditModal

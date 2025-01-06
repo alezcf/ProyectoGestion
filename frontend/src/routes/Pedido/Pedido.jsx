@@ -4,9 +4,10 @@ import pedidoService from '../../services/pedido.service';
 import exportService from '../../services/export.service';
 import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card, Image } from 'react-bootstrap';
 import PedidoDetalles from '../../components/Pedido/PedidoDetalles';
-import PedidoProducto from '../../components/Pedido/PedidoProducto'; // Importamos el nuevo componente
+import PedidoProducto from '../../components/Pedido/PedidoProducto';
 import ButtonsActions from '../../components/Common/ButtonsActions';
 import DefaultEditModal from '../../components/Common/DefaultEditModal';
+import ConfirmDeleteModal from '../../components/Common/ConfirmDeleteModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import pedidoFields from '../../fields/pedido.fields';
@@ -23,6 +24,7 @@ const Pedido = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [openDetalles, setOpenDetalles] = useState(true);
     const [openProductos, setOpenProductos] = useState(false);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
     const defaultInventario = '../images/inventario.png';
 
     useEffect(() => {
@@ -114,6 +116,20 @@ const Pedido = () => {
         }
     };
 
+    const handleDeletePedido = async () => {
+        try {
+            const response = await pedidoService.deletePedido(pedidoId);
+            console.log('Pedido eliminado:', response);
+            alert('Pedido eliminado con éxito.');
+            setShowDeleteConfirmation(false);
+            navigate('/pedidos'); // Redirige al listado de pedidos
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+
+    const handleShowDeleteConfirmation = () => setShowDeleteConfirmation(true);
+    const handleCloseDeleteConfirmation = () => setShowDeleteConfirmation(false);
 
     const handleCloseModal = () => {
         setShowEditModal(false);
@@ -181,6 +197,7 @@ const Pedido = () => {
                         itemName={`Pedido #${pedido.id}`}
                         onEdit={handleEdit}
                         onExport={handleExport}
+                        onDelete={handleShowDeleteConfirmation}
                     />
                 </Col>
                 <Col md={8}>
@@ -241,6 +258,14 @@ const Pedido = () => {
                     </Card>
                 </Col>
             </Row>
+
+            <ConfirmDeleteModal
+                show={showDeleteConfirmation}
+                onClose={handleCloseDeleteConfirmation}
+                onConfirm={handleDeletePedido}
+                title="Confirmar Eliminación"
+                message="¿Estás seguro de que deseas eliminar este pedido? Esta acción no se puede deshacer."
+            />
 
             <DefaultEditModal
                 show={showEditModal}

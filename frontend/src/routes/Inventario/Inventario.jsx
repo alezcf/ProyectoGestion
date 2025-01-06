@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import inventarioService from '../../services/inventario.service';
 import exportService from '../../services/export.service';
 import { Container, Row, Col, Spinner, Alert, Button, Collapse, Card, Image } from 'react-bootstrap';
@@ -10,6 +10,7 @@ import InventarioBotones from '../../components/Common/ButtonsActions';
 import inventarioFields from '../../fields/inventario.fields';
 import DefaultEditModal from '../../components/Common/DefaultEditModal';
 import InventarioProducto from '../../components/Inventario/InventarioProducto';
+import ConfirmDeleteModal from '../../components/Common/ConfirmDeleteModal';
 import { formatDateToDDMMYYYY } from '../../logic/dateFormat.logic';
 import '../../css/Form.css';
 import '../../css/Inventario.css';
@@ -24,6 +25,8 @@ const Inventario = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [openDetalles, setOpenDetalles] = useState(true);
     const [openProductos, setOpenProductos] = useState(false);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+    const navigate = useNavigate();
     const defaultInventario = '../images/inventario.png';
 
     const fetchInventario = async () => {
@@ -82,6 +85,23 @@ const Inventario = () => {
             alert('Error al exportar los datos.');
         }
     };
+
+    const handleDelete = async () => {
+        try {
+            await inventarioService.deleteInventario(inventarioId);
+            alert('Inventario eliminado con éxito.');
+            setShowDeleteConfirmation(false);
+            navigate('/inventarios'); // Redirigir a la lista de inventarios
+        } catch (error) {
+            console.error('Error eliminando el inventario:', error);
+            alert(error.message);
+        }
+    };
+
+    const handleShowDeleteConfirmation = () => setShowDeleteConfirmation(true);
+
+    const handleCloseDeleteConfirmation = () => setShowDeleteConfirmation(false);
+
     const handleFormSubmit = async (data) => {
         // Extraer y transformar los datos necesarios
         const productos = data.productoInventarios.map((item) => (
@@ -157,7 +177,7 @@ const Inventario = () => {
                             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                         }}
                     />
-                    <InventarioBotones onEdit={handleEdit} onExport={handleExport} />
+                    <InventarioBotones onEdit={handleEdit} onExport={handleExport} onDelete={handleShowDeleteConfirmation} />
                 </Col>
                 <Col md={8}>
                     <Card className={`mb-3 custom-card ${openDetalles ? 'card-active' : ''}`}>
@@ -213,6 +233,14 @@ const Inventario = () => {
                     </Card>
                 </Col>
             </Row>
+
+            <ConfirmDeleteModal
+                show={showDeleteConfirmation}
+                onClose={handleCloseDeleteConfirmation}
+                onConfirm={handleDelete}
+                title="Confirmar Eliminación"
+                message="¿Estás seguro de que deseas eliminar este inventario? Esta acción no se puede deshacer."
+            />
 
             <DefaultEditModal
                 show={showEditModal}
