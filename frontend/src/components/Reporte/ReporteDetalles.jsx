@@ -10,57 +10,59 @@ const ReporteConsolidado = ({ reporte }) => {
     const { titulo, descripcion, estado, tipo, inventario, producto } = reporte;
 
     return (
-        <Table striped bordered hover>
-            <tbody>
-                {/* Detalles del Reporte */}
-                <tr>
-                    <td><strong>Título</strong></td>
-                    <td>{titulo || 'No existe registro'}</td>
-                </tr>
-                <tr>
-                    <td><strong>Descripción</strong></td>
-                    <td>{descripcion || 'No existe registro'}</td>
-                </tr>
-                <tr>
-                    <td><strong>Estado</strong></td>
-                    <td>{estado || 'Sin definir'}</td>
-                </tr>
-                <tr>
-                    <td><strong>Tipo</strong></td>
-                    <td>{tipo || 'No especificado'}</td>
-                </tr>
+        <div className="table-responsive">
+            <Table striped bordered hover className="table-responsive-md">
+                <tbody>
+                    {/* Detalles del Reporte */}
+                    <tr>
+                        <td><strong>Título</strong></td>
+                        <td>{titulo || 'No existe registro'}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Descripción</strong></td>
+                        <td>{descripcion || 'No existe registro'}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estado</strong></td>
+                        <td>{estado || 'Sin definir'}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tipo</strong></td>
+                        <td>{tipo || 'No especificado'}</td>
+                    </tr>
 
-                {/* Detalles del Inventario */}
-                {inventario ? (
-
+                    {/* Detalles del Inventario */}
+                    {inventario ? (
                         <tr>
-                            <td><strong>Inventario asociado </strong></td>
+                            <td><strong>Inventario asociado</strong></td>
                             <td>{inventario.nombre}</td>
                         </tr>
-                ) : (
-                    <tr>
-                        <td colSpan="2"><strong>No hay inventarios asociados</strong></td>
-                    </tr>
-                )}
-                {/* Detalles del Producto */}
-                {producto ? (
-                    <>
+                    ) : (
                         <tr>
-                            <td><strong>Producto</strong></td>
-                            <td>{producto.nombre}</td>
+                            <td colSpan="2"><strong>No hay inventarios asociados</strong></td>
                         </tr>
+                    )}
+
+                    {/* Detalles del Producto */}
+                    {producto ? (
+                        <>
+                            <tr>
+                                <td><strong>Producto</strong></td>
+                                <td>{producto.nombre}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Producto - Categoría</strong></td>
+                                <td>{producto.categoria || 'Sin categoría'}</td>
+                            </tr>
+                        </>
+                    ) : (
                         <tr>
-                            <td><strong>Producto - Categoría</strong></td>
-                            <td>{producto.categoria || 'Sin categoría'}</td>
+                            <td colSpan="2"><strong>No hay productos asociados</strong></td>
                         </tr>
-                    </>
-                ) : (
-                    <tr>
-                        <td colSpan="2"><strong>No hay productos asociados</strong></td>
-                    </tr>
-                )}
-            </tbody>
-        </Table>
+                    )}
+                </tbody>
+            </Table>
+        </div>
     );
 };
 

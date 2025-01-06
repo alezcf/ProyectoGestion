@@ -19,7 +19,7 @@ function ReportesPanel() {
                 console.log('Reportes:', data);
                 setReportes(data || []);
             } catch (err) {
-                setError("Error al cargar reportes");
+                setError(err.response.data.message);
             }
         };
 
@@ -36,27 +36,36 @@ function ReportesPanel() {
             <div className="reportes-header">
                 <h2>Reportes</h2>
             </div>
-            <div className="reportes-panel-content">
-                {error && <p className="error">{error}</p>}
-                <div className="reportes-list">
+
+            {error ? (
+                <div className="error-container">
+                    <h5 className="error-message">{error}</h5>
+                </div>
+            ) : (
+                <div className="reportes-panel-content">
                     {reportes.length > 0 ? (
-                        reportes.map((reporte) => (
-                            <div
-                                key={reporte.id}
-                                className="reporte-card"
-                                onClick={() => handleReporteClick(reporte.id)} // Llama a la función al hacer clic
-                            >
-                                <center><h3 className="reporte-titulo">{reporte.titulo}</h3></center>
-                                <p className="reporte-descripcion">{reporte.descripcion}</p>
-                            </div>
-                        ))
+                        <div className="reportes-list">
+                            {reportes.map((reporte) => (
+                                <div
+                                    key={reporte.id}
+                                    className="reporte-card"
+                                    onClick={() => handleReporteClick(reporte.id)}
+                                >
+                                    <center>
+                                        <h3 className="reporte-titulo">{reporte.titulo}</h3>
+                                    </center>
+                                    <p className="reporte-descripcion">{reporte.descripcion}</p>
+                                </div>
+                            ))}
+                        </div>
                     ) : (
                         <p>No hay reportes</p>
                     )}
                 </div>
-            </div>
+            )}
         </div>
     );
+
 }
 
 export default ReportesPanel;

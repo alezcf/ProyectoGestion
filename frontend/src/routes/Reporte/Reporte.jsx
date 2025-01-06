@@ -26,7 +26,7 @@ const Reporte = () => {
                 }
                 setLoading(false);
             } catch (err) {
-                setError('Error al cargar los datos del reporte.');
+                setError(err.message);
                 setLoading(false);
             }
         };

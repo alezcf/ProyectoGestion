@@ -21,7 +21,6 @@ const Inventario = () => {
             try {
                 const data = await inventarioService.getAllInventarios();
 
-                // Agregar la propiedad stock_actual sumando las cantidades de productoInventarios
                 const dataWithStockActual = data.map(inventario => ({
                     ...inventario,
                     stock_actual: inventario.productoInventarios.reduce((total, item) => total + item.cantidad, 0)
@@ -30,11 +29,7 @@ const Inventario = () => {
                 setInventarioData(dataWithStockActual);
                 setFilteredData(dataWithStockActual);
             } catch (err) {
-                if (err.response && err.response.status === 404) {
-                    setError('No se encontraron inventarios registrados.');
-                } else {
-                    setError('Error al cargar los inventarios.');
-                }
+                setError(err.message);
             }
         };
         fetchInventarios();
